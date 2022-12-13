@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "481038838609",
+    "project_id": "eyetranspo",
+    "storage_bucket": "eyetranspo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481038838609:android:0d2b53a4c9a99f1507c170",
+        "android_client_info": {
+          "package_name": "com.eyetransporn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "481038838609-thg0di6i4gf1jo78rotre6aamjb7t9tf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMPwHElIxH27ZUynS7QBl3J0Ud86-B9Ik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "481038838609-thg0di6i4gf1jo78rotre6aamjb7t9tf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
