@@ -64,3 +64,4 @@ buck-out/
 
 #API key
 google-services.json
+AndroidManifest.xml
