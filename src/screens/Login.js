@@ -32,7 +32,7 @@ import {
   Vibration,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Tts from 'react-native-tts';
 export default function App({navigation, route}) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -208,14 +208,7 @@ export default function App({navigation, route}) {
           source={require('../assets/images/Kinaiya-logo_login.png')}
           alt="Alternate Text"
         /> */}
-        <Text
-          style={{
-            // borderColor: 'black',
-            // borderWidth: 1,
-            fontSize: 30,
-          }}>
-          Eye Transpo
-        </Text>
+        <Center>Eye Transpo</Center>
         <Stack
           space={4}
           w="100%"
@@ -226,49 +219,60 @@ export default function App({navigation, route}) {
             // borderWidth: 1,
           }}>
           <Input
-            variant="rounded"
-            style={{color: 'white', backgroundColor: 'rgba(52, 52, 52, 0.8)'}}
+            variant="filled"
+            style={{
+              color: 'white',
+              backgroundColor: 'rgba(52, 52, 52, 0.8)',
+              height: 80,
+              fontSize: 50,
+            }}
             value={username}
             onChangeText={text => setUsername(text)}
-            InputLeftElement={
-              <Icon
-                as={<FontIcon name="user" />}
-                size={5}
-                ml="2"
-                color="white"
-              />
-            }
+            // InputLeftElement={
+            //   <Icon
+            //     as={<FontIcon name="user" />}
+            //     size={5}
+            //     ml="2"
+            //     color="white"
+            //   />
+            // }
             placeholder="Username"
             placeholderTextColor="white"
           />
           <Input
-            variant="rounded"
+            variant="filled"
             style={{
               color: 'white',
               backgroundColor: 'rgba(52, 52, 52, 0.8)',
+              height: 80,
+              fontSize: 50,
             }}
             value={password}
             onChangeText={text => setPassword(text)}
             type="password"
-            InputLeftElement={
-              <Icon
-                as={<FontIcon name="lock" />}
-                size={5}
-                ml="2"
-                color="white"
-              />
-            }
+            // InputLeftElement={
+            //   <Icon
+            //     as={<FontIcon name="lock" />}
+            //     size={5}
+            //     ml="2"
+            //     color="white"
+            //   />
+            // }
             placeholder="Password"
             placeholderTextColor="white"
           />
           <Button
-            borderRadius={20}
+            style={{
+              height: 80,
+            }}
+            // borderRadius={20}
             disabled={buttonStatus}
             onPress={() => {
+              Tts.speak('You are arriving at your destination!');
               // login()
               // Vibration.vibrate(2 * 1000);
             }}
-            bgColor="#ad8765"
+            bgColor="#eed503"
             _text={{color: 'white'}}
             //  endIcon={<Icon as={<FontIcon name="sign-in-alt" />} size="5" />}>
           >
@@ -281,13 +285,17 @@ export default function App({navigation, route}) {
                 />
               )}
 
-              <Heading color="white" fontSize="md">
+              <Heading
+                color="white"
+                style={{
+                  fontSize: 30,
+                }}>
                 {buttonStatus ? 'Loading' : 'SIGN IN'}
               </Heading>
               {buttonStatus == false && (
                 <Icon
                   as={<FontIcon name="sign-in-alt" />}
-                  size="5"
+                  size="30"
                   color="white"
                 />
               )}
@@ -305,7 +313,9 @@ export default function App({navigation, route}) {
 
               //   height: 100,
             }}>
-            <Text style={{color: 'white'}}>Don't have an account?</Text>
+            <Text style={{color: 'gray', fontSize: 25, padding: 5}}>
+              Don't have an account?
+            </Text>
 
             <TouchableOpacity
               onPress={() => {
@@ -313,9 +323,11 @@ export default function App({navigation, route}) {
               }}>
               <Text
                 style={{
-                  color: '#ad8765',
+                  color: '#eed503',
                   borderBottomWidth: 1,
-                  borderColor: '#ad8765',
+                  borderColor: '#eed503',
+                  fontSize: 25,
+                  padding: 5,
                 }}>
                 SIGN UP
               </Text>
