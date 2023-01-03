@@ -26,6 +26,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
+import Tts from 'react-native-tts';
 export default function Register({navigation}) {
   const height = useHeaderHeight();
   const toast = useToast();
@@ -38,6 +39,17 @@ export default function Register({navigation}) {
   const [retypePassword, setRetypePassword] = React.useState('');
   const [buttonStatus, setButtonStatus] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      //console.log('refreshed_home');
+      Tts.speak('You are in signup page.');
+
+      // retrieveIp();
+      // setModalShow(true);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
   const registerUser = () => {
     setModalVisible(true);
     console.log(retypePassword);

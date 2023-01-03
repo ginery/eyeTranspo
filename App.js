@@ -12,7 +12,7 @@ import {PermissionsAndroid} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 
 // local connection
-// window.name = 'http://192.168.57.94/kinaiya/mobile/';
+window.name = 'http://192.168.178.94/eyetranspo/mobile/';
 // global.global_image = 'http://192.168.57.94/kinaiya/images/';
 // online connection
 // window.name = 'https://trisakay.tech/mobile/';
