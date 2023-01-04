@@ -109,10 +109,10 @@ export default function App({navigation, route}) {
     // setButtonStatus(true);
     if (username == '') {
       Tts.speak('Please fillout the username.');
-      Vibration.vibrate(2 * 1000);
+      Vibration.vibrate(0.5 * 1000);
     } else if (password == '') {
       Tts.speak('Please fillout the password.');
-      Vibration.vibrate(2 * 1000);
+      Vibration.vibrate(0.5 * 1000);
     } else {
       const formData = new FormData();
       formData.append('username', username);
@@ -233,8 +233,8 @@ export default function App({navigation, route}) {
           <Input
             variant="filled"
             style={{
-              color: 'white',
-              backgroundColor: 'rgba(52, 52, 52, 0.8)',
+              color: '#606060',
+              backgroundColor: 'rgba(255, 217, 180, 0.45)',
               height: 80,
               fontSize: 50,
             }}
@@ -252,13 +252,13 @@ export default function App({navigation, route}) {
               Tts.speak('Please Enter your username here.');
             }}
             placeholder="Username"
-            placeholderTextColor="white"
+            placeholderTextColor="#606060"
           />
           <Input
             variant="filled"
             style={{
-              color: 'white',
-              backgroundColor: 'rgba(52, 52, 52, 0.8)',
+              color: '#606060',
+              backgroundColor: 'rgba(255, 217, 180, 0.45)',
               height: 80,
               fontSize: 50,
             }}
@@ -277,7 +277,7 @@ export default function App({navigation, route}) {
             //   />
             // }
             placeholder="Password"
-            placeholderTextColor="white"
+            placeholderTextColor="#606060"
           />
           <Button
             style={{
