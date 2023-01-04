@@ -5,8 +5,8 @@ import Login from '../screens/Login';
 import TabViewScreen from '../screens/TabMenu';
 import ProfileScreen from '../screens/Profile';
 import RegisterScreen from '../screens/Register';
-import CartScreen from '../screens/Cart';
-import HistoryScreen from '../screens/History';
+import TripSchedulScreen from '../screens/TripSchedules';
+import TrackBusesScreen from '../screens/TrackBuses';
 const Stack = createStackNavigator();
 const MainStackNavigator = () => {
   return (
@@ -38,13 +38,13 @@ const MainStackNavigator = () => {
       />
 
       <Stack.Screen
-        name="Cart"
-        component={CartScreen}
+        name="Trip Schedule"
+        component={TripSchedulScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="History"
-        component={HistoryScreen}
+        name="Track Buses"
+        component={TrackBusesScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

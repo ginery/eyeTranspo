@@ -96,6 +96,7 @@ export default function Register({navigation}) {
             var data = responseJson.array_data[0];
             console.log(data);
             if (data.res >= 1) {
+              Tts.speak('Great! you are successfully registered.');
               toast.show({
                 render: () => {
                   return (
@@ -219,6 +220,7 @@ export default function Register({navigation}) {
                     placeholder="First Name"
                     placeholderTextColor="#606060"
                     onPressIn={() => {
+                      Tts.stop();
                       Tts.speak('Please Enter your first name here.');
                     }}
                   />
@@ -238,6 +240,7 @@ export default function Register({navigation}) {
                     placeholder="Mid Name"
                     placeholderTextColor="#606060"
                     onPressIn={() => {
+                      Tts.stop();
                       Tts.speak('Please Enter your middle name here.');
                     }}
                   />
@@ -257,6 +260,7 @@ export default function Register({navigation}) {
                     placeholder="Last Name"
                     placeholderTextColor="#606060"
                     onPressIn={() => {
+                      Tts.stop();
                       Tts.speak('Please Enter your last name here.');
                     }}
                   />
@@ -276,6 +280,7 @@ export default function Register({navigation}) {
                     placeholder="Phone #"
                     placeholderTextColor="#606060"
                     onPressIn={() => {
+                      Tts.stop();
                       Tts.speak('Please Enter your phone number here.');
                     }}
                   />
@@ -297,6 +302,7 @@ export default function Register({navigation}) {
                     placeholder="Username"
                     placeholderTextColor="#606060"
                     onPressIn={() => {
+                      Tts.stop();
                       Tts.speak('Please Enter your username here.');
                     }}
                   />
@@ -317,6 +323,7 @@ export default function Register({navigation}) {
                     placeholder="Password"
                     placeholderTextColor="#606060"
                     onPressIn={() => {
+                      Tts.stop();
                       Tts.speak('Please Enter your password here.');
                     }}
                   />
@@ -328,6 +335,7 @@ export default function Register({navigation}) {
                   disabled={buttonStatus}
                   mt="2"
                   onPress={() => {
+                    Tts.stop();
                     registerUser();
                   }}
                   bgColor="#bb936f"
@@ -353,6 +361,7 @@ export default function Register({navigation}) {
 
                   <TouchableOpacity
                     onPress={() => {
+                      Tts.stop();
                       navigation.navigate('Login');
                     }}>
                     <Text

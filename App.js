@@ -18,6 +18,29 @@ window.name = 'http://192.168.178.94/eyetranspo/mobile/';
 // window.name = 'https://trisakay.tech/mobile/';
 
 export default function App() {
+  React.useEffect(() => {
+    requestLocationPermission();
+  }, [1]);
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'MyMapApp needs access to your location',
+        },
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition(info => console.log(info));
+        console.log('Location permission granted');
+      } else {
+        console.log('Location permission denied');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <NativeBaseProvider>
       <NavigationContainer ref={navigationRef}>

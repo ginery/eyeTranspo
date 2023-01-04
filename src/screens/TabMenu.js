@@ -17,7 +17,7 @@ import Tts from 'react-native-tts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // Later on in your styles..
 
-export default function App({navigation}) {
+export default function TabMenu({navigation}) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       //console.log('refreshed_home');
@@ -44,8 +44,9 @@ export default function App({navigation}) {
         <VStack bg="#ffe869">
           <TouchableOpacity
             onPress={() => {
-              console.log('tetst');
+              Tts.stop();
               Tts.speak('TRIP SCHEDULES');
+              navigation.navigate('Trip Schedule');
             }}>
             <Box
               style={{
@@ -82,7 +83,8 @@ export default function App({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              console.log('tetst');
+              Tts.stop();
+              navigation.navigate('Track Buses');
               Tts.speak('TRACK BUSES');
             }}>
             <Box
@@ -120,7 +122,7 @@ export default function App({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              console.log('tetst');
+              Tts.stop();
               Tts.speak('REPORT DRIVERS/CONDUCTOR');
             }}>
             <Box
@@ -158,7 +160,7 @@ export default function App({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              console.log('tetst');
+              Tts.stop();
               AsyncStorage.clear();
               navigation.navigate('Login');
               Tts.speak('Logging out.');

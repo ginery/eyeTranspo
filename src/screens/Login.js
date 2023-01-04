@@ -106,13 +106,15 @@ export default function App({navigation, route}) {
     }
   };
   const login = () => {
-    // setButtonStatus(true);
+    setButtonStatus(true);
     if (username == '') {
       Tts.speak('Please fillout the username.');
       Vibration.vibrate(0.5 * 1000);
+      setButtonStatus(false);
     } else if (password == '') {
       Tts.speak('Please fillout the password.');
       Vibration.vibrate(0.5 * 1000);
+      setButtonStatus(false);
     } else {
       const formData = new FormData();
       formData.append('username', username);
@@ -161,6 +163,7 @@ export default function App({navigation, route}) {
               },
             });
           } else if (data.response == 0) {
+            setButtonStatus(false);
             Tts.speak(
               'Aw snap! username or pasword is not right. Please try again.',
             );
@@ -249,6 +252,7 @@ export default function App({navigation, route}) {
             //   />
             // }
             onPressIn={() => {
+              Tts.stop();
               Tts.speak('Please Enter your username here.');
             }}
             placeholder="Username"
@@ -264,6 +268,7 @@ export default function App({navigation, route}) {
             }}
             value={password}
             onPressIn={() => {
+              Tts.stop();
               Tts.speak('Please Enter your password here.');
             }}
             onChangeText={text => setPassword(text)}
@@ -286,6 +291,7 @@ export default function App({navigation, route}) {
             // borderRadius={20}
             disabled={buttonStatus}
             onPress={() => {
+              Tts.stop();
               login();
             }}
             bgColor="#e99340"
@@ -296,7 +302,7 @@ export default function App({navigation, route}) {
               {buttonStatus == true && (
                 <Spinner
                   accessibilityLabel="Loading posts"
-                  size="sm"
+                  size="lg"
                   color="white"
                 />
               )}
