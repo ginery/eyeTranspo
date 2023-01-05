@@ -184,6 +184,7 @@ export default function App({navigation, route}) {
           console.log(data);
         })
         .catch(error => {
+          Tts.speak('Internet Connection Error');
           console.error(error);
           //  Alert.alert('Internet Connection Error');
         });

@@ -42,6 +42,7 @@ import MapView, {
 } from 'react-native-maps';
 // import Geolocation from '@react-native-community/geolocation';
 import Geolocation from 'react-native-geolocation-service';
+import {round} from 'react-native-reanimated';
 enableLatestRenderer();
 const styles = StyleSheet.create({
   container: {
@@ -120,11 +121,53 @@ export default function TrackBusesScreen() {
       longitude: 122.9438118,
     },
     {
-      latitude: 10.6652092,
-      longitude: 122.9644393,
+      latitude: 9.1763435,
+      longitude: 122.938621,
     },
   ];
+  const distanceUpdate = (distance, duration) => {
+    if (distance > 1) {
+      var distanceTotal = Math.round(distance);
+      if (Math.round(distance) > 1) {
+        var kilometer = 'kilometers';
+      } else {
+        var kilometer = 'kilometer';
+      }
+    } else {
+      var distanceTotal = distance * 1000;
+      if (distanceTotal > 1) {
+        var kilometer = 'meters';
+      } else {
+        var kilometer = 'meter';
+      }
+    }
+    if (duration < 60) {
+      var durationTotal = Math.round(duration);
+      if (Math.round(duration) > 1) {
+        var minutes = 'minutes';
+      } else {
+        var minutes = 'minute';
+      }
+    } else {
+      var time = duration / 60;
+      var durationTotal = Math.round(time);
+      if (time > 1) {
+        var minutes = 'hours';
+      } else {
+        var minutes = 'hour';
+      }
+    }
 
+    Tts.speak(
+      'Bus 12563 is about' +
+        distanceTotal +
+        kilometer +
+        ' away from you. Estimated arrival is ' +
+        Math.round(durationTotal) +
+        minutes,
+    );
+    // console.log(Math.round(distance));
+  };
   return (
     <NativeBaseProvider safeAreaTop>
       <Center bg="gray.100" h="50%">
@@ -138,6 +181,7 @@ export default function TrackBusesScreen() {
           showsTraffic={true}
           loadingIndicatorColor="#e99340"
           zoomControlEnabled={true}
+          directionsServiceBaseUrl="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms&callback=initMap"
           mapType="standard"
           region={{
             latitude: latitude,
@@ -149,8 +193,8 @@ export default function TrackBusesScreen() {
           <MapViewDirections
             origin={{latitude: latitude, longitude: longitude}}
             destination={{
-              latitude: 10.6652092,
-              longitude: 122.9644393,
+              latitude: 9.1763435,
+              longitude: 122.938621,
             }}
             waypoints={
               waypointarray.length > 2 ? waypointarray.slice(1, -1) : undefined
@@ -164,6 +208,7 @@ export default function TrackBusesScreen() {
               );
             }}
             onReady={result => {
+              distanceUpdate(result.distance, result.duration);
               console.log(`Distance: ${result.distance} km`);
               console.log(`Duration: ${result.duration} min.`);
 
