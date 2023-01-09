@@ -21,9 +21,10 @@ export default function TabMenu({navigation}) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       //console.log('refreshed_home');
+      Tts.stop();
       Tts.speak('You are in menu page.');
       Tts.speak(
-        'The menu list are trip schedules, track buses, report drivers/conductor and lastly logout',
+        'The menu list are trip schedules, track buses, report drivers/conductor, profile and lastly logout',
       );
 
       // retrieveIp();
@@ -145,6 +146,45 @@ export default function TabMenu({navigation}) {
                       fontSize: 50,
                     }}>
                     REPORT DRIVERS/CONDUCTOR
+                  </Text>
+                </Center>
+                <Center>
+                  <Text
+                    style={{
+                      fontSize: 50,
+                    }}>
+                    <FontIcon name="chevron-right" size={50} />
+                  </Text>
+                </Center>
+              </HStack>
+            </Box>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Tts.stop();
+              navigation.navigate('Profile');
+              Tts.speak('PROFILE');
+            }}>
+            <Box
+              style={{
+                width: '100%',
+                height: 200,
+                borderColor: '#e9d356',
+                borderBottomWidth: 1,
+                justifyContent: 'center',
+              }}>
+              <HStack
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  textAlign: 'justify',
+                }}>
+                <Center w="89%">
+                  <Text
+                    style={{
+                      fontSize: 50,
+                    }}>
+                    PROFILE
                   </Text>
                 </Center>
                 <Center>

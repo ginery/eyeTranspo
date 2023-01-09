@@ -67,6 +67,7 @@ export default function TrackBusesScreen() {
   const [refreshing, setRefreshing] = React.useState(false);
   const [latitude, setLatitude] = React.useState(0);
   const [longitude, setLongitude] = React.useState(0);
+  const [reverseGeoResponse, setReversegeoResponse] = React.useState('');
   const mapRef = React.useRef();
   const retrieveUser = async () => {
     try {
@@ -91,6 +92,7 @@ export default function TrackBusesScreen() {
       //     longitude: longitude,
       //   })
       //   .then(res => console.log(res));
+
       Tts.speak('You are in track buses page.');
 
       // console.log('user_id' + user_id);
@@ -158,6 +160,7 @@ export default function TrackBusesScreen() {
       }
     }
 
+    // console.log(reverseGeoResponse + 'hello');
     Tts.speak(
       'Bus 12563 is about' +
         distanceTotal +
@@ -167,6 +170,44 @@ export default function TrackBusesScreen() {
         minutes,
     );
     // console.log(Math.round(distance));
+  };
+  const getAddressFromCoordinates = async (latitude, longitude) => {
+    try {
+      fetch(
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+          latitude +
+          ',' +
+          longitude +
+          '&key=AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms',
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+        .then(response => response.json())
+        .then(responseJson => {
+          // var json = JSON.parse(responseJson);
+          console.log(responseJson.results[0].address_components[0]);
+          Tts.speak(
+            'You are currently in ' +
+              String(responseJson.results[0].formatted_address),
+          );
+          Tts.speak('Please select where to go south or north?');
+          // setReversegeoResponse(
+          //   String(responseJson.results[0].formatted_address),
+          // );
+          // setReversegeoResponse('Not Available');
+        })
+        .catch(error => {
+          console.error(error);
+          Alert.alert('Internet Connection Error');
+        });
+    } catch (e) {
+      console.log('Error in getAddressFromCoordinates', e);
+    }
   };
   return (
     <NativeBaseProvider safeAreaTop>
@@ -208,7 +249,9 @@ export default function TrackBusesScreen() {
               );
             }}
             onReady={result => {
-              distanceUpdate(result.distance, result.duration);
+              getAddressFromCoordinates(latitude, longitude);
+              // distanceUpdate(result.distance, result.duration);
+
               console.log(`Distance: ${result.distance} km`);
               console.log(`Duration: ${result.duration} min.`);
 
@@ -223,6 +266,42 @@ export default function TrackBusesScreen() {
             }}
           />
         </MapView>
+      </Center>
+      <Center bg="emerald.100" h="50%" width="100%">
+        <Text fontSize="6xl">Where to..?</Text>
+        <Button
+          onPress={() => {
+            Tts.speak('You are going north!');
+          }}
+          w="80%"
+          h="120"
+          style={{
+            marginBottom: 5,
+            marginTop: 10,
+          }}
+          _text={{
+            fontSize: 60,
+            justifyContent: 'center',
+            textAlign: 'justify',
+          }}>
+          NORTH
+        </Button>
+        <Button
+          onPress={() => {
+            Tts.speak('You are going south!');
+          }}
+          w="80%"
+          h="120"
+          style={{
+            marginBottom: 5,
+          }}
+          _text={{
+            fontSize: 60,
+            justifyContent: 'center',
+            textAlign: 'justify',
+          }}>
+          SOUTH
+        </Button>
       </Center>
       <Modal
         style={{

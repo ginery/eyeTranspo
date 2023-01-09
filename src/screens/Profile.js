@@ -10,10 +10,14 @@ import {
   Stack,
   NativeBaseProvider,
   Avatar,
+  VStack,
+  FormControl,
+  Input,
 } from 'native-base';
 import Rating from 'react-native-easy-rating';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export default function Profile() {
+import Tts from 'react-native-tts';
+export default function Profile({navigation}) {
   const [userFullName, setUserFullName] = React.useState('');
   const retrieveData = async () => {
     try {
@@ -30,9 +34,19 @@ export default function Profile() {
       console.log(error);
     }
   };
-  React.useState(() => {
-    retrieveData();
-  }, [1]);
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      retrieveData();
+      //console.log('refreshed_home');
+      Tts.stop();
+      Tts.speak('You are in profile.');
+
+      // retrieveIp();
+      // setModalShow(true);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <NativeBaseProvider>
@@ -62,7 +76,7 @@ export default function Profile() {
                 <Image
                   w="100%"
                   h={200}
-                  source={require('../assets/images/login_bg.png')}
+                  source={require('../assets/images/bus_cover_photo.jpg')}
                   alt="image"
                   resizeMode="contain"
                 />
@@ -84,7 +98,7 @@ export default function Profile() {
             </Box>
             <Stack p="4" space={3}>
               <Stack space={2}>
-                <Heading size="md" ml="-1">
+                <Heading size="2xl" ml="-1">
                   {userFullName}
                 </Heading>
                 <Text
@@ -99,11 +113,92 @@ export default function Profile() {
                   ml="-0.5"
                   mt="-1"></Text>
               </Stack>
-              <Text fontWeight="400">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s.
-              </Text>
+              <Center w="100%">
+                <Box safeArea p="2" w="100%">
+                  <VStack space={3} mt="2">
+                    <FormControl bg="white">
+                      <Input
+                        variant="filled"
+                        style={{
+                          color: '#606060',
+                          backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                          borderRadius: 15,
+                          height: 80,
+                          fontSize: 50,
+                        }}
+                        w="100%"
+                        onChangeText={text => setFname(text)}
+                        placeholder="First Name"
+                        placeholderTextColor="#606060"
+                        onPressIn={() => {
+                          Tts.stop();
+                          Tts.speak('Please update your first name here.');
+                        }}
+                      />
+                    </FormControl>
+                    <FormControl bg="white">
+                      <Input
+                        variant="filled"
+                        style={{
+                          color: '#606060',
+                          backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                          borderRadius: 15,
+                          height: 80,
+                          fontSize: 50,
+                        }}
+                        w="100%"
+                        onChangeText={text => setFname(text)}
+                        placeholder="Last Name"
+                        placeholderTextColor="#606060"
+                        onPressIn={() => {
+                          Tts.stop();
+                          Tts.speak('Please update your last name here.');
+                        }}
+                      />
+                    </FormControl>
+                    <FormControl bg="white">
+                      <Input
+                        variant="filled"
+                        style={{
+                          color: '#606060',
+                          backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                          borderRadius: 15,
+                          height: 80,
+                          fontSize: 50,
+                        }}
+                        w="100%"
+                        onChangeText={text => setFname(text)}
+                        placeholder="Username"
+                        placeholderTextColor="#606060"
+                        onPressIn={() => {
+                          Tts.stop();
+                          Tts.speak('Please update your username here.');
+                        }}
+                      />
+                    </FormControl>
+                    <FormControl bg="white">
+                      <Input
+                        variant="filled"
+                        style={{
+                          color: '#606060',
+                          backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                          borderRadius: 15,
+                          height: 80,
+                          fontSize: 50,
+                        }}
+                        w="100%"
+                        onChangeText={text => setFname(text)}
+                        placeholder="Password"
+                        placeholderTextColor="#606060"
+                        onPressIn={() => {
+                          Tts.stop();
+                          Tts.speak('Please update your password here.');
+                        }}
+                      />
+                    </FormControl>
+                  </VStack>
+                </Box>
+              </Center>
               <HStack
                 alignItems="center"
                 space={4}
