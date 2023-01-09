@@ -97,7 +97,20 @@ export default function TrackBusesScreen() {
 
       // console.log('user_id' + user_id);
     });
+    var watchID = Geolocation.watchPosition(
+      latestposition => {
+        // setLastPosition(latestposition);
+      },
+      error => console.log(error),
+      {enableHighAccuracy: true, timeout: 3000, maximumAge: 10000},
+    );
+    const interval = setInterval(() => {
+      refreshLocation();
+    }, 300000);
+
     return () => {
+      clearInterval(interval);
+      Geolocation.clearWatch(watchID);
       unsubscribe;
     };
   }, [navigation]);
@@ -190,10 +203,15 @@ export default function TrackBusesScreen() {
         .then(response => response.json())
         .then(responseJson => {
           // var json = JSON.parse(responseJson);
-          console.log(responseJson.results[0].address_components[0]);
+
           Tts.speak(
             'You are currently in ' +
-              String(responseJson.results[0].formatted_address),
+              String(
+                responseJson.results[0].formatted_address.replace(
+                  ', Philippines',
+                  ' ',
+                ),
+              ),
           );
           Tts.speak('Please select where to go south or north?');
           // setReversegeoResponse(

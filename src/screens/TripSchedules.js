@@ -85,7 +85,7 @@ export default function TripSchedulScreen() {
       data.map((item, index) => {
         console.log(item.fullName);
         Tts.speak(
-          'Bus number ' + item.fullName + ' was going to ' + item.recentText,
+          'Bus number ' + item.fullName + ' where going to ' + item.recentText,
         );
       });
 
@@ -161,44 +161,57 @@ export default function TripSchedulScreen() {
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
         <Heading fontSize="4xl" p="4" pb="3">
-          Bus Schedules
+          Trip Schedules
         </Heading>
         <FlatList
           data={data}
           renderItem={({item}) => (
-            <Box
-              borderRadius={10}
-              borderWidth="1"
-              mb={1}
-              _dark={{
-                borderColor: 'muted.50',
-              }}
-              borderColor="muted.800"
-              pl={3}
-              pr={3}
-              py="2">
-              <HStack space={[2, 3]} justifyContent="space-between">
-                <VStack>
-                  <Text
-                    fontSize="3xl"
-                    _dark={{
-                      color: 'warmGray.50',
-                    }}
-                    color="coolGray.800"
-                    bold>
-                    BUS #: {item.fullName}
-                  </Text>
-                  <Text
-                    fontSize="2xl"
-                    color="coolGray.600"
-                    _dark={{
-                      color: 'warmGray.200',
-                    }}>
-                    {item.recentText}
-                  </Text>
-                </VStack>
-                <Spacer />
-                {/* <Text
+            <TouchableOpacity
+              onPress={() => {
+                Tts.stop();
+                Tts.speak(
+                  'You are selected a BUS with a number ' +
+                    item.fullName +
+                    'going to' +
+                    item.recentText,
+                );
+                Tts.addEventListener('tts-finish', event => {
+                  navigation.navigate('Track Buses');
+                });
+              }}>
+              <Box
+                borderRadius={10}
+                borderWidth="1"
+                mb={1}
+                _dark={{
+                  borderColor: 'muted.50',
+                }}
+                borderColor="muted.800"
+                pl={3}
+                pr={3}
+                py="2">
+                <HStack space={[2, 3]} justifyContent="space-between">
+                  <VStack>
+                    <Text
+                      fontSize="3xl"
+                      _dark={{
+                        color: 'warmGray.50',
+                      }}
+                      color="coolGray.800"
+                      bold>
+                      BUS #: {item.fullName}
+                    </Text>
+                    <Text
+                      fontSize="2xl"
+                      color="coolGray.600"
+                      _dark={{
+                        color: 'warmGray.200',
+                      }}>
+                      {item.recentText}
+                    </Text>
+                  </VStack>
+                  <Spacer />
+                  {/* <Text
                   fontSize="xs"
                   _dark={{
                     color: 'warmGray.50',
@@ -207,8 +220,9 @@ export default function TripSchedulScreen() {
                   alignSelf="flex-start">
                   {item.timeStamp}
                 </Text> */}
-              </HStack>
-            </Box>
+                </HStack>
+              </Box>
+            </TouchableOpacity>
           )}
           keyExtractor={item => item.id}
         />
