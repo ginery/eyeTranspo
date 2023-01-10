@@ -71,23 +71,24 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function TripSchedulScreen() {
-  const navigation = useNavigation();
+export default function TripScheduleScreen({navigation}) {
+  // const navigation = useNavigation();
   const toast = useToast();
   const [refreshing, setRefreshing] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      // Tts.stop();
+      Tts.stop();
       //console.log('refreshed_home');
 
-      Tts.speak('You are in trip schedule page.');
-      data.map((item, index) => {
-        console.log(item.fullName);
-        Tts.speak(
-          'Bus number ' + item.fullName + ' where going to ' + item.recentText,
-        );
-      });
+      // Tts.speak('You are in trip schedule page.');
+      Tts.speak('Please select where to go either south or north?');
+      // data.map((item, index) => {
+      //   console.log(item.fullName);
+      //   Tts.speak(
+      //     'Bus number ' + item.fullName + ' where going to ' + item.recentText,
+      //   );
+      // });
 
       // retrieveIp();
       // setModalShow(true);
@@ -160,72 +161,51 @@ export default function TripSchedulScreen() {
   return (
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
-        <Heading fontSize="4xl" p="4" pb="3">
-          Trip Schedules
+        <Heading fontSize="6xl" p="4" pb="3">
+          Where to..?
         </Heading>
-        <FlatList
-          data={data}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              onPress={() => {
-                Tts.stop();
-                Tts.speak(
-                  'You are selected a BUS with a number ' +
-                    item.fullName +
-                    'going to' +
-                    item.recentText,
-                );
-                Tts.addEventListener('tts-finish', event => {
-                  navigation.navigate('Track Buses');
-                });
-              }}>
-              <Box
-                borderRadius={10}
-                borderWidth="1"
-                mb={1}
-                _dark={{
-                  borderColor: 'muted.50',
-                }}
-                borderColor="muted.800"
-                pl={3}
-                pr={3}
-                py="2">
-                <HStack space={[2, 3]} justifyContent="space-between">
-                  <VStack>
-                    <Text
-                      fontSize="3xl"
-                      _dark={{
-                        color: 'warmGray.50',
-                      }}
-                      color="coolGray.800"
-                      bold>
-                      BUS #: {item.fullName}
-                    </Text>
-                    <Text
-                      fontSize="2xl"
-                      color="coolGray.600"
-                      _dark={{
-                        color: 'warmGray.200',
-                      }}>
-                      {item.recentText}
-                    </Text>
-                  </VStack>
-                  <Spacer />
-                  {/* <Text
-                  fontSize="xs"
-                  _dark={{
-                    color: 'warmGray.50',
-                  }}
-                  color="coolGray.800"
-                  alignSelf="flex-start">
-                  {item.timeStamp}
-                </Text> */}
-                </HStack>
-              </Box>
-            </TouchableOpacity>
-          )}
-          keyExtractor={item => item.id}
-        />
+        <Center h="60%" width="100%">
+          {/* <Text fontSize="6xl">Where to..?</Text> */}
+          <Button
+            onPress={() => {
+              Tts.speak('You are going north!');
+              navigation.navigate('Trip Schedule List', {
+                cardinal_directions: 'north',
+              });
+            }}
+            w="80%"
+            h="120"
+            style={{
+              marginBottom: 50,
+              marginTop: 10,
+            }}
+            _text={{
+              fontSize: 60,
+              justifyContent: 'center',
+              textAlign: 'justify',
+            }}>
+            NORTH
+          </Button>
+          <Button
+            onPress={() => {
+              Tts.speak('You are going south!');
+              navigation.navigate('Trip Schedule List', {
+                cardinal_directions: 'south',
+              });
+            }}
+            w="80%"
+            h="120"
+            style={{
+              marginBottom: 5,
+            }}
+            _text={{
+              fontSize: 60,
+              justifyContent: 'center',
+              textAlign: 'justify',
+            }}>
+            SOUTH
+          </Button>
+        </Center>
       </Box>
       <Box
         p={2}

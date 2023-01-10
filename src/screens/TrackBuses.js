@@ -34,6 +34,7 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Tts from 'react-native-tts';
 import MapViewDirections from 'react-native-maps-directions';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import MapView, {
   enableLatestRenderer,
   PROVIDER_GOOGLE,
@@ -43,6 +44,7 @@ import MapView, {
 // import Geolocation from '@react-native-community/geolocation';
 import Geolocation from 'react-native-geolocation-service';
 import {round} from 'react-native-reanimated';
+navigator.geolocation = require('react-native-geolocation-service');
 enableLatestRenderer();
 const styles = StyleSheet.create({
   container: {
@@ -86,6 +88,7 @@ export default function TrackBusesScreen() {
     const unsubscribe = navigation.addListener('focus', () => {
       retrieveUser();
       refreshLocation();
+      Tts.stop();
       // mapRef
       //   .addressForCoordinate({
       //     latitude: latitude,
@@ -213,7 +216,7 @@ export default function TrackBusesScreen() {
                 ),
               ),
           );
-          Tts.speak('Please select where to go south or north?');
+
           // setReversegeoResponse(
           //   String(responseJson.results[0].formatted_address),
           // );
@@ -285,41 +288,18 @@ export default function TrackBusesScreen() {
           />
         </MapView>
       </Center>
-      <Center bg="emerald.100" h="50%" width="100%">
-        <Text fontSize="6xl">Where to..?</Text>
-        <Button
-          onPress={() => {
-            Tts.speak('You are going north!');
+      <Center w="100%">
+        <GooglePlacesAutocomplete
+          placeholder="Search"
+          onPress={(data, details = null) => {
+            // 'details' is provided when fetchDetails = true
+            console.log(data, details);
           }}
-          w="80%"
-          h="120"
-          style={{
-            marginBottom: 5,
-            marginTop: 10,
+          query={{
+            key: 'AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms',
+            language: 'en',
           }}
-          _text={{
-            fontSize: 60,
-            justifyContent: 'center',
-            textAlign: 'justify',
-          }}>
-          NORTH
-        </Button>
-        <Button
-          onPress={() => {
-            Tts.speak('You are going south!');
-          }}
-          w="80%"
-          h="120"
-          style={{
-            marginBottom: 5,
-          }}
-          _text={{
-            fontSize: 60,
-            justifyContent: 'center',
-            textAlign: 'justify',
-          }}>
-          SOUTH
-        </Button>
+        />
       </Center>
       <Modal
         style={{
