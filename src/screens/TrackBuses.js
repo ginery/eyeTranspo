@@ -70,7 +70,9 @@ export default function TrackBusesScreen() {
   const [latitude, setLatitude] = React.useState(0);
   const [longitude, setLongitude] = React.useState(0);
   const [reverseGeoResponse, setReversegeoResponse] = React.useState('');
-  const mapRef = React.useRef();
+  const [d_lat, setDlat] = React.useState(0);
+  const [d_long, setDlong] = React.useState(0);
+  const [busNumber, setBusNumber] = React.useState(0);
   const retrieveUser = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');
@@ -87,6 +89,7 @@ export default function TrackBusesScreen() {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       retrieveUser();
+      retrieveDestination();
       refreshLocation();
       Tts.stop();
       // mapRef
@@ -117,7 +120,20 @@ export default function TrackBusesScreen() {
       unsubscribe;
     };
   }, [navigation]);
-
+  const retrieveDestination = async () => {
+    try {
+      const valueString = await AsyncStorage.getItem('user_destination');
+      if (valueString != null) {
+        const value = JSON.parse(valueString);
+        console.log(value);
+        setDlat(value.d_lat);
+        setDlong(value.d_long);
+        setBusNumber(value.bus_number);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getOrderHistory();
@@ -178,7 +194,9 @@ export default function TrackBusesScreen() {
 
     // console.log(reverseGeoResponse + 'hello');
     Tts.speak(
-      'Bus 12563 is about' +
+      'Bus ' +
+        busNumber +
+        ' is about' +
         distanceTotal +
         kilometer +
         ' away from you. Estimated arrival is ' +
@@ -255,8 +273,8 @@ export default function TrackBusesScreen() {
           <MapViewDirections
             origin={{latitude: latitude, longitude: longitude}}
             destination={{
-              latitude: 9.1763435,
-              longitude: 122.938621,
+              latitude: d_lat,
+              longitude: d_long,
             }}
             waypoints={
               waypointarray.length > 2 ? waypointarray.slice(1, -1) : undefined
@@ -271,7 +289,7 @@ export default function TrackBusesScreen() {
             }}
             onReady={result => {
               getAddressFromCoordinates(latitude, longitude);
-              // distanceUpdate(result.distance, result.duration);
+              distanceUpdate(result.distance, result.duration);
 
               console.log(`Distance: ${result.distance} km`);
               console.log(`Duration: ${result.duration} min.`);
@@ -288,19 +306,7 @@ export default function TrackBusesScreen() {
           />
         </MapView>
       </Center>
-      <Center w="100%">
-        <GooglePlacesAutocomplete
-          placeholder="Search"
-          onPress={(data, details = null) => {
-            // 'details' is provided when fetchDetails = true
-            console.log(data, details);
-          }}
-          query={{
-            key: 'AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms',
-            language: 'en',
-          }}
-        />
-      </Center>
+
       <Modal
         style={{
           justifyContent: 'center',

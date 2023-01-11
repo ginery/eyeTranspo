@@ -77,17 +77,19 @@ export default function TripScheduleListScreen({navigation, route}) {
   const toast = useToast();
   const [refreshing, setRefreshing] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [destination, setDestination] = React.useState([]);
+
   const {cardinal_directions} = route.params;
   const [latitude, setLatitude] = React.useState(0);
   const [longitude, setLongitude] = React.useState(0);
-
+  const [busNumber, setBusNumber] = React.useState(0);
+  const [user_id, set_user_id] = React.useState(0);
+  const [buttonEnable, setButtonEnable] = React.useState(false);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       Tts.stop();
       //console.log('refreshed_home');
       getCurrentLocationMap();
-
+      retrieveUser();
       Tts.speak('You are in trip schedule page.');
       data.map((item, index) => {
         // console.log(item.fullName);
@@ -108,6 +110,13 @@ export default function TripScheduleListScreen({navigation, route}) {
       setLatitude(info.coords.latitude);
       setLongitude(info.coords.longitude);
     });
+  };
+  const setItemStorage = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      // Error saving data
+    }
   };
   const retrieveUser = async () => {
     try {
@@ -171,6 +180,7 @@ export default function TripScheduleListScreen({navigation, route}) {
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU',
     },
   ];
+
   return (
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
@@ -197,6 +207,7 @@ export default function TripScheduleListScreen({navigation, route}) {
                 //     KEY_PARAM_STREAM: 'STREAM_MUSIC',
                 //   },
                 // });
+                setBusNumber(item.fullName);
                 setModalVisible(true);
                 // navigation.navigate('Track Buses');
               }}>
@@ -383,7 +394,14 @@ export default function TripScheduleListScreen({navigation, route}) {
                           placeholder="Search destination here"
                           onPress={(data, details = null) => {
                             // 'details' is provided when fetchDetails = true
-                            setDestination(details?.geometry?.location);
+                            console.log(details?.geometry?.location.lat);
+                            setItemStorage('user_destination', {
+                              user_id: user_id,
+                              d_lat: details?.geometry?.location.lat,
+                              d_long: details?.geometry?.location.lng,
+                              bus_number: busNumber,
+                            });
+                            setButtonEnable(true);
                           }}
                           query={{
                             key: 'AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms',
@@ -393,7 +411,15 @@ export default function TripScheduleListScreen({navigation, route}) {
                       </Center>
                     </Stack>
                     <Center marginBottom={10}>
-                      <Button size="lg">SET DESTINATION</Button>
+                      {buttonEnable == true && (
+                        <Button
+                          onPress={() => {
+                            navigation.navigate('Track Buses');
+                          }}
+                          size="lg">
+                          SET DESTINATION
+                        </Button>
+                      )}
                     </Center>
                   </Box>
                 </Box>
