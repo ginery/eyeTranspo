@@ -44,6 +44,7 @@ import MapView, {
 // import Geolocation from '@react-native-community/geolocation';
 import Geolocation from 'react-native-geolocation-service';
 import {round} from 'react-native-reanimated';
+import {firebase} from '@react-native-firebase/database';
 navigator.geolocation = require('react-native-geolocation-service');
 enableLatestRenderer();
 const styles = StyleSheet.create({
@@ -73,6 +74,10 @@ export default function TrackBusesScreen() {
   const [d_lat, setDlat] = React.useState(0);
   const [d_long, setDlong] = React.useState(0);
   const [busNumber, setBusNumber] = React.useState(0);
+  const reference = firebase
+    .app()
+    .database('https://tri-sakay-28429-default-rtdb.firebaseio.com/')
+    .ref('/users_coordinates/123');
   const retrieveUser = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');

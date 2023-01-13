@@ -198,7 +198,7 @@ export default function TripScheduleListScreen({navigation, route}) {
                     item.fullName +
                     'going to' +
                     item.recentText +
-                    '. Alright, please pin your destination.',
+                    '. Alright, please search your destination.',
                 );
                 // Tts.speak('Hello, world!', {
                 //   androidParams: {
