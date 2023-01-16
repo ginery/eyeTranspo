@@ -84,17 +84,20 @@ export default function TripScheduleListScreen({navigation, route}) {
   const [busNumber, setBusNumber] = React.useState(0);
   const [user_id, set_user_id] = React.useState(0);
   const [buttonEnable, setButtonEnable] = React.useState(false);
+  const [tripScheduleData, setTripScheduleData] = React.useState([]);
+  const [loadingModal, setLoadingModal] = React.useState(false);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       Tts.stop();
       //console.log('refreshed_home');
       getCurrentLocationMap();
       retrieveUser();
+      getTripSchedules();
       Tts.speak('You are in trip schedule page.');
-      data.map((item, index) => {
+      tripScheduleData.map((item, index) => {
         // console.log(item.fullName);
         Tts.speak(
-          'Bus number ' + item.fullName + ' where going to ' + item.recentText,
+          'Bus number ' + item.bus_number + ' where going to ' + item.bus_route,
         );
       });
 
@@ -139,111 +142,104 @@ export default function TripScheduleListScreen({navigation, route}) {
       setRefreshing(false);
     }, 1000);
   }, []);
-  const data = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      fullName: '5809',
-      timeStamp: '12:47 PM',
-      recentText: 'Bacolod City',
-      avatarUrl:
-        'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      fullName: '3028',
-      timeStamp: '11:11 PM',
-      recentText: 'Bago City',
-      avatarUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      fullName: '6899',
-      timeStamp: '6:22 PM',
-      recentText: 'Sagay City',
-      avatarUrl: 'https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg',
-    },
-    {
-      id: '68694a0f-3da1-431f-bd56-142371e29d72',
-      fullName: '5897',
-      timeStamp: '8:56 PM',
-      recentText: 'San Carlos City',
-      avatarUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU',
-    },
-    {
-      id: '28694a0f-3da1-471f-bd96-142456e29d72',
-      fullName: '5322',
-      timeStamp: '12:47 PM',
-      recentText: 'Silay City',
-      avatarUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU',
-    },
-  ];
 
+  const getTripSchedules = () => {
+    setLoadingModal(true);
+    const formData = new FormData();
+    formData.append('headings', cardinal_directions);
+    fetch(window.name + 'getTripSchedules.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        var data = responseJson.array_data.map(function (item, index) {
+          return {
+            trip_id: item.trip_id,
+            bus_number: item.bus_number,
+            bus_route: item.bus_route,
+          };
+        });
+        setTripScheduleData(data);
+        setLoadingModal(false);
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error);
+        setButtonStatus(false);
+        setLoadingModal(false);
+        //  Alert.alert('Internet Connection Error');
+      });
+  };
   return (
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
         <Heading fontSize="4xl" p="4" pb="3">
           Trip Schedules
         </Heading>
-        <FlatList
-          data={data}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              onPress={() => {
-                Tts.stop();
-                Tts.speak(
-                  'You are selected a BUS with a number ' +
-                    item.fullName +
-                    'going to' +
-                    item.recentText +
-                    '. Alright, please search your destination.',
-                );
-                // Tts.speak('Hello, world!', {
-                //   androidParams: {
-                //     KEY_PARAM_PAN: -1,
-                //     KEY_PARAM_VOLUME: 5,
-                //     KEY_PARAM_STREAM: 'STREAM_MUSIC',
-                //   },
-                // });
-                setBusNumber(item.fullName);
-                setModalVisible(true);
-                // navigation.navigate('Track Buses');
-              }}>
-              <Box
-                borderRadius={10}
-                borderWidth="1"
-                mb={1}
-                _dark={{
-                  borderColor: 'muted.50',
-                }}
-                borderColor="muted.800"
-                pl={3}
-                pr={3}
-                py="2">
-                <HStack space={[2, 3]} justifyContent="space-between">
-                  <VStack>
-                    <Text
-                      fontSize="3xl"
-                      _dark={{
-                        color: 'warmGray.50',
-                      }}
-                      color="coolGray.800"
-                      bold>
-                      BUS #: {item.fullName}
-                    </Text>
-                    <Text
-                      fontSize="2xl"
-                      color="coolGray.600"
-                      _dark={{
-                        color: 'warmGray.200',
-                      }}>
-                      {item.recentText}
-                    </Text>
-                  </VStack>
-                  <Spacer />
-                  {/* <Text
+        {tripScheduleData != '' ? (
+          <FlatList
+            data={tripScheduleData}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                onPress={() => {
+                  Tts.stop();
+                  Tts.speak(
+                    'You are selected a BUS with a number ' +
+                      item.bus_number +
+                      'going to' +
+                      item.bus_route +
+                      '. Alright, please search your destination.',
+                  );
+                  // Tts.speak('Hello, world!', {
+                  //   androidParams: {
+                  //     KEY_PARAM_PAN: -1,
+                  //     KEY_PARAM_VOLUME: 5,
+                  //     KEY_PARAM_STREAM: 'STREAM_MUSIC',
+                  //   },
+                  // });
+                  setBusNumber(item.bus_number);
+                  setModalVisible(true);
+                  // navigation.navigate('Track Buses');
+                }}>
+                <Box
+                  borderRadius={10}
+                  borderWidth="1"
+                  mb={1}
+                  _dark={{
+                    borderColor: 'muted.50',
+                  }}
+                  borderColor="muted.800"
+                  pl={3}
+                  pr={3}
+                  py="2">
+                  <HStack space={[2, 3]} justifyContent="space-between">
+                    <VStack>
+                      <Text
+                        fontSize="3xl"
+                        _dark={{
+                          color: 'warmGray.50',
+                        }}
+                        color="coolGray.800"
+                        bold>
+                        BUS #: {item.bus_number}
+                      </Text>
+                      <Text
+                        fontSize="2xl"
+                        color="coolGray.600"
+                        _dark={{
+                          color: 'warmGray.200',
+                        }}>
+                        {item.bus_route}
+                      </Text>
+                    </VStack>
+                    <Spacer />
+                    {/* <Text
                   fontSize="xs"
                   _dark={{
                     color: 'warmGray.50',
@@ -252,16 +248,19 @@ export default function TripScheduleListScreen({navigation, route}) {
                   alignSelf="flex-start">
                   {item.timeStamp}
                 </Text> */}
-                </HStack>
-              </Box>
-            </TouchableOpacity>
-          )}
-          keyExtractor={item => item.id}
-        />
+                  </HStack>
+                </Box>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => item.id}
+          />
+        ) : (
+          <Center>No trip found...</Center>
+        )}
       </Box>
-      <Center width="100%" bg="emerald.100">
+      {/* <Center width="100%" bg="emerald.100">
         {cardinal_directions}
-      </Center>
+      </Center> */}
       <Box
         p={2}
         style={{
@@ -332,52 +331,7 @@ export default function TripScheduleListScreen({navigation, route}) {
                           Search Destination
                         </Heading>
                       </Stack>
-                      {/*
-                      <Center
-                        w="100%"
-                        h="80%"
-                        borderColor="#e99340"
-                        borderWidth={2}>
-                        <View style={styles.container}>
-                          <MapView
-                            provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-                            style={styles.map}
-                            region={{
-                              latitude: latitude,
-                              longitude: longitude,
-                              latitudeDelta: 0.015,
-                              longitudeDelta: 0.0121,
-                            }}>
-                          
-                            <Marker
-                              draggable
-                              onDragEnd={e => {
-                                console.log(
-                                  'dragEnd',
-                                  e.nativeEvent.coordinate,
-                                );
-                                setDestination(e.nativeEvent.coordinate);
-                              }}
-                              tracksViewChanges={false}
-                              zIndex={3}
-                              coordinate={{
-                                latitude: parseFloat(latitude),
-                                longitude: parseFloat(longitude),
-                              }}>
-                              <Center w="100%">
-                                <Image
-                                  source={require('../assets/images/logo_1.png')}
-                                  style={{
-                                    width: 86,
-                                    height: 88,
-                                  }}
-                                  resizeMode="contain"
-                                />
-                              </Center>
-                            </Marker>
-                          </MapView>
-                        </View> 
-                      </Center>*/}
+
                       <Center w="100%" h="80%">
                         <GooglePlacesAutocomplete
                           GooglePlacesDetailsQuery={{fields: 'geometry'}}
@@ -423,6 +377,23 @@ export default function TripScheduleListScreen({navigation, route}) {
                     </Center>
                   </Box>
                 </Box>
+              </Center>
+            </Center>
+          </Box>
+        </Modal>
+        <Modal
+          style={{
+            justifyContent: 'center',
+          }}
+          animationType="fade"
+          transparent={true}
+          visible={loadingModal}>
+          <Box
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Center bg="#2a2a2ab8" width="100%" height="100%">
+              <Center width="100%" height="50%" borderRadius={10}>
+                <ActivityIndicator size="large" color="white" />
+                <Text color="white">Loading...</Text>
               </Center>
             </Center>
           </Box>

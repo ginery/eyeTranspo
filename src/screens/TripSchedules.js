@@ -79,85 +79,12 @@ export default function TripScheduleScreen({navigation}) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       Tts.stop();
-      //console.log('refreshed_home');
-
-      // Tts.speak('You are in trip schedule page.');
       Tts.speak('Please select where to go either south or north?');
-      // data.map((item, index) => {
-      //   console.log(item.fullName);
-      //   Tts.speak(
-      //     'Bus number ' + item.fullName + ' where going to ' + item.recentText,
-      //   );
-      // });
-
-      // retrieveIp();
-      // setModalShow(true);
     });
 
     return unsubscribe;
   }, [navigation]);
-  const retrieveUser = async () => {
-    try {
-      const valueString = await AsyncStorage.getItem('user_details');
-      if (valueString != null) {
-        const value = JSON.parse(valueString);
-        set_user_id(value.user_id);
 
-        // console.log(value.user_id);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-
-    setTimeout(function () {
-      setRefreshing(false);
-    }, 1000);
-  }, []);
-  const data = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      fullName: '5809',
-      timeStamp: '12:47 PM',
-      recentText: 'Bacolod City',
-      avatarUrl:
-        'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      fullName: '3028',
-      timeStamp: '11:11 PM',
-      recentText: 'Bago City',
-      avatarUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      fullName: '6899',
-      timeStamp: '6:22 PM',
-      recentText: 'Sagay City',
-      avatarUrl: 'https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg',
-    },
-    {
-      id: '68694a0f-3da1-431f-bd56-142371e29d72',
-      fullName: '5897',
-      timeStamp: '8:56 PM',
-      recentText: 'San Carlos City',
-      avatarUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU',
-    },
-    {
-      id: '28694a0f-3da1-471f-bd96-142456e29d72',
-      fullName: '5322',
-      timeStamp: '12:47 PM',
-      recentText: 'Silay City',
-      avatarUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU',
-    },
-  ];
   return (
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
@@ -170,7 +97,7 @@ export default function TripScheduleScreen({navigation}) {
             onPress={() => {
               Tts.speak('You are going north!');
               navigation.navigate('Trip Schedule List', {
-                cardinal_directions: 'north',
+                cardinal_directions: 'North',
               });
             }}
             w="80%"
@@ -190,7 +117,7 @@ export default function TripScheduleScreen({navigation}) {
             onPress={() => {
               Tts.speak('You are going south!');
               navigation.navigate('Trip Schedule List', {
-                cardinal_directions: 'south',
+                cardinal_directions: 'South',
               });
             }}
             w="80%"
