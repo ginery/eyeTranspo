@@ -79,7 +79,7 @@ export default function Register({navigation}) {
       formData.append('mname', mname);
       formData.append('lname', lname);
       formData.append('contactNumber', contactNumber);
-      formData.append('username', password);
+      formData.append('username', username);
       formData.append('password', password);
       fetch(window.name + 'register.php', {
         method: 'POST',
@@ -116,8 +116,10 @@ export default function Register({navigation}) {
                 navigation.navigate('Login');
               }, 1500);
             } else if (data.res == -2) {
+              setModalVisible(true);
               Alert.alert('Name already exist.');
             } else {
+              setModalVisible(true);
               Alert.alert('Something went wrong.');
             }
           }
