@@ -73,16 +73,16 @@ export default function Profile({navigation}) {
             }}>
             <Box>
               <AspectRatio w="100%" ratio={16 / 9}>
-                <Image
+                {/* <Image
                   w="100%"
                   h={200}
                   source={require('../assets/images/bus_cover_photo.jpg')}
                   alt="image"
                   resizeMode="contain"
-                />
+                /> */}
               </AspectRatio>
               <Center alignSelf="center" position="absolute" bottom="0" pb="3">
-                <Avatar
+                {/* <Avatar
                   style={{
                     borderColor: 'white',
                     borderWidth: 4,
@@ -93,7 +93,7 @@ export default function Profile({navigation}) {
                   bg="amber.500"
                   source={require('../assets/images/profile.jpg')}>
                   AK
-                </Avatar>
+                </Avatar> */}
               </Center>
             </Box>
             <Stack p="4" space={3}>

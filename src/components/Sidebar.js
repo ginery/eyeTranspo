@@ -56,7 +56,7 @@ export default function Sidebar({...props}) {
         <Stack p="4" space={3}>
           <Stack space={2}>
             <Center>
-              <Avatar
+              {/* <Avatar
                 style={{
                   borderWidth: 3,
                   borderColor: 'white',
@@ -66,7 +66,7 @@ export default function Sidebar({...props}) {
                 size="2xl"
                 source={require('../assets/images/profile.jpg')}>
                 RS
-              </Avatar>
+              </Avatar> */}
               <Heading size="md" ml="-1">
                 {user_fname}
               </Heading>
