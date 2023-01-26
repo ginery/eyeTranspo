@@ -13,12 +13,18 @@ import {
   VStack,
   FormControl,
   Input,
+  Button,
 } from 'native-base';
 import Rating from 'react-native-easy-rating';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Tts from 'react-native-tts';
 export default function Profile({navigation}) {
+  const [user_id, setUserId] = React.useState(0);
   const [userFullName, setUserFullName] = React.useState('');
+  const [userFname, setUserFname] = React.useState('');
+  const [userLname, setUserLname] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const retrieveData = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');
@@ -28,6 +34,7 @@ export default function Profile({navigation}) {
         console.log('empty');
       } else {
         // console.log(value);
+        setUserId(value.user_id);
         setUserFullName(value.user_fname + ' ' + value.user_lname);
       }
     } catch (error) {
@@ -47,7 +54,34 @@ export default function Profile({navigation}) {
 
     return unsubscribe;
   }, [navigation]);
-
+const updateProfile = () => {
+  setLoadingModal(true);
+    const formData = new FormData();
+    formData.append('user_id', user_id);
+    formData.append('fname', userFname);
+    formData.append('lname', userLname);
+    formData.append('username', username);
+    formData.append('password', password);
+    fetch(window.name + 'updateProfile.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error);
+       
+        //  Alert.alert('Internet Connection Error');
+      });
+}
   return (
     <NativeBaseProvider>
       <Center flex={1} px="3" pt="3">
@@ -127,7 +161,8 @@ export default function Profile({navigation}) {
                           fontSize: 50,
                         }}
                         w="100%"
-                        onChangeText={text => setFname(text)}
+                        value={userFname}
+                        onChangeText={text => setUserFname(text)}
                         placeholder="First Name"
                         placeholderTextColor="#606060"
                         onPressIn={() => {
@@ -147,7 +182,8 @@ export default function Profile({navigation}) {
                           fontSize: 50,
                         }}
                         w="100%"
-                        onChangeText={text => setFname(text)}
+                        value={userLname}
+                        onChangeText={text => setUserLname(text)}
                         placeholder="Last Name"
                         placeholderTextColor="#606060"
                         onPressIn={() => {
@@ -167,7 +203,8 @@ export default function Profile({navigation}) {
                           fontSize: 50,
                         }}
                         w="100%"
-                        onChangeText={text => setFname(text)}
+                        value={username}
+                        onChangeText={text => setUsername(text)}
                         placeholder="Username"
                         placeholderTextColor="#606060"
                         onPressIn={() => {
@@ -187,7 +224,9 @@ export default function Profile({navigation}) {
                           fontSize: 50,
                         }}
                         w="100%"
-                        onChangeText={text => setFname(text)}
+                        type='passowrd'
+                        value={password}
+                        onChangeText={text => setPassword(text)}
                         placeholder="Password"
                         placeholderTextColor="#606060"
                         onPressIn={() => {
@@ -196,6 +235,20 @@ export default function Profile({navigation}) {
                         }}
                       />
                     </FormControl>
+                    <Button
+            style={{
+              height: 80,
+            }}
+            // borderRadius={20}
+            // disabled={buttonStatus}
+            onPress={() => {
+              Tts.stop();
+              updateProfile();
+            }}
+            bgColor="#e99340"
+            _text={{color: 'white'}}
+            //  endIcon={<Icon as={<FontIcon name="sign-in-alt" />} size="5" />}>
+          >Save Changes</Button>
                   </VStack>
                 </Box>
               </Center>
