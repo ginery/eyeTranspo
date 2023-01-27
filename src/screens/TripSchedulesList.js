@@ -163,6 +163,10 @@ export default function TripScheduleListScreen({navigation, route}) {
             trip_id: item.trip_id,
             bus_number: item.bus_number,
             bus_route: item.bus_route,
+            trip_schedule_id: item.trip_schedule_id,
+            headings: item.headings,
+            date_departed: item.date_departed,
+            date_arrived: item.date_arrived,
           };
         });
         setTripScheduleData(data);
@@ -180,7 +184,7 @@ export default function TripScheduleListScreen({navigation, route}) {
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
         <Heading fontSize="4xl" p="4" pb="3">
-          Trip Schedules
+          Trip Schedules {cardinal_directions}
         </Heading>
         {tripScheduleData != '' ? (
           <FlatList
@@ -342,7 +346,67 @@ export default function TripScheduleListScreen({navigation, route}) {
                               // borderColor: 'black',
                               // borderWidth: 1,
                               width: '100%',
+                              color: 'black',
                             },
+                            textInput: {
+                              color: 'black',
+                              fontSize: 50,
+                              height: 80,
+                            },
+                            predefinedPlacesDescription: {
+                              color: 'black',
+                            },
+                            textInputContainer: {
+                              borderColor: 'black',
+                              borderWidth: 1,
+                              color: 'black',
+                            },
+                            row: {
+                              // borderColor: 'black',
+                              // borderWidth: 1,
+                              backgroundColor: '#FFFFFF',
+                              paddingTop: 10,
+                              height: 50,
+                              flexDirection: 'row',
+                              color: 'black',
+                            },
+                            listView: {color: 'black'},
+                            loader: {
+                              flexDirection: 'row',
+                              justifyContent: 'flex-end',
+                              height: 20,
+                              color: 'black',
+                            },
+                          }}
+                          renderRow={rowData => {
+                            const title =
+                              rowData.structured_formatting.main_text;
+                            const address =
+                              rowData.structured_formatting.secondary_text;
+                            return (
+                              <HStack>
+                                <Text
+                                  style={{
+                                    paddingTop: 10,
+                                    fontSize: 30,
+                                    height: 50,
+                                    // borderColor: 'black',
+                                    // borderWidth: 1,
+                                  }}>
+                                  {title}{' '}
+                                </Text>
+                                <Text
+                                  style={{
+                                    paddingTop: 10,
+                                    fontSize: 30,
+                                    height: 50,
+                                    // borderColor: 'black',
+                                    // borderWidth: 1,
+                                  }}>
+                                  {address}
+                                </Text>
+                              </HStack>
+                            );
                           }}
                           enablePoweredByContainer={true}
                           placeholder="Search destination here"

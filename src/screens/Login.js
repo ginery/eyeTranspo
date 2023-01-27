@@ -24,6 +24,17 @@ import FontIcon from 'react-native-vector-icons/FontAwesome5';
 import {View} from 'react-native';
 import {background, buttonStyle} from 'styled-system';
 import {
+  BallIndicator,
+  BarIndicator,
+  DotIndicator,
+  MaterialIndicator,
+  PacmanIndicator,
+  PulseIndicator,
+  SkypeIndicator,
+  UIActivityIndicator,
+  WaveIndicator,
+} from 'react-native-indicators';
+import {
   TouchableOpacity,
   Alert,
   ImageBackground,
@@ -149,7 +160,7 @@ export default function App({navigation, route}) {
             });
             setButtonStatus(true);
             setTimeout(function () {
-              navigation.navigate('Tab View');
+              navigation.navigate('Landing');
             }, 1000);
           } else if (data.response == -1) {
             Tts.speak('Signing in. Please wait.');
@@ -205,7 +216,7 @@ export default function App({navigation, route}) {
         source={require('../assets/images/login_bg.png')}
         resizeMode="cover"
         style={{flex: 1, justifyContent: 'center'}}> */}
-      <StatusBar backgroundColor="#ad8765" barStyle="light-content" />
+      <StatusBar backgroundColor="#e99340" barStyle="light-content" />
       <Center
         flex={1}
         px="3"
@@ -302,10 +313,15 @@ export default function App({navigation, route}) {
           >
             <HStack space={2} alignItems="center">
               {buttonStatus == true && (
-                <Spinner
-                  accessibilityLabel="Loading posts"
-                  size="lg"
+                // <Spinner
+                //   accessibilityLabel="Loading posts"
+                //   size="lg"
+                //   color="white"
+                // />
+                <UIActivityIndicator
                   color="white"
+                  size={25}
+                  style={{flex: 0}}
                 />
               )}
 

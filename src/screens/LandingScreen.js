@@ -2,6 +2,17 @@ import * as React from 'react';
 import {View, useWindowDimensions, Alert, TouchableOpacity} from 'react-native';
 import {NativeBaseProvider, Center, Spinner} from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  BallIndicator,
+  BarIndicator,
+  DotIndicator,
+  MaterialIndicator,
+  PacmanIndicator,
+  PulseIndicator,
+  SkypeIndicator,
+  UIActivityIndicator,
+  WaveIndicator,
+} from 'react-native-indicators';
 // import {useNavigation} from '@react-navigation/native';
 export default function LandingScreen({navigation}) {
   // const navigation = useNavigation();
@@ -38,7 +49,8 @@ export default function LandingScreen({navigation}) {
   return (
     <NativeBaseProvider>
       <Center flex={1} px="3">
-        <Spinner accessibilityLabel="Loading posts" size="lg" color="#ad8765" />
+        {/* <Spinner accessibilityLabel="Loading posts" size="lg" color="#ad8765" /> */}
+        <BallIndicator color="#e99340" count={8} size={40} />
       </Center>
     </NativeBaseProvider>
   );

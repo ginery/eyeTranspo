@@ -14,6 +14,12 @@ import {
   useToast,
   Button,
   TextArea,
+  Stack,
+  AspectRatio,
+  Image,
+  Pressable,
+  Flex,
+  AlertDialog,
 } from 'native-base';
 import {
   SafeAreaView,
@@ -74,6 +80,11 @@ export default function TrackBusesScreen() {
   const [d_lat, setDlat] = React.useState(0);
   const [d_long, setDlong] = React.useState(0);
   const [busNumber, setBusNumber] = React.useState(0);
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const onClose = () => setIsOpen(false);
+
+  const cancelRef = React.useRef(null);
   const reference = firebase
     .app()
     .database('https://tri-sakay-28429-default-rtdb.firebaseio.com/')
@@ -311,7 +322,191 @@ export default function TrackBusesScreen() {
           />
         </MapView>
       </Center>
-
+      <VStack mt={5}>
+        <Box alignItems="center">
+          <Box
+            w="95%"
+            rounded="lg"
+            overflow="hidden"
+            borderColor="coolGray.200"
+            borderWidth="1"
+            _dark={{
+              borderColor: 'coolGray.600',
+              backgroundColor: 'gray.700',
+            }}
+            _web={{
+              shadow: 2,
+              borderWidth: 0,
+            }}
+            _light={{
+              backgroundColor: 'gray.50',
+            }}>
+            <Stack p="4" space={1}>
+              <Stack space={1}>
+                <Heading size="2xl" ml="-1">
+                  Driver Name
+                </Heading>
+                <Text
+                  fontSize="3xl"
+                  _light={{
+                    color: 'violet.500',
+                  }}
+                  _dark={{
+                    color: 'violet.400',
+                  }}
+                  fontWeight="500"
+                  ml="-0.5"
+                  mt="-1">
+                  Route name
+                </Text>
+              </Stack>
+              <Text fontWeight="400">Bengaluru</Text>
+              <HStack
+                alignItems="center"
+                space={4}
+                justifyContent="space-between">
+                <HStack alignItems="center">
+                  <Text
+                    color="coolGray.600"
+                    _dark={{
+                      color: 'warmGray.200',
+                    }}
+                    fontWeight="400">
+                    Time Arrival -{' '}
+                  </Text>
+                  <Text
+                    color="coolGray.600"
+                    _dark={{
+                      color: 'warmGray.200',
+                    }}
+                    fo
+                    fontWeight="400">
+                    Time Distination
+                  </Text>
+                </HStack>
+              </HStack>
+            </Stack>
+          </Box>
+        </Box>
+        <HStack
+          justifyContent="center"
+          // borderColor="black"
+          // borderWidth={2}
+          h="100">
+          <Pressable
+            w="50%"
+            onPress={() => {
+              Tts.speak('Report?');
+            }}>
+            {({isHovered, isFocused, isPressed}) => {
+              return (
+                <Center
+                  h="100%"
+                  bg={
+                    isPressed
+                      ? 'warning.200'
+                      : isHovered
+                      ? 'coolGray.200'
+                      : 'warning.500'
+                  }
+                  style={{
+                    transform: [
+                      {
+                        scale: isPressed ? 0.96 : 1,
+                      },
+                    ],
+                  }}>
+                  <Text
+                    fontSize="4xl"
+                    color={
+                      isPressed ? 'black' : isHovered ? 'coolGray.200' : 'white'
+                    }>
+                    Report
+                  </Text>
+                </Center>
+              );
+            }}
+          </Pressable>
+          <Pressable
+            w="50%"
+            onPress={() => {
+              Tts.stop();
+              Tts.speak(
+                'Cancel trip? This action will remove your current trip schedule. Please select either to proceed canceling or not.',
+              );
+              setIsOpen(!isOpen);
+            }}>
+            {({isHovered, isFocused, isPressed}) => {
+              return (
+                <Center
+                  h="100%"
+                  bg={
+                    isPressed
+                      ? 'error.200'
+                      : isHovered
+                      ? 'coolGray.200'
+                      : 'error.500'
+                  }
+                  style={{
+                    transform: [
+                      {
+                        scale: isPressed ? 0.96 : 1,
+                      },
+                    ],
+                  }}>
+                  <Text
+                    fontSize="4xl"
+                    color={
+                      isPressed ? 'black' : isHovered ? 'coolGray.200' : 'white'
+                    }>
+                    Cancel
+                  </Text>
+                </Center>
+              );
+            }}
+          </Pressable>
+        </HStack>
+      </VStack>
+      <Center>
+        <AlertDialog
+          leastDestructiveRef={cancelRef}
+          isOpen={isOpen}
+          onClose={onClose}>
+          <AlertDialog.Content>
+            <AlertDialog.CloseButton />
+            <AlertDialog.Header>
+              <Text fontSize="3xl" fontWeight="bold">
+                Cancel trip?
+              </Text>
+            </AlertDialog.Header>
+            <AlertDialog.Body>
+              <Text fontSize="3xl">
+                This action will remove your current trip schedule.
+              </Text>
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button.Group space={2}>
+                <Button
+                  variant="unstyled"
+                  colorScheme="coolGray"
+                  onPress={onClose}
+                  ref={cancelRef}>
+                  <Text fontSize="3xl">Cancel</Text>
+                </Button>
+                <Button
+                  colorScheme="danger"
+                  onPress={() => {
+                    AsyncStorage.removeItem('user_destination');
+                  }}>
+                  <Text fontSize="3xl" color="white">
+                    Proceed
+                  </Text>
+                </Button>
+              </Button.Group>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
+      </Center>
       <Modal
         style={{
           justifyContent: 'center',

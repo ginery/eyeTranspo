@@ -36,13 +36,13 @@ export default function TabMenu({navigation}) {
   const {colors} = useTheme();
   return (
     <NativeBaseProvider>
-      <StatusBar backgroundColor="#ffe869" barStyle="light-content" />
+      <StatusBar backgroundColor="#e99340" barStyle="light-content" />
       <ScrollView
         style={{
           width: '100%',
           height: '100%',
         }}>
-        <VStack bg="#ffe869">
+        <VStack bg="#e99340">
           <TouchableOpacity
             onPress={() => {
               Tts.stop();
@@ -108,44 +108,6 @@ export default function TabMenu({navigation}) {
                       fontSize: 50,
                     }}>
                     TRACK BUSES
-                  </Text>
-                </Center>
-                <Center>
-                  <Text
-                    style={{
-                      fontSize: 50,
-                    }}>
-                    <FontIcon name="chevron-right" size={50} />
-                  </Text>
-                </Center>
-              </HStack>
-            </Box>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              Tts.stop();
-              Tts.speak('REPORT DRIVERS/CONDUCTOR');
-            }}>
-            <Box
-              style={{
-                width: '100%',
-                height: 200,
-                borderColor: '#e9d356',
-                borderBottomWidth: 1,
-                justifyContent: 'center',
-              }}>
-              <HStack
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  textAlign: 'justify',
-                }}>
-                <Center w="89%">
-                  <Text
-                    style={{
-                      fontSize: 50,
-                    }}>
-                    REPORT DRIVERS/CONDUCTOR
                   </Text>
                 </Center>
                 <Center>

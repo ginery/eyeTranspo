@@ -52,6 +52,7 @@ export default function Register({navigation}) {
     return unsubscribe;
   }, [navigation]);
   const registerUser = () => {
+    Tts.speak('Signing up..please wait');
     if (
       fname == '' ||
       lname == '' ||
