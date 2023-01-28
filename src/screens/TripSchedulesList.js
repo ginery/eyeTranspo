@@ -56,6 +56,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Tts from 'react-native-tts';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {set} from 'react-native-reanimated';
 enableLatestRenderer();
 const styles = StyleSheet.create({
   container: {
@@ -86,6 +87,12 @@ export default function TripScheduleListScreen({navigation, route}) {
   const [buttonEnable, setButtonEnable] = React.useState(false);
   const [tripScheduleData, setTripScheduleData] = React.useState([]);
   const [loadingModal, setLoadingModal] = React.useState(false);
+  const [busId, setBusId] = React.useState(0);
+  const [tripScheduleId, setTripScheduleId] = React.useState(0);
+  const [dateDeparted, setDateDeparted] = React.useState('');
+  const [dateArrival, setDateArrival] = React.useState('');
+  const [busRoute, setBusRoute] = React.useState('');
+
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       Tts.stop();
@@ -139,6 +146,7 @@ export default function TripScheduleListScreen({navigation, route}) {
     setRefreshing(true);
 
     setTimeout(function () {
+      getTripSchedules();
       setRefreshing(false);
     }, 1000);
   }, []);
@@ -161,6 +169,7 @@ export default function TripScheduleListScreen({navigation, route}) {
         var data = responseJson.array_data.map(function (item, index) {
           return {
             trip_id: item.trip_id,
+            bus_id: item.bus_id,
             bus_number: item.bus_number,
             bus_route: item.bus_route,
             trip_schedule_id: item.trip_schedule_id,
@@ -180,14 +189,25 @@ export default function TripScheduleListScreen({navigation, route}) {
         //  Alert.alert('Internet Connection Error');
       });
   };
+  const addTransaction = () => {};
   return (
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
-        <Heading fontSize="4xl" p="4" pb="3">
+        <Heading
+          fontSize="4xl"
+          p="4"
+          pb="3"
+          style={{
+            borderBottomColor: 'black',
+            borderBottomWidth: 1,
+            borderStyle: 'dashed',
+          }}
+          mb={2}>
           Trip Schedules {cardinal_directions}
         </Heading>
         {tripScheduleData != '' ? (
           <FlatList
+            h="85%"
             data={tripScheduleData}
             renderItem={({item}) => (
               <TouchableOpacity
@@ -200,14 +220,12 @@ export default function TripScheduleListScreen({navigation, route}) {
                       item.bus_route +
                       '. Alright, please search your destination.',
                   );
-                  // Tts.speak('Hello, world!', {
-                  //   androidParams: {
-                  //     KEY_PARAM_PAN: -1,
-                  //     KEY_PARAM_VOLUME: 5,
-                  //     KEY_PARAM_STREAM: 'STREAM_MUSIC',
-                  //   },
-                  // });
+                  setBusId(item.bus_id);
+                  setTripScheduleId(item.trip_schedule_id);
+                  setDateArrival(item.date_arrived);
+                  setDateDeparted(item.date_departed);
                   setBusNumber(item.bus_number);
+                  setBusRoute(item.busRoute);
                   setModalVisible(true);
                   // navigation.navigate('Track Buses');
                 }}>
@@ -257,6 +275,16 @@ export default function TripScheduleListScreen({navigation, route}) {
               </TouchableOpacity>
             )}
             keyExtractor={item => item.id}
+            refreshControl={
+              <RefreshControl
+                title="Pull to refresh"
+                tintColor="black"
+                titleColor="Black"
+                colors={['#e99340']}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
+            }
           />
         ) : (
           <Center>No trip found...</Center>
@@ -418,6 +446,11 @@ export default function TripScheduleListScreen({navigation, route}) {
                               d_lat: details?.geometry?.location.lat,
                               d_long: details?.geometry?.location.lng,
                               bus_number: busNumber,
+                              bus_id: busId,
+                              trip_schedule_id: tripScheduleId,
+                              date_arrived: dateArrival,
+                              date_departed: dateDeparted,
+                              bus_route: busRoute,
                             });
                             setButtonEnable(true);
                           }}

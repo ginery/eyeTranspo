@@ -81,7 +81,11 @@ export default function TrackBusesScreen() {
   const [d_long, setDlong] = React.useState(0);
   const [busNumber, setBusNumber] = React.useState(0);
   const [isOpen, setIsOpen] = React.useState(false);
-
+  const [busId, setBusId] = React.useState(0);
+  const [tripScheduleId, setTripScheduleId] = React.useState(0);
+  const [dateDeparted, setDateDeparted] = React.useState('');
+  const [dateArrival, setDateArrival] = React.useState('');
+  const [busRoute, setBusRoute] = React.useState('');
   const onClose = () => setIsOpen(false);
 
   const cancelRef = React.useRef(null);
@@ -145,6 +149,10 @@ export default function TrackBusesScreen() {
         setDlat(value.d_lat);
         setDlong(value.d_long);
         setBusNumber(value.bus_number);
+        setBusId(value.bus_id);
+        setTripScheduleId(value.trip_schedule_id);
+        setDateArrival(value.date_arrived);
+        setDateDeparted(value.date_departed);
       }
     } catch (error) {
       console.log(error);
@@ -357,7 +365,7 @@ export default function TrackBusesScreen() {
                   fontWeight="500"
                   ml="-0.5"
                   mt="-1">
-                  Route name
+                  Route Name
                 </Text>
               </Stack>
               <Text fontWeight="400">Bengaluru</Text>
@@ -497,6 +505,7 @@ export default function TrackBusesScreen() {
                   colorScheme="danger"
                   onPress={() => {
                     AsyncStorage.removeItem('user_destination');
+                    navigation.navigate('Tab View');
                   }}>
                   <Text fontSize="3xl" color="white">
                     Proceed

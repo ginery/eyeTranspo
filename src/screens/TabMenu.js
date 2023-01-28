@@ -18,8 +18,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Later on in your styles..
 
 export default function TabMenu({navigation}) {
+  const [showMenu, setShowMenu] = React.useState(false);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
+      retrieveDestination();
       //console.log('refreshed_home');
       Tts.stop();
       Tts.speak('You are in menu page.');
@@ -33,7 +35,20 @@ export default function TabMenu({navigation}) {
 
     return unsubscribe;
   }, [navigation]);
-  const {colors} = useTheme();
+  const retrieveDestination = async () => {
+    try {
+      const valueString = await AsyncStorage.getItem('user_destination');
+      if (valueString != null) {
+        const value = JSON.parse(valueString);
+        console.log(value);
+        setShowMenu(true);
+      } else {
+        setShowMenu(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <NativeBaseProvider>
       <StatusBar backgroundColor="#e99340" barStyle="light-content" />
@@ -107,7 +122,7 @@ export default function TabMenu({navigation}) {
                     style={{
                       fontSize: 50,
                     }}>
-                    TRACK BUSES
+                    SEARCH BUSES
                   </Text>
                 </Center>
                 <Center>
@@ -121,6 +136,47 @@ export default function TabMenu({navigation}) {
               </HStack>
             </Box>
           </TouchableOpacity>
+          {showMenu && (
+            <TouchableOpacity
+              onPress={() => {
+                Tts.stop();
+                navigation.navigate('Track Buses');
+                Tts.speak('TRACK BUSES');
+              }}>
+              <Box
+                style={{
+                  width: '100%',
+                  height: 200,
+                  borderColor: '#e9d356',
+                  borderBottomWidth: 1,
+                  justifyContent: 'center',
+                }}>
+                <HStack
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    textAlign: 'justify',
+                  }}>
+                  <Center w="89%">
+                    <Text
+                      style={{
+                        fontSize: 50,
+                      }}>
+                      TRACK BUSES
+                    </Text>
+                  </Center>
+                  <Center>
+                    <Text
+                      style={{
+                        fontSize: 50,
+                      }}>
+                      <FontIcon name="chevron-right" size={50} />
+                    </Text>
+                  </Center>
+                </HStack>
+              </Box>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             onPress={() => {
               Tts.stop();
