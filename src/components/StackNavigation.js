@@ -8,6 +8,7 @@ import RegisterScreen from '../screens/Register';
 import TripScheduleScreen from '../screens/TripSchedules';
 import TripScheduleListScreen from '../screens/TripSchedulesList';
 import TrackBusesScreen from '../screens/TrackBuses';
+import TabMenu2 from '../screens/TabMenu2';
 const Stack = createStackNavigator();
 const MainStackNavigator = () => {
   return (
@@ -20,6 +21,11 @@ const MainStackNavigator = () => {
       <Stack.Screen
         name="Tab View"
         component={TabViewScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Tab View 2"
+        component={TabMenu2}
         options={{headerShown: false}}
       />
       <Stack.Screen
