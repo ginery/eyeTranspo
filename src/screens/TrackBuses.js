@@ -90,7 +90,8 @@ export default function TrackBusesScreen() {
   const [tripId, setTripId] = React.useState('');
   const [driverName, setDriverName] = React.useState('');
   const onClose = () => setIsOpen(false);
-
+  const [modalReport, setModalReport] = React.useState(false);
+  const [report, setReport] = React.useState('');
   const cancelRef = React.useRef(null);
   const reference = firebase
     .app()
@@ -109,6 +110,11 @@ export default function TrackBusesScreen() {
       console.log(error);
     }
   };
+  React.useEffect(() => {
+    retrieveUser();
+    retrieveDestination();
+    refreshLocation();
+  }, [1]);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       retrieveUser();
@@ -143,16 +149,15 @@ export default function TrackBusesScreen() {
       if (valueString != null) {
         const value = JSON.parse(valueString);
         // console.log(value);
-        // setTripId(value.trip_id);
+        setTripId(value.trip_id);
         setDlat(value.d_lat);
         setDlong(value.d_long);
         setBusNumber(value.bus_number);
-        // setBusId(value.bus_id);
+        setBusId(value.bus_id);
         // setTripScheduleId(value.trip_schedule_id);
         // setDateArrival(value.date_arrived);
         // setDateDeparted(value.date_departed);
         getTripDetails(value.trip_id);
-      
       }
     } catch (error) {
       console.log(error);
@@ -272,7 +277,7 @@ export default function TrackBusesScreen() {
       console.log('Error in getAddressFromCoordinates', e);
     }
   };
-  const getTripDetails = (trip_id) => {
+  const getTripDetails = trip_id => {
     const formData = new FormData();
     formData.append('trip_id', trip_id);
     fetch(window.name + 'getTripDetails.php', {
@@ -285,22 +290,47 @@ export default function TrackBusesScreen() {
     })
       .then(response => response.json())
       .then(responseJson => {
-        // console.log(responseJson); 
-        if(responseJson.array_data != ""){
+        // console.log(responseJson);
+        if (responseJson.array_data != '') {
           var o = responseJson.array_data[0];
           setDriverName(o.driver_name);
           setBusRoute(o.bus_route);
           setDateArrived(o.date_arrived);
           setDateDeparted(o.date_departed);
-        }     
-
+        }
       })
       .catch(error => {
         Tts.speak('Internet Connection Error');
         console.error(error);
         setButtonStatus(false);
         //  Alert.alert('Internet Connection Error');
-      });    
+      });
+  };
+  const sendReport = () => {
+    const formData = new FormData();
+    formData.append('trip_id', tripId);
+    formData.append('bus_id', busId);
+    formData.append('report', report);
+    fetch(window.name + 'reportDriverConductor.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        if (responseJson.array_data != '') {}
+         
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error);
+        // setButtonStatus(false);
+        //  Alert.alert('Internet Connection Error');
+      });
   }
   return (
     <NativeBaseProvider safeAreaTop>
@@ -359,11 +389,10 @@ export default function TrackBusesScreen() {
             }}
           />
           <Marker
-            coordinate={{latitude: d_lat,
-            longitude: d_long}}
-            title={"title"}
-            description={"description"}
-         />
+            coordinate={{latitude: d_lat, longitude: d_long}}
+            title={'title'}
+            description={'description'}
+          />
         </MapView>
       </Center>
       <VStack mt={5}>
@@ -388,7 +417,9 @@ export default function TrackBusesScreen() {
             <Stack p="4" space={1}>
               <Stack space={1}>
                 <Heading size="2xl" ml="-1">
-                  {driverName} {'['}{busNumber}{']'}
+                  {driverName} {'['}
+                  {busNumber}
+                  {']'}
                 </Heading>
                 <Text
                   fontSize="xl"
@@ -426,93 +457,102 @@ export default function TrackBusesScreen() {
                     fontSize="lg"
                     fontWeight="400">
                     Departed: {dateDeparted}
-                  </Text>                 
+                  </Text>
                 </VStack>
               </HStack>
             </Stack>
           </Box>
         </Box>
         <Center>
-        <HStack
-        mt={2}
-          width="95%"
-          justifyContent="center"
-          // borderColor="black"
-          // borderWidth={2}
-          h="100">
-          <Pressable
-            w="50%"
-            onPress={() => {
-              Tts.speak('Report?');
-            }}>
-            {({isHovered, isFocused, isPressed}) => {
-              return (
-                <Center
-                  h="100%"
-                  bg={
-                    isPressed
-                      ? 'warning.200'
-                      : isHovered
-                      ? 'coolGray.200'
-                      : 'warning.500'
-                  }
-                  style={{
-                    transform: [
-                      {
-                        scale: isPressed ? 0.96 : 1,
-                      },
-                    ],
-                  }}>
-                  <Text
-                    fontSize="4xl"
-                    color={
-                      isPressed ? 'black' : isHovered ? 'coolGray.200' : 'white'
-                    }>
-                    Report
-                  </Text>
-                </Center>
-              );
-            }}
-          </Pressable>
-          <Pressable
-            w="50%"
-            onPress={() => {
-              Tts.stop();
-              Tts.speak(
-                'Cancel trip? This action will remove your current trip schedule. Please select either to proceed canceling or not.',
-              );
-              setIsOpen(!isOpen);
-            }}>
-            {({isHovered, isFocused, isPressed}) => {
-              return (
-                <Center
-                  h="100%"
-                  bg={
-                    isPressed
-                      ? 'error.200'
-                      : isHovered
-                      ? 'coolGray.200'
-                      : 'error.500'
-                  }
-                  style={{
-                    transform: [
-                      {
-                        scale: isPressed ? 0.96 : 1,
-                      },
-                    ],
-                  }}>
-                  <Text
-                    fontSize="4xl"
-                    color={
-                      isPressed ? 'black' : isHovered ? 'coolGray.200' : 'white'
-                    }>
-                    Cancel
-                  </Text>
-                </Center>
-              );
-            }}
-          </Pressable>
-        </HStack>
+          <HStack
+            mt={2}
+            width="95%"
+            justifyContent="center"
+            // borderColor="black"
+            // borderWidth={2}
+            h="100">
+            <Pressable
+              w="50%"
+              onPress={() => {
+                Tts.speak('Report?');
+                setModalReport(true);
+              }}>
+              {({isHovered, isFocused, isPressed}) => {
+                return (
+                  <Center
+                    h="100%"
+                    bg={
+                      isPressed
+                        ? 'warning.200'
+                        : isHovered
+                        ? 'coolGray.200'
+                        : 'warning.500'
+                    }
+                    style={{
+                      transform: [
+                        {
+                          scale: isPressed ? 0.96 : 1,
+                        },
+                      ],
+                    }}>
+                    <Text
+                      fontSize="4xl"
+                      color={
+                        isPressed
+                          ? 'black'
+                          : isHovered
+                          ? 'coolGray.200'
+                          : 'white'
+                      }>
+                      Report
+                    </Text>
+                  </Center>
+                );
+              }}
+            </Pressable>
+            <Pressable
+              w="50%"
+              onPress={() => {
+                Tts.stop();
+                Tts.speak(
+                  'Cancel trip? This action will remove your current trip schedule. Please select either to proceed canceling or not.',
+                );
+                setIsOpen(!isOpen);
+              }}>
+              {({isHovered, isFocused, isPressed}) => {
+                return (
+                  <Center
+                    h="100%"
+                    bg={
+                      isPressed
+                        ? 'error.200'
+                        : isHovered
+                        ? 'coolGray.200'
+                        : 'error.500'
+                    }
+                    style={{
+                      transform: [
+                        {
+                          scale: isPressed ? 0.96 : 1,
+                        },
+                      ],
+                    }}>
+                    <Text
+                      fontSize="4xl"
+                      color={
+                        isPressed
+                          ? 'black'
+                          : isHovered
+                          ? 'coolGray.200'
+                          : 'white'
+                      }>
+                      Cancel
+                    </Text>
+                  </Center>
+                );
+              }}
+            </Pressable>
+          </HStack>
         </Center>
       </VStack>
       <Center>
@@ -556,6 +596,56 @@ export default function TrackBusesScreen() {
           </AlertDialog.Content>
         </AlertDialog>
       </Center>
+
+      <Modal
+        style={{
+          justifyContent: 'center',
+        }}
+        animationType="fade"
+        transparent={true}
+        visible={modalReport}
+        onRequestClose={() => {
+          // Alert.alert('Modal has been closed.');
+          setModalReport(!modalReport);
+        }}>
+        <Box
+          bg="#2a2a2ab8"
+          style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <TouchableOpacity>
+            <Badge
+              colorScheme="success"
+              style={{
+                top: 0,
+                right: 0,
+              }}>
+              fdsggsdgfsdgX
+            </Badge>
+          </TouchableOpacity>
+          <Center bg="white" width="80%" height="200" borderRadius={10}>
+            <Text fontSize="xl" fontWeight="bold" mb={2}>
+              Report Driver/Conductor?
+            </Text>
+            <Box alignItems="center" w="100%" mb={2}>
+              <TextArea
+                value={report}
+                onChangeText={text => setReport(text)}
+                fontSize="xl"
+                h={20}
+                placeholder="Text Area Placeholder"
+                w="90%"
+              />
+            </Box>
+            <Button
+              width="90%"
+              onPress={() => {
+                sendReport();
+              }}>
+              <Heading color="white">Proceed</Heading>
+            </Button>
+          </Center>
+        </Box>
+      </Modal>
+      {/* !#end of mmodal report */}
       <Modal
         style={{
           justifyContent: 'center',
