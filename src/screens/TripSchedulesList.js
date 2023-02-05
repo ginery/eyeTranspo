@@ -48,15 +48,27 @@ import {
   Stack,
   Divider,
   Badge,
+  Icon
 } from 'native-base';
 import Rating from 'react-native-easy-rating';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from 'react-native-animated-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import FontIcon from 'react-native-vector-icons/FontAwesome5';
 import Tts from 'react-native-tts';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {set} from 'react-native-reanimated';
+import {
+  BallIndicator,
+  BarIndicator,
+  DotIndicator,
+  MaterialIndicator,
+  PacmanIndicator,
+  PulseIndicator,
+  SkypeIndicator,
+  UIActivityIndicator,
+  WaveIndicator,
+} from 'react-native-indicators';
 enableLatestRenderer();
 const styles = StyleSheet.create({
   container: {
@@ -92,7 +104,9 @@ export default function TripScheduleListScreen({navigation, route}) {
   const [dateDeparted, setDateDeparted] = React.useState('');
   const [dateArrival, setDateArrival] = React.useState('');
   const [busRoute, setBusRoute] = React.useState('');
-
+  const [tripId, setTripId] = React.useState('');
+  const [buttonStatus, setButtonStatus] = React.useState(false);
+  
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       Tts.stop();
@@ -165,7 +179,7 @@ export default function TripScheduleListScreen({navigation, route}) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        // console.log(responseJson);
         var data = responseJson.array_data.map(function (item, index) {
           return {
             trip_id: item.trip_id,
@@ -189,7 +203,84 @@ export default function TripScheduleListScreen({navigation, route}) {
         //  Alert.alert('Internet Connection Error');
       });
   };
-  const addTransaction = () => {};
+  const addTransaction = (bus_id, user_id, trip_schedule_id, trip_id) => {
+    setButtonStatus(true);
+    setLoadingModal(true);
+    const formData = new FormData();
+    formData.append('bus_id', bus_id);
+    formData.append('trip_schedule_id', trip_schedule_id);
+    formData.append('user_id', user_id);
+    formData.append('trip_id', trip_id);
+    fetch(window.name + 'addTransaction.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        if (responseJson.array_data != '') {
+          if (responseJson.array_data[0].response == 1) {
+            setButtonStatus(true);
+            Tts.speak(
+              'You have successfully sumbit your transaction. You will redirect to track buses page. Please wait..',
+            );
+            toast.show({
+              render: () => {
+                return (
+                  <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+                    <Text color="white">
+                      You have successfully sumbit your transaction.
+                    </Text>
+                  </Box>
+                );
+              },
+            });
+            setTimeout(() => {
+              navigation.navigate('Track Buses');
+            }, 5000);
+          } else {
+            setLoadingModal(false);
+            setButtonStatus(false);
+            Tts.speak('Oh no! there something went wrong. Please try again.');
+            toast.show({
+              render: () => {
+                return (
+                  <Box bg="error.500" px="2" py="1" rounded="sm" mb={5}>
+                    <Text color="white">Oh no! there something went wrong</Text>
+                  </Box>
+                );
+              },
+            });
+            AsyncStorage.removeItem('user_destination');
+          }
+        } else {
+          setLoadingModal(false);
+          setButtonStatus(false);
+          Tts.speak('Oh no! there something went wrong. Please try again.');
+          toast.show({
+            render: () => {
+              return (
+                <Box bg="error.500" px="2" py="1" rounded="sm" mb={5}>
+                  <Text color="white">Oh no! there something went wrong</Text>
+                </Box>
+              );
+            },
+          });
+          AsyncStorage.removeItem('user_destination');
+        }
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error);
+        setButtonStatus(false);
+        setLoadingModal(false);
+        //  Alert.alert('Internet Connection Error');
+      });
+  };
   return (
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
@@ -220,6 +311,7 @@ export default function TripScheduleListScreen({navigation, route}) {
                       item.bus_route +
                       '. Alright, please search your destination.',
                   );
+                  setTripId(item.trip_id);
                   setBusId(item.bus_id);
                   setTripScheduleId(item.trip_schedule_id);
                   setDateArrival(item.date_arrived);
@@ -443,6 +535,7 @@ export default function TripScheduleListScreen({navigation, route}) {
                             console.log(details?.geometry?.location.lat);
                             setItemStorage('user_destination', {
                               user_id: user_id,
+                              trip_id: tripId,
                               d_lat: details?.geometry?.location.lat,
                               d_long: details?.geometry?.location.lng,
                               bus_number: busNumber,
@@ -464,11 +557,42 @@ export default function TripScheduleListScreen({navigation, route}) {
                     <Center marginBottom={10}>
                       {buttonEnable == true && (
                         <Button
+                        style={{
+                          height: 70,
+                        }}
                           onPress={() => {
-                            navigation.navigate('Track Buses');
-                          }}
-                          size="lg">
-                          SET DESTINATION
+                            addTransaction(busId, user_id, tripScheduleId, tripId);
+                            // navigation.navigate('Track Buses');
+                          }}>
+                          <HStack space={2} alignItems="center">
+                            {buttonStatus == true && (
+                              // <Spinner
+                              //   accessibilityLabel="Loading posts"
+                              //   size="lg"
+                              //   color="white"
+                              // />
+                              <UIActivityIndicator
+                                color="white"
+                                size={25}
+                                style={{flex: 0}}
+                              />
+                            )}
+
+                            <Heading
+                              color="white"
+                              style={{
+                                fontSize: 30,
+                              }}>
+                              {buttonStatus ? 'Loading' : 'SUBMIT'}
+                            </Heading>
+                            {buttonStatus == false && (
+                              <Icon
+                                as={<FontIcon name="check" />}
+                                size="30"
+                                color="white"
+                              />
+                            )}
+                          </HStack>
                         </Button>
                       )}
                     </Center>

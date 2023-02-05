@@ -94,6 +94,8 @@ export default function TripScheduleScreen({navigation}) {
         <Center h="60%" width="100%">
           {/* <Text fontSize="6xl">Where to..?</Text> */}
           <Button
+           bgColor="#f25655"
+           bg="#dd302f"
             onPress={() => {
               Tts.speak('You are going north!');
               navigation.navigate('Trip Schedule List', {
@@ -114,6 +116,8 @@ export default function TripScheduleScreen({navigation}) {
             NORTH
           </Button>
           <Button
+             bgColor="#f25655"
+             bg="#dd302f"
             onPress={() => {
               Tts.speak('You are going south!');
               navigation.navigate('Trip Schedule List', {

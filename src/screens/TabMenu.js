@@ -51,13 +51,13 @@ export default function TabMenu({navigation}) {
   };
   return (
     <NativeBaseProvider>
-      <StatusBar backgroundColor="#e99340" barStyle="light-content" />
+      <StatusBar backgroundColor="#2f46c6" barStyle="light-content" />
       <ScrollView
         style={{
           width: '100%',
           height: '100%',
         }}>
-        <VStack bg="#e99340">
+        <VStack bg="#2f46c6">
           <TouchableOpacity
             onPress={() => {
               Tts.stop();
@@ -68,7 +68,7 @@ export default function TabMenu({navigation}) {
               style={{
                 width: '100%',
                 height: 200,
-                borderColor: '#e9d356',
+                borderColor: '#dd302f',
                 borderBottomWidth: 1,
                 justifyContent: 'center',
               }}>
@@ -82,6 +82,7 @@ export default function TabMenu({navigation}) {
                   <Text
                     style={{
                       fontSize: 50,
+                      color: 'white'
                     }}>
                     TRIP SCHEDULES
                   </Text>
@@ -91,7 +92,7 @@ export default function TabMenu({navigation}) {
                     style={{
                       fontSize: 50,
                     }}>
-                    <FontIcon name="chevron-right" size={50} />
+                    <FontIcon color="white" name="chevron-right" size={50} />
                   </Text>
                 </Center>
               </HStack>
@@ -107,7 +108,7 @@ export default function TabMenu({navigation}) {
               style={{
                 width: '100%',
                 height: 200,
-                borderColor: '#e9d356',
+                borderColor: '#dd302f',
                 borderBottomWidth: 1,
                 justifyContent: 'center',
               }}>
@@ -121,6 +122,7 @@ export default function TabMenu({navigation}) {
                   <Text
                     style={{
                       fontSize: 50,
+                      color: 'white'
                     }}>
                     SEARCH BUSES
                   </Text>
@@ -130,7 +132,7 @@ export default function TabMenu({navigation}) {
                     style={{
                       fontSize: 50,
                     }}>
-                    <FontIcon name="chevron-right" size={50} />
+                    <FontIcon color="white" name="chevron-right" size={50} />
                   </Text>
                 </Center>
               </HStack>
@@ -147,7 +149,7 @@ export default function TabMenu({navigation}) {
                 style={{
                   width: '100%',
                   height: 200,
-                  borderColor: '#e9d356',
+                  borderColor: '#dd302f',
                   borderBottomWidth: 1,
                   justifyContent: 'center',
                 }}>
@@ -161,6 +163,7 @@ export default function TabMenu({navigation}) {
                     <Text
                       style={{
                         fontSize: 50,
+                        color: 'white'
                       }}>
                       TRACK BUSES
                     </Text>
@@ -169,8 +172,9 @@ export default function TabMenu({navigation}) {
                     <Text
                       style={{
                         fontSize: 50,
+                        
                       }}>
-                      <FontIcon name="chevron-right" size={50} />
+                      <FontIcon color="white" name="chevron-right" size={50} />
                     </Text>
                   </Center>
                 </HStack>
@@ -187,7 +191,7 @@ export default function TabMenu({navigation}) {
               style={{
                 width: '100%',
                 height: 200,
-                borderColor: '#e9d356',
+                borderColor: '#dd302f',
                 borderBottomWidth: 1,
                 justifyContent: 'center',
               }}>
@@ -201,6 +205,7 @@ export default function TabMenu({navigation}) {
                   <Text
                     style={{
                       fontSize: 50,
+                      color: 'white'
                     }}>
                     PROFILE
                   </Text>
@@ -210,7 +215,7 @@ export default function TabMenu({navigation}) {
                     style={{
                       fontSize: 50,
                     }}>
-                    <FontIcon name="chevron-right" size={50} />
+                    <FontIcon color="white" name="chevron-right" size={50} />
                   </Text>
                 </Center>
               </HStack>
@@ -227,7 +232,7 @@ export default function TabMenu({navigation}) {
               style={{
                 width: '100%',
                 height: 200,
-                borderColor: '#e9d356',
+                borderColor: '#dd302f',
                 borderBottomWidth: 1,
                 justifyContent: 'center',
               }}>
@@ -241,6 +246,7 @@ export default function TabMenu({navigation}) {
                   <Text
                     style={{
                       fontSize: 50,
+                      color: 'white'
                     }}>
                     LOG OUT
                   </Text>
@@ -250,7 +256,7 @@ export default function TabMenu({navigation}) {
                     style={{
                       fontSize: 50,
                     }}>
-                    <FontIcon name="chevron-right" size={50} />
+                    <FontIcon color="white" name="chevron-right" size={50} />
                   </Text>
                 </Center>
               </HStack>

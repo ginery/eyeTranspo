@@ -52,6 +52,7 @@ import Geolocation from 'react-native-geolocation-service';
 import {round} from 'react-native-reanimated';
 import {firebase} from '@react-native-firebase/database';
 navigator.geolocation = require('react-native-geolocation-service');
+
 enableLatestRenderer();
 const styles = StyleSheet.create({
   container: {
@@ -84,8 +85,10 @@ export default function TrackBusesScreen() {
   const [busId, setBusId] = React.useState(0);
   const [tripScheduleId, setTripScheduleId] = React.useState(0);
   const [dateDeparted, setDateDeparted] = React.useState('');
-  const [dateArrival, setDateArrival] = React.useState('');
+  const [dateArrived, setDateArrived] = React.useState('');
   const [busRoute, setBusRoute] = React.useState('');
+  const [tripId, setTripId] = React.useState('');
+  const [driverName, setDriverName] = React.useState('');
   const onClose = () => setIsOpen(false);
 
   const cancelRef = React.useRef(null);
@@ -112,12 +115,6 @@ export default function TrackBusesScreen() {
       retrieveDestination();
       refreshLocation();
       Tts.stop();
-      // mapRef
-      //   .addressForCoordinate({
-      //     latitude: latitude,
-      //     longitude: longitude,
-      //   })
-      //   .then(res => console.log(res));
 
       Tts.speak('You are in track buses page.');
 
@@ -145,14 +142,17 @@ export default function TrackBusesScreen() {
       const valueString = await AsyncStorage.getItem('user_destination');
       if (valueString != null) {
         const value = JSON.parse(valueString);
-        console.log(value);
+        // console.log(value);
+        // setTripId(value.trip_id);
         setDlat(value.d_lat);
         setDlong(value.d_long);
         setBusNumber(value.bus_number);
-        setBusId(value.bus_id);
-        setTripScheduleId(value.trip_schedule_id);
-        setDateArrival(value.date_arrived);
-        setDateDeparted(value.date_departed);
+        // setBusId(value.bus_id);
+        // setTripScheduleId(value.trip_schedule_id);
+        // setDateArrival(value.date_arrived);
+        // setDateDeparted(value.date_departed);
+        getTripDetails(value.trip_id);
+      
       }
     } catch (error) {
       console.log(error);
@@ -166,7 +166,7 @@ export default function TrackBusesScreen() {
     }, 1000);
   }, []);
   const refreshLocation = u_id => {
-    console.log('get location');
+    // console.log('get location');
     Geolocation.getCurrentPosition(info => {
       console.log(info);
       setLatitude(info.coords.latitude);
@@ -272,6 +272,36 @@ export default function TrackBusesScreen() {
       console.log('Error in getAddressFromCoordinates', e);
     }
   };
+  const getTripDetails = (trip_id) => {
+    const formData = new FormData();
+    formData.append('trip_id', trip_id);
+    fetch(window.name + 'getTripDetails.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        // console.log(responseJson); 
+        if(responseJson.array_data != ""){
+          var o = responseJson.array_data[0];
+          setDriverName(o.driver_name);
+          setBusRoute(o.bus_route);
+          setDateArrived(o.date_arrived);
+          setDateDeparted(o.date_departed);
+        }     
+
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error);
+        setButtonStatus(false);
+        //  Alert.alert('Internet Connection Error');
+      });    
+  }
   return (
     <NativeBaseProvider safeAreaTop>
       <Center bg="gray.100" h="50%">
@@ -328,6 +358,12 @@ export default function TrackBusesScreen() {
               // });
             }}
           />
+          <Marker
+            coordinate={{latitude: d_lat,
+            longitude: d_long}}
+            title={"title"}
+            description={"description"}
+         />
         </MapView>
       </Center>
       <VStack mt={5}>
@@ -352,51 +388,54 @@ export default function TrackBusesScreen() {
             <Stack p="4" space={1}>
               <Stack space={1}>
                 <Heading size="2xl" ml="-1">
-                  Driver Name
+                  {driverName} {'['}{busNumber}{']'}
                 </Heading>
                 <Text
-                  fontSize="3xl"
+                  fontSize="xl"
                   _light={{
-                    color: 'violet.500',
+                    color: '#2f46c6',
                   }}
                   _dark={{
-                    color: 'violet.400',
+                    color: '#2f46c6',
                   }}
                   fontWeight="500"
                   ml="-0.5"
                   mt="-1">
-                  Route Name
+                  {busRoute}
                 </Text>
               </Stack>
-              <Text fontWeight="400">Bengaluru</Text>
               <HStack
                 alignItems="center"
                 space={4}
                 justifyContent="space-between">
-                <HStack alignItems="center">
+                <VStack alignItems="flex-start">
                   <Text
                     color="coolGray.600"
                     _dark={{
                       color: 'warmGray.200',
                     }}
+                    fontSize="lg"
                     fontWeight="400">
-                    Time Arrival -{' '}
+                    Arrived: {dateArrived}
                   </Text>
                   <Text
                     color="coolGray.600"
                     _dark={{
                       color: 'warmGray.200',
                     }}
-                    fo
+                    fontSize="lg"
                     fontWeight="400">
-                    Time Distination
-                  </Text>
-                </HStack>
+                    Departed: {dateDeparted}
+                  </Text>                 
+                </VStack>
               </HStack>
             </Stack>
           </Box>
         </Box>
+        <Center>
         <HStack
+        mt={2}
+          width="95%"
           justifyContent="center"
           // borderColor="black"
           // borderWidth={2}
@@ -474,6 +513,7 @@ export default function TrackBusesScreen() {
             }}
           </Pressable>
         </HStack>
+        </Center>
       </VStack>
       <Center>
         <AlertDialog

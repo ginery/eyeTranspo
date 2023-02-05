@@ -157,7 +157,7 @@ export default function App({navigation, route}) {
               user_id: data.user_id,
               user_fname: data.user_fname,
               user_lname: data.user_lname,
-              cateogry: data.category
+              category: data.category
             });
             setButtonStatus(true);
             setTimeout(function () {
@@ -217,20 +217,17 @@ export default function App({navigation, route}) {
         source={require('../assets/images/login_bg.png')}
         resizeMode="cover"
         style={{flex: 1, justifyContent: 'center'}}> */}
-      <StatusBar backgroundColor="#e99340" barStyle="light-content" />
+      <StatusBar backgroundColor="#2f46c6" barStyle="light-content" />
       <Center
         flex={1}
         px="3"
-        style={{
-          borderColor: 'black',
-          borderWidth: 1,
-        }}>
+       >
         <Image
           style={{
             // borderColor: 'black',
             // borderWidth: 1,
-            width: 350,
-            height: 80,
+            width: 250,
+            height: 120,
             resizeMode: 'stretch',
           }}
           size="lg"
@@ -250,8 +247,8 @@ export default function App({navigation, route}) {
           <Input
             variant="filled"
             style={{
-              color: '#606060',
-              backgroundColor: 'rgba(255, 217, 180, 0.45)',
+              color: 'white',
+              backgroundColor: '#0033c491',
               height: 80,
               fontSize: 50,
             }}
@@ -270,13 +267,13 @@ export default function App({navigation, route}) {
               Tts.speak('Please Enter your username here.');
             }}
             placeholder="Username"
-            placeholderTextColor="#606060"
+            placeholderTextColor="white"
           />
           <Input
             variant="filled"
             style={{
-              color: '#606060',
-              backgroundColor: 'rgba(255, 217, 180, 0.45)',
+              color: 'white',
+              backgroundColor: '#0033c491',
               height: 80,
               fontSize: 50,
             }}
@@ -296,7 +293,7 @@ export default function App({navigation, route}) {
             //   />
             // }
             placeholder="Password"
-            placeholderTextColor="#606060"
+            placeholderTextColor="white"
           />
           <Button
             style={{
@@ -308,7 +305,7 @@ export default function App({navigation, route}) {
               Tts.stop();
               login();
             }}
-            bgColor="#e99340"
+            bgColor="#dd302f"
             _text={{color: 'white'}}
             //  endIcon={<Icon as={<FontIcon name="sign-in-alt" />} size="5" />}>
           >
@@ -365,9 +362,9 @@ export default function App({navigation, route}) {
               }}>
               <Text
                 style={{
-                  color: '#e99340',
+                  color: '#dd302f',
                   borderBottomWidth: 1,
-                  borderColor: '#e99340',
+                  borderColor: '#dd302f',
                   fontSize: 25,
                   padding: 5,
                 }}>

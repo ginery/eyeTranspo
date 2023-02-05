@@ -162,7 +162,7 @@ export default function Register({navigation}) {
           _light={{
             backgroundColor: 'gray.50',
           }}
-          background="rgba(52, 52, 52, 0.8)"
+          background="white"
           w="100%"
           h={110}>
           <Box>
@@ -171,7 +171,7 @@ export default function Register({navigation}) {
                 // borderColor: 'green',
                 // borderWidth: 1,
                 alignSelf: 'flex-end',
-                width: 240,
+                width: 100,
                 height: 50,
                 resizeMode: 'stretch',
               }}
@@ -194,7 +194,7 @@ export default function Register({navigation}) {
               }}
               fontWeight="medium"
               size="md">
-              <Text color="white">
+              <Text color="coolGray.600">
                 A bus tracker app specially designed for visually impared
                 passenger.
               </Text>
@@ -204,7 +204,7 @@ export default function Register({navigation}) {
         </Box>
       </Box>
       <ScrollView w={['100%', '300']} h="80">
-        <Center px="3" mt={2} background="#E1D9D1">
+        <Center px="3" mt={2} background="white">
           <Center w="100%">
             <Box safeArea p="2" w="90%">
               <VStack space={3} mt="5">
@@ -212,8 +212,8 @@ export default function Register({navigation}) {
                   <Input
                     variant="filled"
                     style={{
-                      color: '#606060',
-                      backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                      color: 'white',
+                      backgroundColor: '#0033c491',
                       borderRadius: 15,
                       height: 80,
                       fontSize: 50,
@@ -221,7 +221,7 @@ export default function Register({navigation}) {
                     w="100%"
                     onChangeText={text => setFname(text)}
                     placeholder="First Name"
-                    placeholderTextColor="#606060"
+                    placeholderTextColor="white"
                     onPressIn={() => {
                       Tts.stop();
                       Tts.speak('Please Enter your first name here.');
@@ -232,8 +232,8 @@ export default function Register({navigation}) {
                   <Input
                     variant="filled"
                     style={{
-                      color: '#606060',
-                      backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                      color: 'white',
+                      backgroundColor: '#0033c491',
                       borderRadius: 15,
                       height: 80,
                       fontSize: 50,
@@ -241,7 +241,7 @@ export default function Register({navigation}) {
                     w="100%"
                     onChangeText={text => setMname(text)}
                     placeholder="Mid Name"
-                    placeholderTextColor="#606060"
+                    placeholderTextColor="white"
                     onPressIn={() => {
                       Tts.stop();
                       Tts.speak('Please Enter your middle name here.');
@@ -252,8 +252,8 @@ export default function Register({navigation}) {
                   <Input
                     variant="filled"
                     style={{
-                      color: '#606060',
-                      backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                      color: 'white',
+                      backgroundColor: '#0033c491',
                       borderRadius: 15,
                       height: 80,
                       fontSize: 50,
@@ -261,7 +261,7 @@ export default function Register({navigation}) {
                     w="100%"
                     onChangeText={text => setLname(text)}
                     placeholder="Last Name"
-                    placeholderTextColor="#606060"
+                    placeholderTextColor="white"
                     onPressIn={() => {
                       Tts.stop();
                       Tts.speak('Please Enter your last name here.');
@@ -272,8 +272,8 @@ export default function Register({navigation}) {
                   <Input
                     variant="filled"
                     style={{
-                      color: '#606060',
-                      backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                      color: 'white',
+                      backgroundColor: '#0033c491',
                       borderRadius: 15,
                       height: 80,
                       fontSize: 50,
@@ -281,7 +281,7 @@ export default function Register({navigation}) {
                     w="100%"
                     onChangeText={text => setContactNumber(text)}
                     placeholder="Phone #"
-                    placeholderTextColor="#606060"
+                    placeholderTextColor="white"
                     onPressIn={() => {
                       Tts.stop();
                       Tts.speak('Please Enter your phone number here.');
@@ -293,8 +293,8 @@ export default function Register({navigation}) {
                   <Input
                     variant="filled"
                     style={{
-                      color: '#606060',
-                      backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                      color: 'white',
+                      backgroundColor: '#0033c491',
                       borderRadius: 15,
                       height: 80,
                       fontSize: 50,
@@ -303,7 +303,7 @@ export default function Register({navigation}) {
                     type="text"
                     onChangeText={text => setUsername(text)}
                     placeholder="Username"
-                    placeholderTextColor="#606060"
+                    placeholderTextColor="white"
                     onPressIn={() => {
                       Tts.stop();
                       Tts.speak('Please Enter your username here.');
@@ -314,8 +314,8 @@ export default function Register({navigation}) {
                   <Input
                     variant="filled"
                     style={{
-                      color: '#606060',
-                      backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                      color: 'white',
+                      backgroundColor: '#0033c491',
                       borderRadius: 15,
                       height: 80,
                       fontSize: 50,
@@ -324,7 +324,7 @@ export default function Register({navigation}) {
                     type="password"
                     onChangeText={text => setPassword(text)}
                     placeholder="Password"
-                    placeholderTextColor="#606060"
+                    placeholderTextColor="white"
                     onPressIn={() => {
                       Tts.stop();
                       Tts.speak('Please Enter your password here.');
@@ -341,9 +341,11 @@ export default function Register({navigation}) {
                     Tts.stop();
                     registerUser();
                   }}
-                  bgColor="#bb936f"
+                
+                  bgColor="#f25655"
+                  bg="#dd302f"
                   _text={{color: 'white', fontSize: 30}}
-                  bg="#e99340">
+                 >
                   SIGN UP
                 </Button>
                 <HStack
@@ -369,9 +371,9 @@ export default function Register({navigation}) {
                     }}>
                     <Text
                       style={{
-                        color: '#ad8765',
+                        color: '#dd302f',
                         borderBottomWidth: 1,
-                        borderColor: '#ad8765',
+                        borderColor: '#dd302f',
                         fontSize: 25,
                         paddingTop: 5,
                       }}>
