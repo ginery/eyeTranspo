@@ -211,6 +211,29 @@ export default function App({navigation, route}) {
     });
     setModalShow(false);
   };
+
+  const updateLocation = (user_id, lat, long) => {
+    const formData = new FormData();
+    formData.append('user_id', user_id);
+    formData.append('location', lat+','+long);
+    fetch(window.name + 'updateLocation.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+      }) .catch(error => {
+          Tts.speak('Internet Connection Error');
+          console.error(error);
+          setButtonStatus(false);
+          //  Alert.alert('Internet Connection Error');
+        });
+  }
   return (
     <NativeBaseProvider>
       {/* <ImageBackground
