@@ -44,6 +44,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Tts from 'react-native-tts';
+import Geolocation from 'react-native-geolocation-service';
 export default function App({navigation, route}) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -53,6 +54,7 @@ export default function App({navigation, route}) {
       setUsername('');
       setPassword('');
       retrieveUser();
+      getCurrentLocation();
       // retrieveIp();
       // setModalShow(true);
     });
@@ -65,6 +67,7 @@ export default function App({navigation, route}) {
   const [buttonStatus, setButtonStatus] = React.useState(false);
   const [modalShow, setModalShow] = React.useState(false);
   const [ipAddress, setIpAddress] = React.useState('');
+  const [location, setLocation] = React.useState('0,0');
   const setItemStorage = async (key, value) => {
     try {
       await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -130,6 +133,7 @@ export default function App({navigation, route}) {
       const formData = new FormData();
       formData.append('username', username);
       formData.append('password', password);
+      formData.append('location', location);
       fetch(window.name + 'login.php', {
         method: 'POST',
         headers: {
@@ -211,7 +215,12 @@ export default function App({navigation, route}) {
     });
     setModalShow(false);
   };
-
+  const getCurrentLocation = u_id => {
+    // console.log('get location');
+    Geolocation.getCurrentPosition(info => {      
+      setLocation(info.coords.latitude+','+info.coords.longitude);
+    });
+  };
   const updateLocation = (user_id, lat, long) => {
     const formData = new FormData();
     formData.append('user_id', user_id);

@@ -332,6 +332,8 @@ export default function TrackBusesScreen() {
         //  Alert.alert('Internet Connection Error');
       });
   }
+
+
   return (
     <NativeBaseProvider safeAreaTop>
       <Center bg="gray.100" h="50%">
