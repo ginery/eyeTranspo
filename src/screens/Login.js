@@ -55,6 +55,7 @@ export default function App({navigation, route}) {
       setPassword('');
       retrieveUser();
       getCurrentLocation();
+      retrieveToken();
       // retrieveIp();
       // setModalShow(true);
     });
@@ -68,6 +69,7 @@ export default function App({navigation, route}) {
   const [modalShow, setModalShow] = React.useState(false);
   const [ipAddress, setIpAddress] = React.useState('');
   const [location, setLocation] = React.useState('0,0');
+  const [idtoken, setIdToken] = React.useState('');
   const setItemStorage = async (key, value) => {
     try {
       await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -95,26 +97,19 @@ export default function App({navigation, route}) {
       console.log(error);
     }
   };
-  const retrieveIp = async () => {
+  const retrieveToken = async () => {
     try {
-      const valueString = await AsyncStorage.getItem('local_ip');
-      if (valueString != null) {
-        const value = JSON.parse(valueString);
-        console.log(value);
-        if (value.ip_address == '') {
-          setModalShow(true);
-        } else {
-          setModalShow(true);
-          window.name = 'http://' + value.ip_address + '/kinaiya/mobile/';
-          global.global_image =
-            'http://' + value.ip_address + '/kinaiya/images/';
-          setIpAddress(value.ip_address);
-        }
+      const valueString = await AsyncStorage.getItem('IDToken');
+      console.log(valueString);
+      const value = JSON.parse(valueString);
+      if (value == null) {
+        console.log('empty');
       } else {
-        setModalShow(true);
+        console.log('may unod');
+        setIdToken(value.idtoken);
+        // setUserid(value.user_id);
+        console.log(value.idtoken);
       }
-
-      //setUserID(value.user_fname);
     } catch (error) {
       console.log(error);
     }
@@ -134,6 +129,7 @@ export default function App({navigation, route}) {
       formData.append('username', username);
       formData.append('password', password);
       formData.append('location', location);
+      formData.append('id_token', idtoken);
       fetch(window.name + 'login.php', {
         method: 'POST',
         headers: {
@@ -161,7 +157,7 @@ export default function App({navigation, route}) {
               user_id: data.user_id,
               user_fname: data.user_fname,
               user_lname: data.user_lname,
-              category: data.category
+              category: data.category,
             });
             setButtonStatus(true);
             setTimeout(function () {
@@ -217,14 +213,14 @@ export default function App({navigation, route}) {
   };
   const getCurrentLocation = u_id => {
     // console.log('get location');
-    Geolocation.getCurrentPosition(info => {      
-      setLocation(info.coords.latitude+','+info.coords.longitude);
+    Geolocation.getCurrentPosition(info => {
+      setLocation(info.coords.latitude + ',' + info.coords.longitude);
     });
   };
   const updateLocation = (user_id, lat, long) => {
     const formData = new FormData();
     formData.append('user_id', user_id);
-    formData.append('location', lat+','+long);
+    formData.append('location', lat + ',' + long);
     fetch(window.name + 'updateLocation.php', {
       method: 'POST',
       headers: {
@@ -236,13 +232,14 @@ export default function App({navigation, route}) {
       .then(response => response.json())
       .then(responseJson => {
         console.log(responseJson);
-      }) .catch(error => {
-          Tts.speak('Internet Connection Error');
-          console.error(error);
-          setButtonStatus(false);
-          //  Alert.alert('Internet Connection Error');
-        });
-  }
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error);
+        setButtonStatus(false);
+        //  Alert.alert('Internet Connection Error');
+      });
+  };
   return (
     <NativeBaseProvider>
       {/* <ImageBackground
@@ -250,10 +247,7 @@ export default function App({navigation, route}) {
         resizeMode="cover"
         style={{flex: 1, justifyContent: 'center'}}> */}
       <StatusBar backgroundColor="#2f46c6" barStyle="light-content" />
-      <Center
-        flex={1}
-        px="3"
-       >
+      <Center flex={1} px="3">
         <Image
           style={{
             // borderColor: 'black',

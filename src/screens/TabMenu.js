@@ -58,128 +58,101 @@ export default function TabMenu({navigation}) {
           height: '100%',
         }}>
         <VStack bg="#2f46c6">
-          <TouchableOpacity
-            onPress={() => {
-              Tts.stop();
-              Tts.speak('TRIP SCHEDULES');
-              navigation.navigate('Trip Schedule');
-            }}>
-            <Box
-              style={{
-                width: '100%',
-                height: 200,
-                borderColor: '#dd302f',
-                borderBottomWidth: 1,
-                justifyContent: 'center',
-              }}>
-              <HStack
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  textAlign: 'justify',
+          {showMenu == false && (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  Tts.stop();
+                  Tts.speak('TRIP SCHEDULES');
+                  navigation.navigate('Trip Schedule');
                 }}>
-                <Center w="89%">
-                  <Text
-                    style={{
-                      fontSize: 50,
-                      color: 'white'
-                    }}>
-                    TRIP SCHEDULES
-                  </Text>
-                </Center>
-                <Center>
-                  <Text
-                    style={{
-                      fontSize: 50,
-                    }}>
-                    <FontIcon color="white" name="chevron-right" size={50} />
-                  </Text>
-                </Center>
-              </HStack>
-            </Box>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              Tts.stop();
-              navigation.navigate('Track Buses');
-              Tts.speak('TRACK BUSES');
-            }}>
-            <Box
-              style={{
-                width: '100%',
-                height: 200,
-                borderColor: '#dd302f',
-                borderBottomWidth: 1,
-                justifyContent: 'center',
-              }}>
-              <HStack
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  textAlign: 'justify',
-                }}>
-                <Center w="89%">
-                  <Text
-                    style={{
-                      fontSize: 50,
-                      color: 'white'
-                    }}>
-                    SEARCH BUSES
-                  </Text>
-                </Center>
-                <Center>
-                  <Text
-                    style={{
-                      fontSize: 50,
-                    }}>
-                    <FontIcon color="white" name="chevron-right" size={50} />
-                  </Text>
-                </Center>
-              </HStack>
-            </Box>
-          </TouchableOpacity>
-          {showMenu && (
-            <TouchableOpacity
-              onPress={() => {
-                Tts.stop();
-                navigation.navigate('Track Buses');
-                Tts.speak('TRACK BUSES');
-              }}>
-              <Box
-                style={{
-                  width: '100%',
-                  height: 200,
-                  borderColor: '#dd302f',
-                  borderBottomWidth: 1,
-                  justifyContent: 'center',
-                }}>
-                <HStack
+                <Box
                   style={{
                     width: '100%',
-                    height: '100%',
-                    textAlign: 'justify',
+                    height: 200,
+                    borderColor: '#dd302f',
+                    borderBottomWidth: 1,
+                    justifyContent: 'center',
                   }}>
-                  <Center w="89%">
-                    <Text
-                      style={{
-                        fontSize: 50,
-                        color: 'white'
-                      }}>
-                      TRACK BUSES
-                    </Text>
-                  </Center>
-                  <Center>
-                    <Text
-                      style={{
-                        fontSize: 50,
-                        
-                      }}>
-                      <FontIcon color="white" name="chevron-right" size={50} />
-                    </Text>
-                  </Center>
-                </HStack>
-              </Box>
-            </TouchableOpacity>
+                  <HStack
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      textAlign: 'justify',
+                    }}>
+                    <Center w="89%">
+                      <Text
+                        style={{
+                          fontSize: 50,
+                          color: 'white',
+                        }}>
+                        TRIP SCHEDULES
+                      </Text>
+                    </Center>
+                    <Center>
+                      <Text
+                        style={{
+                          fontSize: 50,
+                        }}>
+                        <FontIcon
+                          color="white"
+                          name="chevron-right"
+                          size={50}
+                        />
+                      </Text>
+                    </Center>
+                  </HStack>
+                </Box>
+              </TouchableOpacity>
+            </>
+          )}
+          {showMenu == true && (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  Tts.stop();
+                  navigation.navigate('Track Buses');
+                  Tts.speak('TRACK BUSES');
+                }}>
+                <Box
+                  style={{
+                    width: '100%',
+                    height: 200,
+                    borderColor: '#dd302f',
+                    borderBottomWidth: 1,
+                    justifyContent: 'center',
+                  }}>
+                  <HStack
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      textAlign: 'justify',
+                    }}>
+                    <Center w="89%">
+                      <Text
+                        style={{
+                          fontSize: 50,
+                          color: 'white',
+                        }}>
+                        TRACK BUSES
+                      </Text>
+                    </Center>
+                    <Center>
+                      <Text
+                        style={{
+                          fontSize: 50,
+                        }}>
+                        <FontIcon
+                          color="white"
+                          name="chevron-right"
+                          size={50}
+                        />
+                      </Text>
+                    </Center>
+                  </HStack>
+                </Box>
+              </TouchableOpacity>
+            </>
           )}
           <TouchableOpacity
             onPress={() => {
@@ -205,7 +178,7 @@ export default function TabMenu({navigation}) {
                   <Text
                     style={{
                       fontSize: 50,
-                      color: 'white'
+                      color: 'white',
                     }}>
                     PROFILE
                   </Text>
@@ -224,7 +197,7 @@ export default function TabMenu({navigation}) {
           <TouchableOpacity
             onPress={() => {
               Tts.stop();
-              AsyncStorage.clear();
+              AsyncStorage.removeItem('user_details');
               navigation.navigate('Login');
               Tts.speak('Logging out.');
             }}>
@@ -246,7 +219,7 @@ export default function TabMenu({navigation}) {
                   <Text
                     style={{
                       fontSize: 50,
-                      color: 'white'
+                      color: 'white',
                     }}>
                     LOG OUT
                   </Text>

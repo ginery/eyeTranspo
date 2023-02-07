@@ -92,6 +92,7 @@ export default function TrackBusesScreen() {
   const onClose = () => setIsOpen(false);
   const [modalReport, setModalReport] = React.useState(false);
   const [report, setReport] = React.useState('');
+  const [busLocation, setBusLocation] = React.useState(0);
   const cancelRef = React.useRef(null);
   const reference = firebase
     .app()
@@ -290,13 +291,15 @@ export default function TrackBusesScreen() {
     })
       .then(response => response.json())
       .then(responseJson => {
-        // console.log(responseJson);
+        console.log(responseJson);
         if (responseJson.array_data != '') {
           var o = responseJson.array_data[0];
           setDriverName(o.driver_name);
           setBusRoute(o.bus_route);
           setDateArrived(o.date_arrived);
           setDateDeparted(o.date_departed);
+          var loc = o.bus_location.split(',');
+          setBusLocation(loc);
         }
       })
       .catch(error => {
@@ -322,8 +325,8 @@ export default function TrackBusesScreen() {
       .then(response => response.json())
       .then(responseJson => {
         console.log(responseJson);
-        if (responseJson.array_data != '') {}
-         
+        if (responseJson.array_data != '') {
+        }
       })
       .catch(error => {
         Tts.speak('Internet Connection Error');
@@ -331,8 +334,7 @@ export default function TrackBusesScreen() {
         // setButtonStatus(false);
         //  Alert.alert('Internet Connection Error');
       });
-  }
-
+  };
 
   return (
     <NativeBaseProvider safeAreaTop>
@@ -344,7 +346,7 @@ export default function TrackBusesScreen() {
           showsMyLocationButton={true}
           showsBuildings={true}
           loadingEnabled={true}
-          showsTraffic={true}
+          // showsTraffic={true}
           loadingIndicatorColor="#e99340"
           zoomControlEnabled={true}
           directionsServiceBaseUrl="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms&callback=initMap"
@@ -357,14 +359,17 @@ export default function TrackBusesScreen() {
           }}
           zIndex={-1}>
           <MapViewDirections
-            origin={{latitude: latitude, longitude: longitude}}
-            destination={{
-              latitude: d_lat,
-              longitude: d_long,
+            origin={{
+              latitude: busLocation != '' ? parseFloat(busLocation[0]) : '',
+              longitude: busLocation != '' ? parseFloat(busLocation[1]) : '',
             }}
-            waypoints={
-              waypointarray.length > 2 ? waypointarray.slice(1, -1) : undefined
-            }
+            destination={{
+              latitude: latitude,
+              longitude: latitude,
+            }}
+            // waypoints={
+            //   waypointarray.length > 2 ? waypointarray.slice(1, -1) : undefined
+            // }
             apikey="AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms"
             strokeWidth={8}
             strokeColor="#0a95ff8a" //#4a89f3
@@ -390,6 +395,16 @@ export default function TrackBusesScreen() {
               // });
             }}
           />
+          {busLocation != '' && (
+            <Marker
+              coordinate={{
+                latitude: parseFloat(busLocation[0]),
+                longitude: parseFloat(busLocation[1]),
+              }}
+              title={'title'}
+              description={'description'}
+            />
+          )}
           <Marker
             coordinate={{latitude: d_lat, longitude: d_long}}
             title={'title'}
@@ -434,7 +449,7 @@ export default function TrackBusesScreen() {
                   fontWeight="500"
                   ml="-0.5"
                   mt="-1">
-                  {busRoute}
+                  {busRoute} {parseFloat(busLocation[0])}
                 </Text>
               </Stack>
               <HStack
@@ -613,7 +628,7 @@ export default function TrackBusesScreen() {
         <Box
           bg="#2a2a2ab8"
           style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <Badge
               colorScheme="success"
               style={{
@@ -622,7 +637,7 @@ export default function TrackBusesScreen() {
               }}>
               fdsggsdgfsdgX
             </Badge>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <Center bg="white" width="80%" height="200" borderRadius={10}>
             <Text fontSize="xl" fontWeight="bold" mb={2}>
               Report Driver/Conductor?

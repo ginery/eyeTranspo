@@ -17,11 +17,12 @@ const setItemStorage = async (key, value) => {
     // Error saving data
   }
 };
+
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
   onRegister: function (token) {
-    console.log('TOKEN:', token);
+    // console.log('TOKEN:', token);
     var iidToken = token.token;
     setItemStorage('IDToken', {
       idtoken: iidToken,
@@ -30,8 +31,8 @@ PushNotification.configure({
 
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: function (notification) {
-    // console.log('NOTIFICATION:', notification.message);
-    Alert.alert(notification.message);
+    console.log('NOTIFICATION:', notification.message);
+    // Alert.alert(notification.message);
     // process the notification
 
     // (required) Called when a remote is received or opened, or local notification is opened

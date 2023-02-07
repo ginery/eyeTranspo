@@ -54,8 +54,8 @@ export default function Profile({navigation}) {
 
     return unsubscribe;
   }, [navigation]);
-const updateProfile = () => {
-  setLoadingModal(true);
+  const updateProfile = () => {
+    setLoadingModal(true);
     const formData = new FormData();
     formData.append('user_id', user_id);
     formData.append('fname', userFname);
@@ -73,19 +73,18 @@ const updateProfile = () => {
       .then(response => response.json())
       .then(responseJson => {
         console.log(responseJson);
-        
       })
       .catch(error => {
         Tts.speak('Internet Connection Error');
         console.error(error);
-       
+
         //  Alert.alert('Internet Connection Error');
       });
-}
+  };
   return (
     <NativeBaseProvider>
       <Center flex={1} px="3" pt="3">
-        <Box alignItems="center">
+        <Box alignItems="center" h="100%" w="100%">
           <Box
             h="100%"
             w="100%"
@@ -105,31 +104,6 @@ const updateProfile = () => {
             _light={{
               backgroundColor: 'gray.50',
             }}>
-            <Box>
-              <AspectRatio w="100%" ratio={16 / 9}>
-                {/* <Image
-                  w="100%"
-                  h={200}
-                  source={require('../assets/images/bus_cover_photo.jpg')}
-                  alt="image"
-                  resizeMode="contain"
-                /> */}
-              </AspectRatio>
-              <Center alignSelf="center" position="absolute" bottom="0" pb="3">
-                {/* <Avatar
-                  style={{
-                    borderColor: 'white',
-                    borderWidth: 4,
-                  }}
-                  w="100"
-                  h="100"
-                  alignSelf="center"
-                  bg="amber.500"
-                  source={require('../assets/images/profile.jpg')}>
-                  AK
-                </Avatar> */}
-              </Center>
-            </Box>
             <Stack p="4" space={3}>
               <Stack space={2}>
                 <Heading size="2xl" ml="-1">
@@ -154,8 +128,8 @@ const updateProfile = () => {
                       <Input
                         variant="filled"
                         style={{
-                          color: '#606060',
-                          backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                          color: 'white',
+                          backgroundColor: '#0033c491',
                           borderRadius: 15,
                           height: 80,
                           fontSize: 50,
@@ -164,7 +138,7 @@ const updateProfile = () => {
                         value={userFname}
                         onChangeText={text => setUserFname(text)}
                         placeholder="First Name"
-                        placeholderTextColor="#606060"
+                        placeholderTextColor="white"
                         onPressIn={() => {
                           Tts.stop();
                           Tts.speak('Please update your first name here.');
@@ -175,8 +149,8 @@ const updateProfile = () => {
                       <Input
                         variant="filled"
                         style={{
-                          color: '#606060',
-                          backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                          color: 'white',
+                          backgroundColor: '#0033c491',
                           borderRadius: 15,
                           height: 80,
                           fontSize: 50,
@@ -185,7 +159,7 @@ const updateProfile = () => {
                         value={userLname}
                         onChangeText={text => setUserLname(text)}
                         placeholder="Last Name"
-                        placeholderTextColor="#606060"
+                        placeholderTextColor="white"
                         onPressIn={() => {
                           Tts.stop();
                           Tts.speak('Please update your last name here.');
@@ -196,8 +170,8 @@ const updateProfile = () => {
                       <Input
                         variant="filled"
                         style={{
-                          color: '#606060',
-                          backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                          color: 'white',
+                          backgroundColor: '#0033c491',
                           borderRadius: 15,
                           height: 80,
                           fontSize: 50,
@@ -206,7 +180,7 @@ const updateProfile = () => {
                         value={username}
                         onChangeText={text => setUsername(text)}
                         placeholder="Username"
-                        placeholderTextColor="#606060"
+                        placeholderTextColor="white"
                         onPressIn={() => {
                           Tts.stop();
                           Tts.speak('Please update your username here.');
@@ -217,18 +191,18 @@ const updateProfile = () => {
                       <Input
                         variant="filled"
                         style={{
-                          color: '#606060',
-                          backgroundColor: 'rgba(255, 217, 180, 0.45)',
+                          color: 'white',
+                          backgroundColor: '#0033c491',
                           borderRadius: 15,
                           height: 80,
                           fontSize: 50,
                         }}
                         w="100%"
-                        type='passowrd'
+                        type="passowrd"
                         value={password}
                         onChangeText={text => setPassword(text)}
                         placeholder="Password"
-                        placeholderTextColor="#606060"
+                        placeholderTextColor="white"
                         onPressIn={() => {
                           Tts.stop();
                           Tts.speak('Please update your password here.');
@@ -236,19 +210,19 @@ const updateProfile = () => {
                       />
                     </FormControl>
                     <Button
-            style={{
-              height: 80,
-            }}
-            // borderRadius={20}
-            // disabled={buttonStatus}
-            onPress={() => {
-              Tts.stop();
-              updateProfile();
-            }}
-            bgColor="#e99340"
-            _text={{color: 'white'}}
-            //  endIcon={<Icon as={<FontIcon name="sign-in-alt" />} size="5" />}>
-          >Save Changes</Button>
+                      style={{
+                        height: 80,
+                      }}
+                      mt="2"
+                      onPress={() => {
+                        Tts.stop();
+                        updateProfile();
+                      }}
+                      bgColor="#f25655"
+                      bg="#dd302f"
+                      _text={{color: 'white', fontSize: 30}}>
+                      Save Changes
+                    </Button>
                   </VStack>
                 </Box>
               </Center>

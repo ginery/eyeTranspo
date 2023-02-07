@@ -43,7 +43,7 @@ export default function TabMenu2({navigation}) {
   }, [navigation]);
   React.useEffect(() => {
     retrieveBusDetails();
-  },[1]);
+  }, [1]);
   const setItemStorage = async (key, value) => {
     try {
       await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -65,18 +65,19 @@ export default function TabMenu2({navigation}) {
       console.log(error);
     }
   };
-  const retrieveBusDetails = async() => {
+
+  const retrieveBusDetails = async () => {
     try {
       const valueString = await AsyncStorage.getItem('bus_details');
-      if (valueString != null) {      
-       setModalBusNumber(false);       
+      if (valueString != null) {
+        setModalBusNumber(false);
       } else {
-        setModalBusNumber(true);  
+        setModalBusNumber(true);
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   const getBusDetail = () => {
     console.log('test');
     const formData = new FormData();
@@ -91,20 +92,19 @@ export default function TabMenu2({navigation}) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        if(responseJson.array_data != ""){
+        if (responseJson.array_data != '') {
           var o = responseJson.array_data[0];
-          setItemStorage('bus_details',{
+          setItemStorage('bus_details', {
             bus_id: o.bus_id,
             bus_max_capacity: o.bus_max_capacity,
             bus_number: o.bus_number,
             bus_operator: o.bus_operator,
             bus_plate_number: o.bus_plate_number,
             bus_route: o.bus_route,
-            driver_name: o.driver_name
-
+            driver_name: o.driver_name,
           });
           setModalBusNumber(false);
-        }else{
+        } else {
           setModalBusNumber(true);
         }
         console.log(responseJson);
@@ -144,15 +144,13 @@ export default function TabMenu2({navigation}) {
                   textAlign: 'justify',
                 }}>
                 <Center w="89%">
-                  <Text
-                     fontSize="4xl">
+                  <Text color="white" fontSize="4xl">
                     TRIP SCHEDULES
                   </Text>
                 </Center>
                 <Center>
-                  <Text
-                    fontSize="4xl">
-                    <FontIcon name="chevron-right" size={50} />
+                  <Text fontSize="4xl">
+                    <FontIcon name="chevron-right" color="white" size={50} />
                   </Text>
                 </Center>
               </HStack>
@@ -179,15 +177,13 @@ export default function TabMenu2({navigation}) {
                   textAlign: 'justify',
                 }}>
                 <Center w="89%">
-                  <Text
-                     fontSize="4xl">
+                  <Text fontSize="4xl" color="white">
                     TRIP HISTORY
                   </Text>
                 </Center>
                 <Center>
-                  <Text
-                    fontSize="4xl">
-                    <FontIcon name="chevron-right" size={50} />
+                  <Text fontSize="4xl">
+                    <FontIcon name="chevron-right" color="white" size={50} />
                   </Text>
                 </Center>
               </HStack>
@@ -215,15 +211,13 @@ export default function TabMenu2({navigation}) {
                   textAlign: 'justify',
                 }}>
                 <Center w="89%">
-                  <Text
-                     fontSize="4xl">
+                  <Text fontSize="4xl" color="white">
                     PROFILE
                   </Text>
                 </Center>
                 <Center>
-                  <Text
-                     fontSize="4xl">
-                    <FontIcon name="chevron-right" size={50} />
+                  <Text fontSize="4xl">
+                    <FontIcon name="chevron-right" color="white" size={50} />
                   </Text>
                 </Center>
               </HStack>
@@ -232,7 +226,7 @@ export default function TabMenu2({navigation}) {
           <TouchableOpacity
             onPress={() => {
               Tts.stop();
-              AsyncStorage.clear();
+              AsyncStorage.removeItem('user_details');
               navigation.navigate('Login');
               Tts.speak('Logging out.');
             }}>
@@ -251,16 +245,13 @@ export default function TabMenu2({navigation}) {
                   textAlign: 'justify',
                 }}>
                 <Center w="89%">
-                  <Text
-                  fontSize="4xl"
-                   >
+                  <Text fontSize="4xl" color="white">
                     LOG OUT
                   </Text>
                 </Center>
                 <Center>
-                  <Text
-                     fontSize="4xl">
-                    <FontIcon name="chevron-right" size={50} />
+                  <Text fontSize="4xl">
+                    <FontIcon name="chevron-right" color="white" size={50} />
                   </Text>
                 </Center>
               </HStack>

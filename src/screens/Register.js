@@ -28,6 +28,7 @@ import {
 } from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import Tts from 'react-native-tts';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 export default function Register({navigation}) {
   const height = useHeaderHeight();
   const toast = useToast();
@@ -39,6 +40,10 @@ export default function Register({navigation}) {
   const [password, setPassword] = React.useState('');
   const [buttonStatus, setButtonStatus] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [image_preview, Setimage_preview] = React.useState(false);
+  const [imageUri, SetimageUri] = React.useState('');
+  const [image_file_type, Setimage_file_type] = React.useState('');
+  const [imageName, setImageName] = React.useState('');
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       //console.log('refreshed_home');
@@ -82,6 +87,12 @@ export default function Register({navigation}) {
       formData.append('contactNumber', contactNumber);
       formData.append('username', username);
       formData.append('password', password);
+      formData.append('file', {
+        uri: imageUri,
+        name: imageName,
+        type: image_file_type,
+      });
+
       fetch(window.name + 'register.php', {
         method: 'POST',
         headers: {
@@ -128,19 +139,43 @@ export default function Register({navigation}) {
         .catch(error => {
           console.error(error);
           Alert.alert('Internet Connection Error');
+          setModalVisible(false);
         });
-      // } else {
-      //   toast.show({
-      //     render: () => {
-      //       return (
-      //         <Box bg="warning.500" px="2" py="1" rounded="sm" mb={5}>
-      //           <Text color="white">Oops! Password doesn't match</Text>
-      //         </Box>
-      //       );
-      //     },
-      //   });
-      // }
     }
+  };
+  const open_file = () => {
+    const options = {
+      title: 'Select Avatar',
+      customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    launchCamera(options, response => {
+      // Use launchImageLibrary to open image gallery
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        const source = {uri: response.assets[0].uri};
+
+        // You can also display the image using data:
+        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        console.log(source);
+        Setimage_file_type(response.assets[0].type);
+        SetimageUri(response.assets[0].uri);
+        setImageName(response.assets[0].fileName);
+        Setimage_preview(true);
+      }
+    });
   };
   return (
     <NativeBaseProvider>
@@ -331,6 +366,21 @@ export default function Register({navigation}) {
                     }}
                   />
                 </FormControl>
+
+                <Button
+                  style={{
+                    height: 80,
+                  }}
+                  disabled={buttonStatus}
+                  mt="2"
+                  onPress={() => {
+                    open_file();
+                  }}
+                  bgColor="#f25655"
+                  bg="#dd302f"
+                  _text={{color: 'white', fontSize: 30}}>
+                  UPLOAD PWD ID
+                </Button>
                 <Button
                   style={{
                     height: 80,
@@ -341,11 +391,9 @@ export default function Register({navigation}) {
                     Tts.stop();
                     registerUser();
                   }}
-                
                   bgColor="#f25655"
                   bg="#dd302f"
-                  _text={{color: 'white', fontSize: 30}}
-                 >
+                  _text={{color: 'white', fontSize: 30}}>
                   SIGN UP
                 </Button>
                 <HStack

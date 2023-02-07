@@ -48,7 +48,7 @@ import {
   Stack,
   Divider,
   Badge,
-  Icon
+  Icon,
 } from 'native-base';
 import Rating from 'react-native-easy-rating';
 import {useNavigation} from '@react-navigation/native';
@@ -106,7 +106,7 @@ export default function TripScheduleListScreen({navigation, route}) {
   const [busRoute, setBusRoute] = React.useState('');
   const [tripId, setTripId] = React.useState('');
   const [buttonStatus, setButtonStatus] = React.useState(false);
-  
+  const [conductorId, setConductorId] = React.useState(0);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       Tts.stop();
@@ -190,6 +190,7 @@ export default function TripScheduleListScreen({navigation, route}) {
             headings: item.headings,
             date_departed: item.date_departed,
             date_arrived: item.date_arrived,
+            conductor_id: item.conductor_id,
           };
         });
         setTripScheduleData(data);
@@ -318,6 +319,7 @@ export default function TripScheduleListScreen({navigation, route}) {
                   setDateDeparted(item.date_departed);
                   setBusNumber(item.bus_number);
                   setBusRoute(item.busRoute);
+                  setConductorId(item.conductorId);
                   setModalVisible(true);
                   // navigation.navigate('Track Buses');
                 }}>
@@ -544,6 +546,7 @@ export default function TripScheduleListScreen({navigation, route}) {
                               date_arrived: dateArrival,
                               date_departed: dateDeparted,
                               bus_route: busRoute,
+                              conductor_id: conductorId,
                             });
                             setButtonEnable(true);
                           }}
@@ -557,11 +560,16 @@ export default function TripScheduleListScreen({navigation, route}) {
                     <Center marginBottom={10}>
                       {buttonEnable == true && (
                         <Button
-                        style={{
-                          height: 70,
-                        }}
+                          style={{
+                            height: 70,
+                          }}
                           onPress={() => {
-                            addTransaction(busId, user_id, tripScheduleId, tripId);
+                            addTransaction(
+                              busId,
+                              user_id,
+                              tripScheduleId,
+                              tripId,
+                            );
                             // navigation.navigate('Track Buses');
                           }}>
                           <HStack space={2} alignItems="center">

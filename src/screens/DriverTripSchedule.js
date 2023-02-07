@@ -341,17 +341,30 @@ export default function DriverTripSchedule({navigation, route}) {
                         }}>
                         {item.bus_route}
                       </Text>
-                      <Text
-                        fontSize="lg"
-                        _dark={{
-                          color: 'warmGray.50',
-                        }}
-                        color="coolGray.800"
-                        alignSelf="flex-start">
-                        <Badge colorScheme="success" alignSelf="flex-start">
-                          {item.headings}
-                        </Badge>
-                      </Text>
+                      <HStack>
+                        <Text
+                          fontSize="lg"
+                          _dark={{
+                            color: 'warmGray.50',
+                          }}
+                          color="coolGray.800"
+                          alignSelf="flex-start">
+                          <Badge colorScheme="success" alignSelf="flex-start">
+                            {item.headings}
+                          </Badge>
+                        </Text>
+                        <Text
+                          fontSize="lg"
+                          _dark={{
+                            color: 'warmGray.50',
+                          }}
+                          color="coolGray.800"
+                          alignSelf="flex-start">
+                          <Badge colorScheme="primary" alignSelf="flex-start">
+                            Departed
+                          </Badge>
+                        </Text>
+                      </HStack>
                     </VStack>
                     <Spacer />
                   </HStack>
