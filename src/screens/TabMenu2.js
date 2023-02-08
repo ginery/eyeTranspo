@@ -24,6 +24,7 @@ export default function TabMenu2({navigation}) {
   const [showMenu, setShowMenu] = React.useState(false);
   const [busNumber, setBusNumber] = React.useState(0);
   const [modalBusNumber, setModalBusNumber] = React.useState(false);
+  const [busId, setBusId] = React.useState(0);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       retrieveDestination();
@@ -94,6 +95,7 @@ export default function TabMenu2({navigation}) {
       .then(responseJson => {
         if (responseJson.array_data != '') {
           var o = responseJson.array_data[0];
+          setBusId(o.bus_id);
           setItemStorage('bus_details', {
             bus_id: o.bus_id,
             bus_max_capacity: o.bus_max_capacity,
@@ -159,8 +161,10 @@ export default function TabMenu2({navigation}) {
           <TouchableOpacity
             onPress={() => {
               Tts.stop();
-              navigation.navigate('Track Buses');
-              Tts.speak('Trip History');
+              navigation.navigate('Track Passenger', {
+                bus_id: busId,
+              });
+              Tts.speak('Track Passenger');
             }}>
             <Box
               style={{
@@ -178,7 +182,7 @@ export default function TabMenu2({navigation}) {
                 }}>
                 <Center w="89%">
                   <Text fontSize="4xl" color="white">
-                    TRIP HISTORY
+                    TRACK PASSENGER
                   </Text>
                 </Center>
                 <Center>

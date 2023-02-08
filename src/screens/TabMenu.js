@@ -19,9 +19,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TabMenu({navigation}) {
   const [showMenu, setShowMenu] = React.useState(false);
+  const [user_id, set_user_id] = React.useState(0);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       retrieveDestination();
+      retrieveUser();
       //console.log('refreshed_home');
       Tts.stop();
       Tts.speak('You are in menu page.');
@@ -35,6 +37,9 @@ export default function TabMenu({navigation}) {
 
     return unsubscribe;
   }, [navigation]);
+  React.useEffect(() => {
+    retrieveUser();
+  }, [1]);
   const retrieveDestination = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_destination');
@@ -48,6 +53,94 @@ export default function TabMenu({navigation}) {
     } catch (error) {
       console.log(error);
     }
+  };
+  const retrieveUser = async () => {
+    try {
+      const valueString = await AsyncStorage.getItem('user_details');
+      if (valueString != null) {
+        const value = JSON.parse(valueString);
+        // console.log(value);
+        set_user_id(value.user_id);
+        checkTransactionStatus(value.user_id);
+      } else {
+        console.log('login');
+      }
+      //setUserID(value.user_fname);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const checkTransactionStatus = user_id => {
+    console.log(user_id);
+    const formData = new FormData();
+    formData.append('user_id', user_id);
+    fetch(window.name + 'getTransactionStatus.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        if (responseJson.array_data[0].response > 1) {
+          getTripDetails(responseJson.array_data[0].response);
+        }
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error);
+
+        //  Alert.alert('Internet Connection Error');
+      });
+  };
+  const setItemStorage = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      // Error saving data
+    }
+  };
+  const getTripDetails = trip_id => {
+    const formData = new FormData();
+    formData.append('trip_id', trip_id);
+    fetch(window.name + 'getTripDetails.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        if (responseJson.array_data != '') {
+          var o = responseJson.array_data[0];
+          var destination = o.destination.split(',');
+          setItemStorage('user_destination', {
+            user_id: user_id,
+            trip_id: o.trip_id,
+            d_lat: destination[0],
+            d_long: destination[1],
+            bus_number: o.bus_number,
+            bus_id: o.bus_id,
+            date_arrived: o.date_arrived,
+            date_departed: o.date_departed,
+            bus_route: o.bus_route,
+            conductor_id: o.conductor_id,
+          });
+          setShowMenu(true);
+        }
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error);
+        setButtonStatus(false);
+        //  Alert.alert('Internet Connection Error');
+      });
   };
   return (
     <NativeBaseProvider>

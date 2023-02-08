@@ -10,6 +10,7 @@ import TripScheduleListScreen from '../screens/TripSchedulesList';
 import TrackBusesScreen from '../screens/TrackBuses';
 import TabMenu2 from '../screens/TabMenu2';
 import DriverTripSchedule from '../screens/DriverTripSchedule';
+import TrackPassengerScreen from '../screens/TrackPassenger';
 const Stack = createStackNavigator();
 const MainStackNavigator = () => {
   return (
@@ -63,6 +64,11 @@ const MainStackNavigator = () => {
       <Stack.Screen
         name="Driver Trip Schedule"
         component={DriverTripSchedule}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Track Passenger"
+        component={TrackPassengerScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

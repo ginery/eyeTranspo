@@ -107,6 +107,7 @@ export default function TripScheduleListScreen({navigation, route}) {
   const [tripId, setTripId] = React.useState('');
   const [buttonStatus, setButtonStatus] = React.useState(false);
   const [conductorId, setConductorId] = React.useState(0);
+  const [userDestination, setUserDestination] = React.useState(0);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       Tts.stop();
@@ -204,7 +205,13 @@ export default function TripScheduleListScreen({navigation, route}) {
         //  Alert.alert('Internet Connection Error');
       });
   };
-  const addTransaction = (bus_id, user_id, trip_schedule_id, trip_id) => {
+  const addTransaction = (
+    bus_id,
+    user_id,
+    trip_schedule_id,
+    trip_id,
+    destination,
+  ) => {
     setButtonStatus(true);
     setLoadingModal(true);
     const formData = new FormData();
@@ -212,6 +219,7 @@ export default function TripScheduleListScreen({navigation, route}) {
     formData.append('trip_schedule_id', trip_schedule_id);
     formData.append('user_id', user_id);
     formData.append('trip_id', trip_id);
+    formData.append('destination', destination);
     fetch(window.name + 'addTransaction.php', {
       method: 'POST',
       headers: {
@@ -535,6 +543,11 @@ export default function TripScheduleListScreen({navigation, route}) {
                           onPress={(data, details = null) => {
                             // 'details' is provided when fetchDetails = true
                             console.log(details?.geometry?.location.lat);
+                            setUserDestination(
+                              details?.geometry?.location.lat +
+                                ',' +
+                                details?.geometry?.location.lng,
+                            );
                             setItemStorage('user_destination', {
                               user_id: user_id,
                               trip_id: tripId,
@@ -569,6 +582,7 @@ export default function TripScheduleListScreen({navigation, route}) {
                               user_id,
                               tripScheduleId,
                               tripId,
+                              userDestination,
                             );
                             // navigation.navigate('Track Buses');
                           }}>

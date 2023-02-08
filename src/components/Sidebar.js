@@ -98,7 +98,7 @@ export default function Sidebar({...props}) {
         <DrawerItem
           label="Sign Out"
           onPress={() => {
-            AsyncStorage.clear();
+            AsyncStorage.removeItem('user_details');
             props.navigation.navigate('Login');
           }}
           icon={() => <Icon name="sign-out-alt" size={22} color="#ad8765" />}
