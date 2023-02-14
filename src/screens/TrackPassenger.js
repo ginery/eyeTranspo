@@ -113,12 +113,14 @@ export default function TrackPassengerScreen({navigation, route}) {
     retrieveUser();
     retrieveDestination();
     refreshLocation();
+    getTransactionByBus();
   }, [1]);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       retrieveUser();
       retrieveDestination();
       refreshLocation();
+      getTransactionByBus();
       Tts.stop();
 
       Tts.speak('You are in track passenger page.');
@@ -289,7 +291,7 @@ export default function TrackPassengerScreen({navigation, route}) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        // console.log(responseJson);
         if (responseJson.array_data != '') {
           var o = responseJson.array_data[0];
           setDriverName(o.driver_name);

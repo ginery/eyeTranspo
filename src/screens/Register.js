@@ -29,6 +29,17 @@ import {
 import {useHeaderHeight} from '@react-navigation/elements';
 import Tts from 'react-native-tts';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {
+  BallIndicator,
+  BarIndicator,
+  DotIndicator,
+  MaterialIndicator,
+  PacmanIndicator,
+  PulseIndicator,
+  SkypeIndicator,
+  UIActivityIndicator,
+  WaveIndicator,
+} from 'react-native-indicators';
 export default function Register({navigation}) {
   const height = useHeaderHeight();
   const toast = useToast();
@@ -63,7 +74,8 @@ export default function Register({navigation}) {
       lname == '' ||
       password == '' ||
       contactNumber == '' ||
-      username == ''
+      username == '' ||
+      imageUri == ''
     ) {
       Tts.speak('Oh no! Please fill out all the informations required.');
       toast.show({
@@ -78,6 +90,7 @@ export default function Register({navigation}) {
         },
       });
     } else {
+      // console.log(image_file_type);
       setModalVisible(true);
       // if (password == retypePassword) {
       const formData = new FormData();
@@ -103,8 +116,8 @@ export default function Register({navigation}) {
       })
         .then(response => response.json())
         .then(responseJson => {
+          console.log(responseJson);
           if (responseJson.array_data != '') {
-            console.log(responseJson);
             var data = responseJson.array_data[0];
             console.log(data);
             if (data.res >= 1) {
@@ -144,6 +157,7 @@ export default function Register({navigation}) {
     }
   };
   const open_file = () => {
+    Setimage_preview(true);
     const options = {
       title: 'Select Avatar',
       customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
@@ -173,7 +187,7 @@ export default function Register({navigation}) {
         Setimage_file_type(response.assets[0].type);
         SetimageUri(response.assets[0].uri);
         setImageName(response.assets[0].fileName);
-        Setimage_preview(true);
+        Setimage_preview(false);
       }
     });
   };
@@ -314,6 +328,7 @@ export default function Register({navigation}) {
                       fontSize: 50,
                     }}
                     w="100%"
+                    keyboardType="numeric"
                     onChangeText={text => setContactNumber(text)}
                     placeholder="Phone #"
                     placeholderTextColor="white"
@@ -371,7 +386,7 @@ export default function Register({navigation}) {
                   style={{
                     height: 80,
                   }}
-                  disabled={buttonStatus}
+                  disabled={image_preview}
                   mt="2"
                   onPress={() => {
                     open_file();
@@ -379,7 +394,35 @@ export default function Register({navigation}) {
                   bgColor="#f25655"
                   bg="#dd302f"
                   _text={{color: 'white', fontSize: 30}}>
-                  UPLOAD PWD ID
+                  <HStack space={2} alignItems="center">
+                    {image_preview == true && (
+                      // <Spinner
+                      //   accessibilityLabel="Loading posts"
+                      //   size="lg"
+                      //   color="white"
+                      // />
+                      <UIActivityIndicator
+                        color="white"
+                        size={25}
+                        style={{flex: 0}}
+                      />
+                    )}
+
+                    <Heading
+                      color="white"
+                      style={{
+                        fontSize: 30,
+                      }}>
+                      {image_preview ? 'Loading' : 'Upload PWD ID'}
+                    </Heading>
+                    {image_preview == false && (
+                      <Icon
+                        as={<FontIcon name="camera" />}
+                        size="25"
+                        color="white"
+                      />
+                    )}
+                  </HStack>
                 </Button>
                 <Button
                   style={{

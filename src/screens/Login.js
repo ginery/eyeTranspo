@@ -369,34 +369,36 @@ export default function App({navigation, route}) {
             space={1}
             alignItems="center"
             style={{
-              //   borderColor: 'black',
-              //   borderWidth: 1,
+              // borderColor: 'black',
+              // borderWidth: 1,
               //   backgroundColor: '#8b8b8b',
               justifyContent: 'center',
               alignItems: 'center',
 
               //   height: 100,
             }}>
-            <Text style={{color: 'gray', fontSize: 25, padding: 5}}>
-              Don't have an account?
-            </Text>
-
-            <TouchableOpacity
-              onPress={() => {
-                Tts.speak('Sign up.');
-                navigation.navigate('Register');
-              }}>
-              <Text
-                style={{
-                  color: '#dd302f',
-                  borderBottomWidth: 1,
-                  borderColor: '#dd302f',
-                  fontSize: 25,
-                  padding: 5,
-                }}>
-                SIGN UP
+            <Center>
+              <Text style={{color: 'gray', fontSize: 25, padding: 5}}>
+                Don't have an account?
               </Text>
-            </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  Tts.speak('Sign up.');
+                  navigation.navigate('Register');
+                }}>
+                <Text
+                  style={{
+                    color: '#dd302f',
+                    borderBottomWidth: 1,
+                    borderColor: '#dd302f',
+                    fontSize: 25,
+                    padding: 5,
+                  }}>
+                  SIGN UP
+                </Text>
+              </TouchableOpacity>
+            </Center>
           </HStack>
         </Stack>
       </Center>
