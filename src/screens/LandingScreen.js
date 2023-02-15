@@ -30,17 +30,16 @@ export default function LandingScreen({navigation}) {
   const retrieveData = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');
-      
+
       if (valueString != null) {
-       
         const value = JSON.parse(valueString);
         // console.log(value);
-        if(value.category == 'U'){
+        if (value.category == 'U') {
           console.log('user');
-          navigation.navigate('Tab View');
-        }else if(value.category == 'C'){
-          navigation.navigate('Tab View 2');
-        }       
+          navigation.navigate('Verify');
+        } else if (value.category == 'C') {
+          navigation.navigate('Verify');
+        }
       } else {
         console.log('login');
         // navigate('Login');

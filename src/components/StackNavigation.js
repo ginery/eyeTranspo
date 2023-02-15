@@ -11,6 +11,7 @@ import TrackBusesScreen from '../screens/TrackBuses';
 import TabMenu2 from '../screens/TabMenu2';
 import DriverTripSchedule from '../screens/DriverTripSchedule';
 import TrackPassengerScreen from '../screens/TrackPassenger';
+import CheckVerifiedScreen from '../screens/CheckVerified';
 const Stack = createStackNavigator();
 const MainStackNavigator = () => {
   return (
@@ -69,6 +70,11 @@ const MainStackNavigator = () => {
       <Stack.Screen
         name="Track Passenger"
         component={TrackPassengerScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Verify"
+        component={CheckVerifiedScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
