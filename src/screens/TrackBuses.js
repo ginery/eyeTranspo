@@ -32,11 +32,12 @@ import {
   RefreshControl,
   ActivityIndicator,
   Modal,
+  ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Rating from 'react-native-easy-rating';
-import {useNavigation} from '@react-navigation/native';
+// import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Tts from 'react-native-tts';
 import MapViewDirections from 'react-native-maps-directions';
@@ -68,8 +69,8 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 });
-export default function TrackBusesScreen() {
-  const navigation = useNavigation();
+export default function TrackBusesScreen({navigation, route}) {
+  // const navigation = useNavigation();
   const [user_id, set_user_id] = React.useState(0);
   const [modalShow, setModalShow] = React.useState(false);
   const [referenceNumber, setReferenceNumber] = React.useState('');
@@ -82,6 +83,7 @@ export default function TrackBusesScreen() {
   const [d_long, setDlong] = React.useState(0);
   const [busNumber, setBusNumber] = React.useState(0);
   const [isOpen, setIsOpen] = React.useState(false);
+  const {bus_id, trip_id} = route.params;
   const [busId, setBusId] = React.useState(0);
   const [tripScheduleId, setTripScheduleId] = React.useState(0);
   const [dateDeparted, setDateDeparted] = React.useState('');
@@ -95,6 +97,7 @@ export default function TrackBusesScreen() {
   const [busLocation, setBusLocation] = React.useState([]);
   const cancelRef = React.useRef(null);
   const [userDestination, setUserDestination] = React.useState([]);
+  const [tripStatus, getTripStatus] = React.useState('');
   const retrieveUser = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');
@@ -110,18 +113,15 @@ export default function TrackBusesScreen() {
   };
   React.useEffect(() => {
     retrieveUser();
-    retrieveDestination();
     refreshLocation();
   }, [1]);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       retrieveUser();
-      retrieveDestination();
       refreshLocation();
       Tts.stop();
-
       Tts.speak('You are in track buses page.');
-
+      getTripDetails();
       // console.log('user_id' + user_id);
     });
     var watchID = Geolocation.watchPosition(
@@ -141,26 +141,7 @@ export default function TrackBusesScreen() {
       unsubscribe;
     };
   }, [navigation]);
-  const retrieveDestination = async () => {
-    try {
-      const valueString = await AsyncStorage.getItem('user_destination');
-      if (valueString != null) {
-        const value = JSON.parse(valueString);
-        // console.log(value);
-        setTripId(value.trip_id);
-        setDlat(value.d_lat);
-        setDlong(value.d_long);
-        setBusNumber(value.bus_number);
-        setBusId(value.bus_id);
-        // setTripScheduleId(value.trip_schedule_id);
-        // setDateArrival(value.date_arrived);
-        // setDateDeparted(value.date_departed);
-        getTripDetails(value.trip_id);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getOrderHistory();
@@ -269,15 +250,16 @@ export default function TrackBusesScreen() {
         })
         .catch(error => {
           console.error(error);
-          Alert.alert('Internet Connection Error');
+          Alert.alert('Internet Connection Error', 'getAddressFromCoordinates');
         });
     } catch (e) {
       console.log('Error in getAddressFromCoordinates', e);
     }
   };
-  const getTripDetails = trip_id => {
+  const getTripDetails = () => {
     const formData = new FormData();
     formData.append('trip_id', trip_id);
+    formData.append('user_id', user_id);
     fetch(window.name + 'getTripDetails.php', {
       method: 'POST',
       headers: {
@@ -295,22 +277,24 @@ export default function TrackBusesScreen() {
           setBusRoute(o.bus_route);
           setDateArrived(o.date_arrived);
           setDateDeparted(o.date_departed);
+          setBusNumber(o.bus_number);
           var loc = o.bus_location.split(',');
           setBusLocation(loc);
           // var d = o.destination.split(',');
           setUserDestination(o.destination.split(','));
+          getTripStatus(o.status);
         }
       })
       .catch(error => {
         Tts.speak('Internet Connection Error');
-        console.error(error);
+        console.error(error, 'getTripDetails');
         setButtonStatus(false);
-        //  Alert.alert('Internet Connection Error');
+        Alert.alert('Internet Connection Error', 'getTripDetails');
       });
   };
   const sendReport = () => {
     const formData = new FormData();
-    formData.append('trip_id', tripId);
+    formData.append('trip_id', trip_id);
     formData.append('report', report);
     fetch(window.name + 'reportDriverConductor.php', {
       method: 'POST',
@@ -338,7 +322,7 @@ export default function TrackBusesScreen() {
   };
   const cancelTrip = () => {
     const formData = new FormData();
-    formData.append('trip_id', tripId);
+    formData.append('trip_id', trip_id);
     fetch(window.name + 'cancelTrips.php', {
       method: 'POST',
       headers: {
@@ -352,13 +336,54 @@ export default function TrackBusesScreen() {
         console.log(responseJson);
         if (responseJson.array_data != '') {
           if (responseJson.array_data[0].response == 1) {
-            AsyncStorage.removeItem('user_destination');
+            // AsyncStorage.removeItem('user_destination');
             navigation.navigate('Tab View');
           }
         }
       })
       .catch(error => {
         Tts.speak('Internet Connection Error');
+        console.error(error);
+        // setButtonStatus(false);
+        //  Alert.alert('Internet Connection Error');
+      });
+  };
+  const updateStatus = status => {
+    const formData = new FormData();
+    formData.append('trip_id', trip_id);
+    formData.append('status', status);
+    fetch(window.name + 'updateTripStatus.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        if (responseJson.array_data != '') {
+          if (responseJson.array_data[0].response == 1) {
+            getTripDetails();
+            if (tripStatus == 'B') {
+              ToastAndroid.showWithGravity(
+                'Great! You are on board.',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+            } else if (tripStatus == 'A') {
+              ToastAndroid.showWithGravity(
+                'Great! You arrived at your destination.',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+            }
+          }
+        }
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error', 'Update transaction');
         console.error(error);
         // setButtonStatus(false);
         //  Alert.alert('Internet Connection Error');
@@ -555,7 +580,94 @@ export default function TrackBusesScreen() {
         </Box>
         <Center>
           <HStack
-            mt={2}
+            mt={1}
+            width="95%"
+            justifyContent="center"
+            // borderColor="black"
+            // borderWidth={2}
+            h="60">
+            {tripStatus == 'P' ? (
+              <Pressable
+                w="100%"
+                onPress={() => {
+                  updateStatus('B');
+                }}>
+                {({isHovered, isFocused, isPressed}) => {
+                  return (
+                    <Center
+                      h="100%"
+                      bg={
+                        isPressed
+                          ? 'primary.200'
+                          : isHovered
+                          ? 'coolGray.200'
+                          : 'primary.500'
+                      }
+                      style={{
+                        transform: [
+                          {
+                            scale: isPressed ? 0.96 : 1,
+                          },
+                        ],
+                      }}>
+                      <Text
+                        fontSize="4xl"
+                        color={
+                          isPressed
+                            ? 'black'
+                            : isHovered
+                            ? 'coolGray.200'
+                            : 'white'
+                        }>
+                        Boarding
+                      </Text>
+                    </Center>
+                  );
+                }}
+              </Pressable>
+            ) : (
+              <Pressable
+                w="100%"
+                onPress={() => {
+                  updateStatus('A');
+                }}>
+                {({isHovered, isFocused, isPressed}) => {
+                  return (
+                    <Center
+                      h="100%"
+                      bg={
+                        isPressed
+                          ? 'emerald.200'
+                          : isHovered
+                          ? 'coolGray.200'
+                          : 'emerald.500'
+                      }
+                      style={{
+                        transform: [
+                          {
+                            scale: isPressed ? 0.96 : 1,
+                          },
+                        ],
+                      }}>
+                      <Text
+                        fontSize="4xl"
+                        color={
+                          isPressed
+                            ? 'black'
+                            : isHovered
+                            ? 'coolGray.200'
+                            : 'white'
+                        }>
+                        Arrived
+                      </Text>
+                    </Center>
+                  );
+                }}
+              </Pressable>
+            )}
+          </HStack>
+          <HStack
+            mt={1}
             width="95%"
             justifyContent="center"
             // borderColor="black"

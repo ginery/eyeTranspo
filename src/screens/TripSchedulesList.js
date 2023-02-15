@@ -90,15 +90,16 @@ export default function TripScheduleListScreen({navigation, route}) {
   const toast = useToast();
   const [refreshing, setRefreshing] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
-
-  const {cardinal_directions} = route.params;
   const [latitude, setLatitude] = React.useState(0);
   const [longitude, setLongitude] = React.useState(0);
+  const [dlatitude, setDLatitude] = React.useState(0);
+  const [dlongitude, setDLongitude] = React.useState(0);
   const [busNumber, setBusNumber] = React.useState(0);
   const [user_id, set_user_id] = React.useState(0);
   const [buttonEnable, setButtonEnable] = React.useState(false);
   const [tripScheduleData, setTripScheduleData] = React.useState([]);
   const [loadingModal, setLoadingModal] = React.useState(false);
+
   const [busId, setBusId] = React.useState(0);
   const [tripScheduleId, setTripScheduleId] = React.useState(0);
   const [dateDeparted, setDateDeparted] = React.useState('');
@@ -169,18 +170,18 @@ export default function TripScheduleListScreen({navigation, route}) {
   const getTripSchedules = () => {
     setLoadingModal(true);
     const formData = new FormData();
-    formData.append('headings', cardinal_directions);
+    formData.append('trip_id', 1);
     fetch(window.name + 'getTripSchedules.php', {
       method: 'POST',
       headers: {
-        Accept: 'applicatiion/json',
+        Accept: 'application/json',
         'Content-Type': 'multipart/form-data',
       },
       body: formData,
     })
       .then(response => response.json())
       .then(responseJson => {
-        // console.log(responseJson);
+        console.log(responseJson);
         var data = responseJson.array_data.map(function (item, index) {
           return {
             trip_id: item.trip_id,
@@ -249,7 +250,9 @@ export default function TripScheduleListScreen({navigation, route}) {
               },
             });
             setTimeout(() => {
-              navigation.navigate('Track Buses');
+              navigation.navigate('Track Buses', {
+                bus_id: bus_id,
+              });
             }, 5000);
           } else {
             setLoadingModal(false);
@@ -303,7 +306,7 @@ export default function TripScheduleListScreen({navigation, route}) {
             borderStyle: 'dashed',
           }}
           mb={2}>
-          Trip Schedules {cardinal_directions}
+          Trip Schedules
         </Heading>
         {tripScheduleData != '' ? (
           <FlatList
@@ -548,19 +551,21 @@ export default function TripScheduleListScreen({navigation, route}) {
                                 ',' +
                                 details?.geometry?.location.lng,
                             );
-                            setItemStorage('user_destination', {
-                              user_id: user_id,
-                              trip_id: tripId,
-                              d_lat: details?.geometry?.location.lat,
-                              d_long: details?.geometry?.location.lng,
-                              bus_number: busNumber,
-                              bus_id: busId,
-                              trip_schedule_id: tripScheduleId,
-                              date_arrived: dateArrival,
-                              date_departed: dateDeparted,
-                              bus_route: busRoute,
-                              conductor_id: conductorId,
-                            });
+                            // setItemStorage('user_destination', {
+                            //   user_id: user_id,
+                            //   trip_id: tripId,
+                            //   d_lat: details?.geometry?.location.lat,
+                            //   d_long: details?.geometry?.location.lng,
+                            //   bus_number: busNumber,
+                            //   bus_id: busId,
+                            //   trip_schedule_id: tripScheduleId,
+                            //   date_arrived: dateArrival,
+                            //   date_departed: dateDeparted,
+                            //   bus_route: busRoute,
+                            //   conductor_id: conductorId,
+                            // });
+                            setDLatitude(details?.geometry?.location.lat);
+                            setDLongitude(details?.geometry?.location.lng);
                             setButtonEnable(true);
                           }}
                           query={{

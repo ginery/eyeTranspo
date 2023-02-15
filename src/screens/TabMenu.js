@@ -20,9 +20,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function TabMenu({navigation}) {
   const [showMenu, setShowMenu] = React.useState(false);
   const [user_id, set_user_id] = React.useState(0);
+  const [bus_id, setBusId] = React.useState(0);
+  const [trip_id, setTripId] = React.useState(0);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      retrieveDestination();
       retrieveUser();
       //console.log('refreshed_home');
       Tts.stop();
@@ -40,20 +41,7 @@ export default function TabMenu({navigation}) {
   React.useEffect(() => {
     retrieveUser();
   }, [1]);
-  const retrieveDestination = async () => {
-    try {
-      const valueString = await AsyncStorage.getItem('user_destination');
-      if (valueString != null) {
-        const value = JSON.parse(valueString);
-        console.log(value);
-        setShowMenu(true);
-      } else {
-        setShowMenu(false);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const retrieveUser = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');
@@ -85,8 +73,15 @@ export default function TabMenu({navigation}) {
       .then(response => response.json())
       .then(responseJson => {
         console.log(responseJson);
-        if (responseJson.array_data[0].response > 1) {
-          getTripDetails(responseJson.array_data[0].response);
+        if (responseJson.array_data != '') {
+          if (responseJson.array_data[0].status == 1) {
+            setBusId(responseJson.array_data[0].bus_id);
+            setTripId(responseJson.array_data[0].trip_id);
+            setShowMenu(true);
+          } else {
+            setShowMenu(false);
+          }
+          // getTripDetails(responseJson.array_data[0].response);
         }
       })
       .catch(error => {
@@ -120,18 +115,18 @@ export default function TabMenu({navigation}) {
         if (responseJson.array_data != '') {
           var o = responseJson.array_data[0];
           var destination = o.destination.split(',');
-          setItemStorage('user_destination', {
-            user_id: user_id,
-            trip_id: o.trip_id,
-            d_lat: destination[0],
-            d_long: destination[1],
-            bus_number: o.bus_number,
-            bus_id: o.bus_id,
-            date_arrived: o.date_arrived,
-            date_departed: o.date_departed,
-            bus_route: o.bus_route,
-            conductor_id: o.conductor_id,
-          });
+          // setItemStorage('user_destination', {
+          //   user_id: user_id,
+          //   trip_id: o.trip_id,
+          //   d_lat: destination[0],
+          //   d_long: destination[1],
+          //   bus_number: o.bus_number,
+          //   bus_id: o.bus_id,
+          //   date_arrived: o.date_arrived,
+          //   date_departed: o.date_departed,
+          //   bus_route: o.bus_route,
+          //   conductor_id: o.conductor_id,
+          // });
           setShowMenu(true);
         }
       })
@@ -157,7 +152,7 @@ export default function TabMenu({navigation}) {
                 onPress={() => {
                   Tts.stop();
                   Tts.speak('TRIP SCHEDULES');
-                  navigation.navigate('Trip Schedule');
+                  navigation.navigate('Trip Schedule List');
                 }}>
                 <Box
                   style={{
@@ -204,7 +199,10 @@ export default function TabMenu({navigation}) {
               <TouchableOpacity
                 onPress={() => {
                   Tts.stop();
-                  navigation.navigate('Track Buses');
+                  navigation.navigate('Track Buses', {
+                    bus_id: bus_id,
+                    trip_id: trip_id,
+                  });
                   Tts.speak('TRACK BUSES');
                 }}>
                 <Box
