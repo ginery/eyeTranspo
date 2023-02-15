@@ -159,6 +159,7 @@ export default function App({navigation, route}) {
               user_fname: data.user_fname,
               user_lname: data.user_lname,
               category: data.category,
+              username: data.username,
             });
             setButtonStatus(true);
             setTimeout(function () {

@@ -28,7 +28,7 @@ export default function Profile({navigation}) {
   const retrieveData = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');
-      // console.log(valueString);
+      console.log(valueString);
       const value = JSON.parse(valueString);
       if (value == null) {
         console.log('empty');
@@ -36,6 +36,9 @@ export default function Profile({navigation}) {
         // console.log(value);
         setUserId(value.user_id);
         setUserFullName(value.user_fname + ' ' + value.user_lname);
+        setUserFname(value.user_fname);
+        setUserLname(value.user_lname);
+        setUsername(value.username);
       }
     } catch (error) {
       console.log(error);

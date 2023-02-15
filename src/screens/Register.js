@@ -25,6 +25,7 @@ import {
   KeyboardAvoidingView,
   Modal,
   ActivityIndicator,
+  PermissionsAndroid,
 } from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import Tts from 'react-native-tts';
@@ -156,6 +157,30 @@ export default function Register({navigation}) {
         });
     }
   };
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Cool Photo App Camera Permission',
+          message:
+            'Cool Photo App needs access to your camera ' +
+            'so you can take awesome pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        open_file();
+        console.log('You can use the camera');
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
   const open_file = () => {
     Setimage_preview(true);
     const options = {
@@ -187,7 +212,7 @@ export default function Register({navigation}) {
         Setimage_file_type(response.assets[0].type);
         SetimageUri(response.assets[0].uri);
         setImageName(response.assets[0].fileName);
-        Setimage_preview(false);
+        // Setimage_preview(false);
       }
     });
   };
@@ -389,7 +414,7 @@ export default function Register({navigation}) {
                   disabled={image_preview}
                   mt="2"
                   onPress={() => {
-                    open_file();
+                    requestCameraPermission();
                   }}
                   bgColor="#f25655"
                   bg="#dd302f"
@@ -477,7 +502,47 @@ export default function Register({navigation}) {
           </Center>
         </Center>
       </ScrollView>
-
+      <Modal
+        style={{
+          justifyContent: 'center',
+        }}
+        animationType="fade"
+        transparent={true}
+        visible={image_preview}
+        onRequestClose={() => {
+          // Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <Box style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Center bg="white" width="80%" height="50%" borderRadius={10}>
+            <Text color="black">Image Preview</Text>
+            <Center>
+              <Image
+                borderRadius={10}
+                size={250}
+                source={{
+                  uri: imageUri,
+                }}
+                alt="Alternate Text"
+              />
+            </Center>
+            <HStack space={2} mt="5">
+              <Button
+                onPress={() => {
+                  requestCameraPermission();
+                }}>
+                Retake
+              </Button>
+              <Button
+                onPress={() => {
+                  Setimage_preview(false);
+                }}>
+                Submit
+              </Button>
+            </HStack>
+          </Center>
+        </Box>
+      </Modal>
       <Modal
         style={{
           justifyContent: 'center',

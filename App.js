@@ -12,7 +12,7 @@ import {PermissionsAndroid} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 
 // local connection
-window.name = 'http://192.168.128.94/eyetranspo/mobile/';
+window.name = 'http://192.168.128.159:8080/eyetranspo/mobile/';
 // online connection
 // window.name = 'https://juancoder.com/eyetranspo/mobile/';
 

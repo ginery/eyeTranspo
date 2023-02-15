@@ -413,14 +413,14 @@ export default function TrackBusesScreen({navigation, route}) {
           zIndex={-1}>
           <MapViewDirections
             origin={{
-              latitude: busLocation != '' ? parseFloat(busLocation[0]) : '',
-              longitude: busLocation != '' ? parseFloat(busLocation[1]) : '',
+              latitude: busLocation != '' ? parseFloat(busLocation[0]) : 0,
+              longitude: busLocation != '' ? parseFloat(busLocation[1]) : 0,
             }}
             destination={{
               latitude:
-                userDestination != '' ? parseFloat(userDestination[0]) : '',
+                userDestination != '' ? parseFloat(userDestination[0]) : 0,
               longitude:
-                userDestination != '' ? parseFloat(userDestination[1]) : '',
+                userDestination != '' ? parseFloat(userDestination[1]) : 0,
             }}
             // waypoints={
             //   waypointarray.length > 2 ? waypointarray.slice(1, -1) : undefined
@@ -456,9 +456,8 @@ export default function TrackBusesScreen({navigation, route}) {
               longitude: longitude,
             }}
             destination={{
-              latitude: userDestination != '' ? parseFloat(busLocation[0]) : '',
-              longitude:
-                userDestination != '' ? parseFloat(busLocation[1]) : '',
+              latitude: userDestination != '' ? parseFloat(busLocation[0]) : 0,
+              longitude: userDestination != '' ? parseFloat(busLocation[1]) : 0,
             }}
             // waypoints={
             //   waypointarray.length > 2 ? waypointarray.slice(1, -1) : undefined
@@ -500,9 +499,9 @@ export default function TrackBusesScreen({navigation, route}) {
             <Marker
               coordinate={{
                 latitude:
-                  userDestination != '' ? parseFloat(userDestination[0]) : '',
+                  userDestination != '' ? parseFloat(userDestination[0]) : 0,
                 longitude:
-                  userDestination != '' ? parseFloat(userDestination[1]) : '',
+                  userDestination != '' ? parseFloat(userDestination[1]) : 0,
               }}
               title={'title'}
               description={'description'}
@@ -590,6 +589,8 @@ export default function TrackBusesScreen({navigation, route}) {
               <Pressable
                 w="100%"
                 onPress={() => {
+                  Tts.stop();
+                  Tts.speak('You are boarded on your bus.');
                   updateStatus('B');
                 }}>
                 {({isHovered, isFocused, isPressed}) => {
@@ -630,7 +631,7 @@ export default function TrackBusesScreen({navigation, route}) {
                 w="100%"
                 onPress={() => {
                   updateStatus('F');
-                  // Tts.speak('You arrived at your destination.');
+                  //
                   navigation.navigate('Tab View');
                 }}>
                 {({isHovered, isFocused, isPressed}) => {

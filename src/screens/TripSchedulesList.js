@@ -252,6 +252,7 @@ export default function TripScheduleListScreen({navigation, route}) {
             setTimeout(() => {
               navigation.navigate('Track Buses', {
                 bus_id: bus_id,
+                trip_id: trip_id,
               });
             }, 5000);
           } else {
