@@ -290,14 +290,17 @@ export default function DriverTripSchedule({navigation, route}) {
                   //       '. Alright, please select where you are heading.',
                   //   );
                   //   setTripId(item.trip_id);
-                  setBusId(item.bus_id);
+                  // setBusId(item.bus_id);
                   //   setTripScheduleId(item.trip_schedule_id);
                   //   setDateArrival(item.date_arrived);
                   //   setDateDeparted(item.date_departed);
                   //   setBusNumber(item.bus_number);
                   //   setBusRoute(item.busRoute);
-                  setModalVisible(true);
-                  // navigation.navigate('Track Buses');
+                  // setModalVisible(true);
+                  navigation.navigate('Track Passenger', {
+                    user_id: user_id,
+                    bus_id: item.bus_id,
+                  });
                 }}>
                 <Box
                   borderRadius={10}

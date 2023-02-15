@@ -32,6 +32,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Modal,
+  ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -72,7 +73,7 @@ export default function TrackPassengerScreen({navigation, route}) {
   // const navigation = useNavigation();
   // const bus_id = route.params;
   // const [user_id, set_user_id] = React.useState(0);
-  const {user_id} = route.params;
+  const {user_id, bus_id} = route.params;
   const [modalShow, setModalShow] = React.useState(false);
   const [referenceNumber, setReferenceNumber] = React.useState('');
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -119,7 +120,7 @@ export default function TrackPassengerScreen({navigation, route}) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // retrieveUser();
-      getBusTransaction();
+      // getBusTransaction();
       getBusDetails();
       refreshLocation();
       Tts.stop();
@@ -137,7 +138,8 @@ export default function TrackPassengerScreen({navigation, route}) {
     );
     const interval = setInterval(() => {
       refreshLocation();
-    }, 300000);
+      getBusTransaction();
+    }, 10000);
 
     return () => {
       clearInterval(interval);
@@ -159,6 +161,7 @@ export default function TrackPassengerScreen({navigation, route}) {
       // console.log(info);
       setLatitude(info.coords.latitude);
       setLongitude(info.coords.longitude);
+      updateLocation(user_id, info.coords.latitude, info.coords.longitude);
     });
   };
   const waypointarray = [
@@ -335,6 +338,7 @@ export default function TrackPassengerScreen({navigation, route}) {
         // console.log(responseJson);
         if (responseJson.array_data != '') {
           getBusTransaction(responseJson.array_data[0].bus_id);
+          setBusId(responseJson.array_data[0].bus_id);
         }
       })
       .catch(error => {
@@ -344,7 +348,7 @@ export default function TrackPassengerScreen({navigation, route}) {
         //  Alert.alert('Internet Connection Error');
       });
   };
-  const getBusTransaction = bus_id => {
+  const getBusTransaction = () => {
     console.log(bus_id);
     const formData = new FormData();
     formData.append('bus_id', bus_id);
@@ -396,6 +400,66 @@ export default function TrackPassengerScreen({navigation, route}) {
         //  Alert.alert('Internet Connection Error');
       });
   };
+  const delayNotification = () => {
+    // console.log(busId);
+    const formData = new FormData();
+    formData.append('bus_id', busId);
+    fetch(window.name + 'delaysNotification.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        // console.log(responseJson);
+        ToastAndroid.showWithGravity(
+          'Notifications sent.',
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error, 'getBusDetails');
+        // setButtonStatus(false);
+        //  Alert.alert('Internet Connection Error');
+      });
+  };
+  const updateLocation = (user_id, lat, long) => {
+    const formData = new FormData();
+    formData.append('user_id', user_id);
+    formData.append('location', lat + ',' + long);
+    fetch(window.name + 'updateCurrentLocation.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        if (responseJson.array_data != '') {
+          if (responseJson.array_data[0].response == 1) {
+            ToastAndroid.showWithGravity(
+              'Location Updated.',
+              ToastAndroid.SHORT,
+              ToastAndroid.BOTTOM,
+            );
+          }
+        }
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error);
+        setButtonStatus(false);
+        //  Alert.alert('Internet Connection Error');
+      });
+  };
   return (
     <NativeBaseProvider safeAreaTop>
       <Center bg="gray.100" height="50%">
@@ -419,18 +483,26 @@ export default function TrackPassengerScreen({navigation, route}) {
           {passenderLocData.map((item, index) => {
             var p_loc = item.passenger_loc.split(',');
             return (
+              // <Marker
+              //   coordinate={{
+              //     latitude: parseFloat(p_loc[0]),
+              //     longitude: parseFloat(p_loc[0]),
+              //   }} //driver
+              // >
+              //   <Center w="100%">
+              //     <Badge colorScheme="info" borderRadius={3}>
+              //       {item.passenger_name}
+              //     </Badge>
+              //   </Center>
+              // </Marker>
               <Marker
                 coordinate={{
                   latitude: parseFloat(p_loc[0]),
-                  longitude: parseFloat(p_loc[0]),
-                }} //driver
-              >
-                <Center w="100%">
-                  <Badge colorScheme="info" borderRadius={3}>
-                    {item.passenger_name}
-                  </Badge>
-                </Center>
-              </Marker>
+                  longitude: parseFloat(p_loc[1]),
+                }}
+                title={'title'}
+                description={'description'}
+              />
             );
           })}
         </MapView>
@@ -444,7 +516,22 @@ export default function TrackPassengerScreen({navigation, route}) {
               borderStyle: 'dashed',
             }}
             w="90%">
-            <Heading>Passenger list</Heading>
+            <HStack width="100%" mt={3} mb={1}>
+              <Center width="50%">
+                <Heading>Passenger list</Heading>
+              </Center>
+              <Center width="50%" alignItems="flex-end">
+                <Button
+                  onPress={() => {
+                    delayNotification();
+                  }}>
+                  <HStack>
+                    <Icon name="bell" size={20} color="white" />
+                    <Text color="white"> Delays</Text>
+                  </HStack>
+                </Button>
+              </Center>
+            </HStack>
           </Center>
 
           <Box width="100%" height="100%" p={3}>

@@ -16,17 +16,30 @@ import {
   Button,
 } from 'native-base';
 import Rating from 'react-native-easy-rating';
+import {
+  TouchableOpacity,
+  Alert,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Modal,
+  ActivityIndicator,
+  PermissionsAndroid,
+  ToastAndroid,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Tts from 'react-native-tts';
 export default function Profile({navigation}) {
   const [user_id, setUserId] = React.useState(0);
   const [userFullName, setUserFullName] = React.useState('');
   const [userFname, setUserFname] = React.useState('');
+  const [userMname, setUserMname] = React.useState('');
   const [userLname, setUserLname] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [modalVisible, setModalVisible] = React.useState(false);
   const retrieveData = async () => {
     try {
+      setModalVisible(true);
       const valueString = await AsyncStorage.getItem('user_details');
       console.log(valueString);
       const value = JSON.parse(valueString);
@@ -37,8 +50,10 @@ export default function Profile({navigation}) {
         setUserId(value.user_id);
         setUserFullName(value.user_fname + ' ' + value.user_lname);
         setUserFname(value.user_fname);
+        setUserMname(value.user_mname);
         setUserLname(value.user_lname);
         setUsername(value.username);
+        setModalVisible(false);
       }
     } catch (error) {
       console.log(error);
@@ -58,10 +73,11 @@ export default function Profile({navigation}) {
     return unsubscribe;
   }, [navigation]);
   const updateProfile = () => {
-    setLoadingModal(true);
+    setModalVisible(true);
     const formData = new FormData();
     formData.append('user_id', user_id);
     formData.append('fname', userFname);
+    formData.append('mname', userMname);
     formData.append('lname', userLname);
     formData.append('username', username);
     formData.append('password', password);
@@ -76,6 +92,19 @@ export default function Profile({navigation}) {
       .then(response => response.json())
       .then(responseJson => {
         console.log(responseJson);
+        if (responseJson.array_data != '') {
+          if (responseJson.array_data[0].res == 1) {
+            ToastAndroid.showWithGravity(
+              'Profile updated. Loging out',
+              ToastAndroid.SHORT,
+              ToastAndroid.BOTTOM,
+            );
+            AsyncStorage.clear();
+            AsyncStorage.removeItem('user_details');
+          } else {
+            setModalVisible(false);
+          }
+        }
       })
       .catch(error => {
         Tts.speak('Internet Connection Error');
@@ -145,6 +174,27 @@ export default function Profile({navigation}) {
                         onPressIn={() => {
                           Tts.stop();
                           Tts.speak('Please update your first name here.');
+                        }}
+                      />
+                    </FormControl>
+                    <FormControl bg="white">
+                      <Input
+                        variant="filled"
+                        style={{
+                          color: 'white',
+                          backgroundColor: '#0033c491',
+                          borderRadius: 15,
+                          height: 80,
+                          fontSize: 50,
+                        }}
+                        w="100%"
+                        value={userMname}
+                        onChangeText={text => setUserMname(text)}
+                        placeholder="Mid Name"
+                        placeholderTextColor="white"
+                        onPressIn={() => {
+                          Tts.stop();
+                          Tts.speak('Please update your middle name here.');
                         }}
                       />
                     </FormControl>
@@ -237,6 +287,24 @@ export default function Profile({navigation}) {
           </Box>
         </Box>
       </Center>
+      <Modal
+        style={{
+          justifyContent: 'center',
+        }}
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          // Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <Box style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Center bg="#2a2a2ab8" width="50%" height="20%" borderRadius={10}>
+            <ActivityIndicator size="large" color="white" />
+            <Text color="white">Loading...</Text>
+          </Center>
+        </Box>
+      </Modal>
     </NativeBaseProvider>
   );
 }

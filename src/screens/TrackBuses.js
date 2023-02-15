@@ -257,6 +257,7 @@ export default function TrackBusesScreen({navigation, route}) {
     }
   };
   const getTripDetails = () => {
+    setModalVisible(true);
     const formData = new FormData();
     formData.append('trip_id', trip_id);
     // formData.append('user_id', user_id);
@@ -283,9 +284,11 @@ export default function TrackBusesScreen({navigation, route}) {
           // var d = o.destination.split(',');
           setUserDestination(o.destination.split(','));
           getTripStatus(o.status);
+          setModalVisible(false);
         }
       })
       .catch(error => {
+        setModalVisible(false);
         Tts.speak('Internet Connection Error');
         console.error(error, 'getTripDetails');
         setButtonStatus(false);

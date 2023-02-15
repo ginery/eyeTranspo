@@ -32,7 +32,7 @@ export default function TabMenu2({navigation}) {
       Tts.stop();
       Tts.speak('You are in menu page.');
       Tts.speak(
-        'The menu list are trip schedules, track buses, report drivers/conductor, profile and lastly logout',
+        'The menu list are trip schedules, track buses, profile and lastly logout',
       );
     });
 
@@ -128,7 +128,7 @@ export default function TabMenu2({navigation}) {
               </HStack>
             </Box>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               Tts.stop();
               navigation.navigate('Track Passenger', {
@@ -162,7 +162,7 @@ export default function TabMenu2({navigation}) {
                 </Center>
               </HStack>
             </Box>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity
             onPress={() => {

@@ -29,7 +29,7 @@ export default function TabMenu({navigation}) {
       Tts.stop();
       Tts.speak('You are in menu page.');
       Tts.speak(
-        'The menu list are trip schedules, track buses, report drivers/conductor, profile and lastly logout',
+        'The menu list are trip schedules, track buses, profile and lastly logout',
       );
 
       // retrieveIp();
