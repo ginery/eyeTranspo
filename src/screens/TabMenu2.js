@@ -25,56 +25,33 @@ export default function TabMenu2({navigation}) {
   const [busNumber, setBusNumber] = React.useState(0);
   const [modalBusNumber, setModalBusNumber] = React.useState(false);
   const [busId, setBusId] = React.useState(0);
+  const [user_id, setUserId] = React.useState(0);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      retrieveDestination();
-      retrieveBusDetails();
-      //console.log('refreshed_home');
+      retrieveUser();
       Tts.stop();
       Tts.speak('You are in menu page.');
       Tts.speak(
         'The menu list are trip schedules, track buses, report drivers/conductor, profile and lastly logout',
       );
-
-      // retrieveIp();
-      // setModalShow(true);
     });
 
     return unsubscribe;
   }, [navigation]);
   React.useEffect(() => {
-    retrieveBusDetails();
+    retrieveUser();
   }, [1]);
-  const setItemStorage = async (key, value) => {
+  const retrieveUser = async () => {
     try {
-      await AsyncStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      // Error saving data
-    }
-  };
-  const retrieveDestination = async () => {
-    try {
-      const valueString = await AsyncStorage.getItem('user_destination');
+      const valueString = await AsyncStorage.getItem('user_details');
       if (valueString != null) {
         const value = JSON.parse(valueString);
         console.log(value);
-        setShowMenu(true);
+        setUserId(value.user_id);
       } else {
-        setShowMenu(false);
+        console.log('login');
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const retrieveBusDetails = async () => {
-    try {
-      const valueString = await AsyncStorage.getItem('bus_details');
-      if (valueString != null) {
-        setModalBusNumber(false);
-      } else {
-        setModalBusNumber(true);
-      }
+      //setUserID(value.user_fname);
     } catch (error) {
       console.log(error);
     }
@@ -82,7 +59,7 @@ export default function TabMenu2({navigation}) {
   const getBusDetail = () => {
     console.log('test');
     const formData = new FormData();
-    formData.append('bus_number', busNumber);
+    formData.append('user_id', user_id);
     fetch(window.name + 'getBusDetails.php', {
       method: 'POST',
       headers: {
@@ -96,15 +73,6 @@ export default function TabMenu2({navigation}) {
         if (responseJson.array_data != '') {
           var o = responseJson.array_data[0];
           setBusId(o.bus_id);
-          setItemStorage('bus_details', {
-            bus_id: o.bus_id,
-            bus_max_capacity: o.bus_max_capacity,
-            bus_number: o.bus_number,
-            bus_operator: o.bus_operator,
-            bus_plate_number: o.bus_plate_number,
-            bus_route: o.bus_route,
-            driver_name: o.driver_name,
-          });
           setModalBusNumber(false);
         } else {
           setModalBusNumber(true);
@@ -129,7 +97,9 @@ export default function TabMenu2({navigation}) {
             onPress={() => {
               Tts.stop();
               Tts.speak('TRIP SCHEDULES');
-              navigation.navigate('Driver Trip Schedule');
+              navigation.navigate('Driver Trip Schedule', {
+                user_id: user_id,
+              });
             }}>
             <Box
               style={{
@@ -162,7 +132,7 @@ export default function TabMenu2({navigation}) {
             onPress={() => {
               Tts.stop();
               navigation.navigate('Track Passenger', {
-                bus_id: busId,
+                user_id: user_id,
               });
               Tts.speak('Track Passenger');
             }}>
@@ -269,7 +239,7 @@ export default function TabMenu2({navigation}) {
         }}
         animationType="fade"
         transparent={true}
-        visible={modalBusNumber}>
+        visible={false}>
         <Box style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <Center bg="#2a2a2ab8" width="100%" height="100%">
             <Box

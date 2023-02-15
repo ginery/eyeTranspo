@@ -70,8 +70,9 @@ const styles = StyleSheet.create({
 });
 export default function TrackPassengerScreen({navigation, route}) {
   // const navigation = useNavigation();
-  const bus_id = route.params;
-  const [user_id, set_user_id] = React.useState(0);
+  // const bus_id = route.params;
+  // const [user_id, set_user_id] = React.useState(0);
+  const {user_id} = route.params;
   const [modalShow, setModalShow] = React.useState(false);
   const [referenceNumber, setReferenceNumber] = React.useState('');
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -96,12 +97,14 @@ export default function TrackPassengerScreen({navigation, route}) {
   const [busLocation, setBusLocation] = React.useState([]);
   const cancelRef = React.useRef(null);
   const [userDestination, setUserDestination] = React.useState([]);
+  const [busTransactionData, setBusTransactionData] = React.useState([]);
+  const [passenderLocData, setPassengerLocData] = React.useState([]);
   const retrieveUser = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');
       if (valueString != null) {
         const value = JSON.parse(valueString);
-        set_user_id(value.user_id);
+        // set_user_id(value.user_id);
 
         // console.log(value.user_id);
       }
@@ -110,17 +113,15 @@ export default function TrackPassengerScreen({navigation, route}) {
     }
   };
   React.useEffect(() => {
-    retrieveUser();
-    retrieveDestination();
+    // retrieveUser();
     refreshLocation();
-    getTransactionByBus();
   }, [1]);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      retrieveUser();
-      retrieveDestination();
+      // retrieveUser();
+      getBusTransaction();
+      getBusDetails();
       refreshLocation();
-      getTransactionByBus();
       Tts.stop();
 
       Tts.speak('You are in track passenger page.');
@@ -144,29 +145,10 @@ export default function TrackPassengerScreen({navigation, route}) {
       unsubscribe;
     };
   }, [navigation]);
-  const retrieveDestination = async () => {
-    try {
-      const valueString = await AsyncStorage.getItem('user_destination');
-      if (valueString != null) {
-        const value = JSON.parse(valueString);
-        // console.log(value);
-        setTripId(value.trip_id);
-        setDlat(value.d_lat);
-        setDlong(value.d_long);
-        setBusNumber(value.bus_number);
-        setBusId(value.bus_id);
-        // setTripScheduleId(value.trip_schedule_id);
-        // setDateArrival(value.date_arrived);
-        // setDateDeparted(value.date_departed);
-        getTripDetails(value.trip_id);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    getOrderHistory();
+
     setTimeout(function () {
       setRefreshing(false);
     }, 1000);
@@ -174,7 +156,7 @@ export default function TrackPassengerScreen({navigation, route}) {
   const refreshLocation = u_id => {
     // console.log('get location');
     Geolocation.getCurrentPosition(info => {
-      console.log(info);
+      // console.log(info);
       setLatitude(info.coords.latitude);
       setLongitude(info.coords.longitude);
     });
@@ -278,39 +260,7 @@ export default function TrackPassengerScreen({navigation, route}) {
       console.log('Error in getAddressFromCoordinates', e);
     }
   };
-  const getTripDetails = trip_id => {
-    const formData = new FormData();
-    formData.append('trip_id', trip_id);
-    fetch(window.name + 'getTripDetails.php', {
-      method: 'POST',
-      headers: {
-        Accept: 'applicatiion/json',
-        'Content-Type': 'multipart/form-data',
-      },
-      body: formData,
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        // console.log(responseJson);
-        if (responseJson.array_data != '') {
-          var o = responseJson.array_data[0];
-          setDriverName(o.driver_name);
-          setBusRoute(o.bus_route);
-          setDateArrived(o.date_arrived);
-          setDateDeparted(o.date_departed);
-          var loc = o.bus_location.split(',');
-          setBusLocation(loc);
-          // var d = o.destination.split(',');
-          setUserDestination(o.destination.split(','));
-        }
-      })
-      .catch(error => {
-        Tts.speak('Internet Connection Error');
-        console.error(error);
-        setButtonStatus(false);
-        //  Alert.alert('Internet Connection Error');
-      });
-  };
+
   const sendReport = () => {
     const formData = new FormData();
     formData.append('trip_id', tripId);
@@ -367,74 +317,88 @@ export default function TrackPassengerScreen({navigation, route}) {
         //  Alert.alert('Internet Connection Error');
       });
   };
-  const data = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      fullName: 'Aafreen Khan',
-      timeStamp: '12:47 PM',
-      recentText: 'Good Day!',
-      avatarUrl:
-        'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      fullName: 'Sujitha Mathur',
-      timeStamp: '11:11 PM',
-      recentText: 'Cheer up, there!',
-      avatarUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      fullName: 'Anci Barroco',
-      timeStamp: '6:22 PM',
-      recentText: 'Good Day!',
-      avatarUrl: 'https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg',
-    },
-    {
-      id: '68694a0f-3da1-431f-bd56-142371e29d72',
-      fullName: 'Aniket Kumar',
-      timeStamp: '8:56 PM',
-      recentText: 'All the best',
-      avatarUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU',
-    },
-    {
-      id: '28694a0f-3da1-471f-bd96-142456e29d72',
-      fullName: 'Kiara',
-      timeStamp: '12:47 PM',
-      recentText: 'I will call today.',
-      avatarUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU',
-    },
-  ];
-  const getTransactionByBus = () => {
+
+  const getBusDetails = () => {
+    // console.log(user_id);
     const formData = new FormData();
-    formData.append('bus_id', busId);
-    fetch(window.name + 'getTransactionByBus.php', {
+    formData.append('user_id', user_id);
+    fetch(window.name + 'getBusDetails.php', {
       method: 'POST',
       headers: {
-        Accept: 'applicatiion/json',
+        Accept: 'application/json',
         'Content-Type': 'multipart/form-data',
       },
       body: formData,
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        // console.log(responseJson);
         if (responseJson.array_data != '') {
+          getBusTransaction(responseJson.array_data[0].bus_id);
         }
       })
       .catch(error => {
         Tts.speak('Internet Connection Error');
-        console.error(error);
+        console.error(error, 'getBusDetails');
+        // setButtonStatus(false);
+        //  Alert.alert('Internet Connection Error');
+      });
+  };
+  const getBusTransaction = bus_id => {
+    console.log(bus_id);
+    const formData = new FormData();
+    formData.append('bus_id', bus_id);
+    fetch(window.name + 'getBusTransaction.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        // console.log(responseJson);
+        if (responseJson.array_data != '') {
+          var data = responseJson.array_data.map(function (item, index) {
+            return {
+              transaction_id: item.transaction_id,
+              trip_id: item.trip_id,
+              bus_id: item.bus_id,
+              passenger_id: item.passenger_id,
+              passenger_name: item.passenger_name,
+              fare: item.fare,
+              remarks: item.remarks,
+              status: item.status,
+              date_added: item.date_added,
+              destination: item.destination,
+            };
+          });
+          var data_p = responseJson.array_data.map(function (item, index) {
+            return {
+              transaction_id: item.transaction_id,
+              trip_id: item.trip_id,
+              bus_id: item.bus_id,
+              passenger_id: item.passenger_id,
+              passenger_name: item.passenger_name,
+              destination: item.destination,
+              passenger_loc: item.passenger_loc,
+            };
+          });
+          setPassengerLocData(data_p);
+          setBusTransactionData(data);
+        }
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error, 'getBusTransaction');
         // setButtonStatus(false);
         //  Alert.alert('Internet Connection Error');
       });
   };
   return (
     <NativeBaseProvider safeAreaTop>
-      <Center bg="gray.100" h="50%">
+      <Center bg="gray.100" height="50%">
         <MapView
           provider={PROVIDER_GOOGLE} // remove if not using Google Maps
           style={styles.map}
@@ -445,133 +409,100 @@ export default function TrackPassengerScreen({navigation, route}) {
           // showsTraffic={true}
           loadingIndicatorColor="#e99340"
           zoomControlEnabled={true}
-          directionsServiceBaseUrl="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms&callback=initMap"
-          mapType="standard"
           region={{
             latitude: latitude,
             longitude: longitude,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121,
           }}
-          zIndex={-1}></MapView>
+          zIndex={-1}>
+          {passenderLocData.map((item, index) => {
+            var p_loc = item.passenger_loc.split(',');
+            return (
+              <Marker
+                coordinate={{
+                  latitude: parseFloat(p_loc[0]),
+                  longitude: parseFloat(p_loc[0]),
+                }} //driver
+              >
+                <Center w="100%">
+                  <Badge colorScheme="info" borderRadius={3}>
+                    {item.passenger_name}
+                  </Badge>
+                </Center>
+              </Marker>
+            );
+          })}
+        </MapView>
       </Center>
       <VStack mt={5}>
-        <Box alignItems="center">
-          <Box
-            w="95%"
-            rounded="lg"
-            overflow="hidden"
-            borderColor="coolGray.200"
-            borderWidth="1"
-            _dark={{
-              borderColor: 'coolGray.600',
-              backgroundColor: 'gray.700',
+        <Center h="68%">
+          <Center
+            style={{
+              borderBottomColor: 'black',
+              borderBottomWidth: 1,
+              borderStyle: 'dashed',
             }}
-            _web={{
-              shadow: 2,
-              borderWidth: 0,
-            }}
-            _light={{
-              backgroundColor: 'gray.50',
-            }}>
-            <Stack p="4" space={1}>
-              <Stack space={1}>
-                <Heading size="2xl" ml="-1">
-                  {driverName} {'['}
-                  {busNumber}
-                  {']'}
-                </Heading>
-                <Text
-                  fontSize="xl"
-                  _light={{
-                    color: '#2f46c6',
-                  }}
-                  _dark={{
-                    color: '#2f46c6',
-                  }}
-                  fontWeight="500"
-                  ml="-0.5"
-                  mt="-1">
-                  {busRoute}
-                </Text>
-              </Stack>
-              <HStack
-                alignItems="center"
-                space={4}
-                justifyContent="space-between">
-                <VStack alignItems="flex-start">
-                  <Text
-                    color="coolGray.600"
+            w="90%">
+            <Heading>Passenger list</Heading>
+          </Center>
+
+          <Box width="100%" height="100%" p={3}>
+            {busTransactionData != '' ? (
+              <FlatList
+                data={busTransactionData}
+                keyExtractor={item => item.transaction_id}
+                renderItem={({item}) => (
+                  <Box
+                    mb="2"
+                    borderRadius={5}
+                    borderWidth="1"
                     _dark={{
-                      color: 'warmGray.200',
+                      borderColor: 'muted.50',
                     }}
-                    fontSize="lg"
-                    fontWeight="400">
-                    Arrived: {dateArrived}
-                  </Text>
-                  <Text
-                    color="coolGray.600"
-                    _dark={{
-                      color: 'warmGray.200',
-                    }}
-                    fontSize="lg"
-                    fontWeight="400">
-                    Departed: {dateDeparted}
-                  </Text>
-                </VStack>
-              </HStack>
-            </Stack>
-          </Box>
-        </Box>
-        <Center height={170}>
-          <Box width="100%" p={3}>
-            <FlatList
-              data={data}
-              renderItem={({item}) => (
-                <Box
-                  mb="2"
-                  borderRadius={5}
-                  borderWidth="1"
-                  _dark={{
-                    borderColor: 'muted.50',
-                  }}
-                  borderColor="muted.800"
-                  pl={['0', '4']}
-                  pr={['0', '5']}
-                  py="2">
-                  <HStack space={[2, 3]} p="2" justifyContent="space-between">
-                    <VStack>
+                    borderColor="muted.800"
+                    pl={['0', '4']}
+                    pr={['0', '5']}
+                    py="2">
+                    <HStack space={[2, 3]} p="2" justifyContent="space-between">
+                      <VStack>
+                        <Text
+                          _dark={{
+                            color: 'warmGray.50',
+                          }}
+                          color="coolGray.800"
+                          bold>
+                          {item.passenger_name}
+                        </Text>
+                        <Text
+                          color="coolGray.600"
+                          _dark={{
+                            color: 'warmGray.200',
+                          }}>
+                          {item.date_added}
+                        </Text>
+                      </VStack>
+                      <Spacer />
                       <Text
+                        fontSize="xs"
                         _dark={{
                           color: 'warmGray.50',
                         }}
                         color="coolGray.800"
-                        bold>
-                        {item.fullName}
+                        alignSelf="flex-start">
+                        {item.status == 'P' ? (
+                          <Badge colorScheme="warning">PENDING</Badge>
+                        ) : item.status == 'B' ? (
+                          <Badge colorScheme="success">BOARDED</Badge>
+                        ) : null}
                       </Text>
-                      <Text
-                        color="coolGray.600"
-                        _dark={{
-                          color: 'warmGray.200',
-                        }}>
-                        {item.recentText}
-                      </Text>
-                    </VStack>
-                    <Spacer />
-                    <Text
-                      fontSize="xs"
-                      _dark={{
-                        color: 'warmGray.50',
-                      }}
-                      color="coolGray.800"
-                      alignSelf="flex-start">
-                      {item.timeStamp}
-                    </Text>
-                  </HStack>
-                </Box>
-              )}
-              keyExtractor={item => item.id}
-            />
+                    </HStack>
+                  </Box>
+                )}
+              />
+            ) : (
+              <Center>Empty records.</Center>
+            )}
           </Box>
         </Center>
       </VStack>

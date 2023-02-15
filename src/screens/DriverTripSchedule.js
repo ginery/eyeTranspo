@@ -94,7 +94,8 @@ export default function DriverTripSchedule({navigation, route}) {
   const [latitude, setLatitude] = React.useState(0);
   const [longitude, setLongitude] = React.useState(0);
   const [busNumber, setBusNumber] = React.useState(0);
-  const [user_id, set_user_id] = React.useState(0);
+  // const [user_id, set_user_id] = React.useState(0);
+  const {user_id} = route.params;
   const [buttonEnable, setButtonEnable] = React.useState(false);
   const [tripScheduleData, setTripScheduleData] = React.useState([]);
   const [loadingModal, setLoadingModal] = React.useState(false);
@@ -112,8 +113,7 @@ export default function DriverTripSchedule({navigation, route}) {
       //console.log('refreshed_home');
       getCurrentLocationMap();
       //   retrieveUser();
-
-      retrieveBusDetails();
+      getTripSchedules();
       Tts.speak('You are in trip schedule page.');
       tripScheduleData.map((item, index) => {
         // console.log(item.fullName);
@@ -155,19 +155,7 @@ export default function DriverTripSchedule({navigation, route}) {
       console.log(error);
     }
   };
-  const retrieveBusDetails = async () => {
-    try {
-      const valueString = await AsyncStorage.getItem('bus_details');
-      if (valueString != null) {
-        const value = JSON.parse(valueString);
-        // setBusId(value.bus_id);
-        getTripSchedules(value.bus_id);
-        console.log(value);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
@@ -177,22 +165,22 @@ export default function DriverTripSchedule({navigation, route}) {
     }, 1000);
   }, []);
 
-  const getTripSchedules = bus_id => {
+  const getTripSchedules = () => {
     // console.log(bus_id);
     setLoadingModal(true);
     const formData = new FormData();
-    formData.append('bus_id', bus_id);
+    formData.append('user_id', user_id);
     fetch(window.name + 'getDriverTripSchedules.php', {
       method: 'POST',
       headers: {
-        Accept: 'applicatiion/json',
+        Accept: 'application/json',
         'Content-Type': 'multipart/form-data',
       },
       body: formData,
     })
       .then(response => response.json())
       .then(responseJson => {
-        // console.log(responseJson);
+        console.log(responseJson);
         var data = responseJson.array_data.map(function (item, index) {
           return {
             trip_id: item.trip_id,
@@ -341,7 +329,7 @@ export default function DriverTripSchedule({navigation, route}) {
                         }}>
                         {item.bus_route}
                       </Text>
-                      <HStack>
+                      {/* <HStack>
                         <Text
                           fontSize="lg"
                           _dark={{
@@ -364,7 +352,7 @@ export default function DriverTripSchedule({navigation, route}) {
                             Departed
                           </Badge>
                         </Text>
-                      </HStack>
+                      </HStack> */}
                     </VStack>
                     <Spacer />
                   </HStack>
