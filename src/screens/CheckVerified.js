@@ -127,18 +127,28 @@ export default function CheckVerifiedScreen({navigation}) {
             height: 100,
           }}>
           <Text fontSize="xl" textAlign="center">
-            Account is not yet verified. Please wait for verification.
+            Please wait for verification.
           </Text>
-          <PacmanIndicator size={48} color="#54b5df" />
+          <DotIndicator color="#dd302f" />
         </Center>
       </Center>
       <Center mb={5}>
         <Button
+          style={{
+            height: 80,
+          }}
           onPress={() => {
             removeValue();
           }}
-          w="80%">
-          Go back to login
+          w="80%"
+          bgColor="#dd302f">
+          <Heading
+            color="white"
+            style={{
+              fontSize: 30,
+            }}>
+            GO TO LOGIN
+          </Heading>
         </Button>
       </Center>
     </NativeBaseProvider>
