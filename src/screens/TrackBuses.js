@@ -259,7 +259,7 @@ export default function TrackBusesScreen({navigation, route}) {
   const getTripDetails = () => {
     const formData = new FormData();
     formData.append('trip_id', trip_id);
-    formData.append('user_id', user_id);
+    // formData.append('user_id', user_id);
     fetch(window.name + 'getTripDetails.php', {
       method: 'POST',
       headers: {
@@ -366,19 +366,19 @@ export default function TrackBusesScreen({navigation, route}) {
         if (responseJson.array_data != '') {
           if (responseJson.array_data[0].response == 1) {
             getTripDetails();
-            if (tripStatus == 'B') {
-              ToastAndroid.showWithGravity(
-                'Great! You are on board.',
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
-              );
-            } else if (tripStatus == 'A') {
-              ToastAndroid.showWithGravity(
-                'Great! You arrived at your destination.',
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
-              );
-            }
+            // if (tripStatus == 'B') {
+            //   ToastAndroid.showWithGravity(
+            //     'Great! You are on board.',
+            //     ToastAndroid.SHORT,
+            //     ToastAndroid.CENTER,
+            //   );
+            // } else if (tripStatus == 'A') {
+            //   ToastAndroid.showWithGravity(
+            //     'Great! You arrived at your destination.',
+            //     ToastAndroid.SHORT,
+            //     ToastAndroid.CENTER,
+            //   );
+            // }
           }
         }
       })
@@ -629,7 +629,9 @@ export default function TrackBusesScreen({navigation, route}) {
               <Pressable
                 w="100%"
                 onPress={() => {
-                  updateStatus('A');
+                  updateStatus('F');
+                  // Tts.speak('You arrived at your destination.');
+                  navigation.navigate('Tab View');
                 }}>
                 {({isHovered, isFocused, isPressed}) => {
                   return (
