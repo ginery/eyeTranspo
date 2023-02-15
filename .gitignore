@@ -62,5 +62,4 @@ buck-out/
 /ios/Pods/
 /vendor/bundle/
 
-#API key
-google-services.json
+

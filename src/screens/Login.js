@@ -116,6 +116,7 @@ export default function App({navigation, route}) {
   };
   const login = () => {
     setButtonStatus(true);
+    Tts.speak('Signing in. Please wait.');
     if (username == '') {
       Tts.speak('Please fillout the username.');
       Vibration.vibrate(0.5 * 1000);
@@ -143,7 +144,7 @@ export default function App({navigation, route}) {
           console.log(responseJson);
           var data = responseJson.array_data[0];
           if (data.response == 1) {
-            Tts.speak('Signing in. Please wait.');
+            Tts.speak('Great! Please Wait.');
             toast.show({
               render: () => {
                 return (
@@ -164,7 +165,7 @@ export default function App({navigation, route}) {
               navigation.navigate('Landing');
             }, 1000);
           } else if (data.response == -1) {
-            Tts.speak('Signing in. Please wait.');
+            Tts.speak("Sorry! Account doesn't exist.");
             toast.show({
               render: () => {
                 return (
