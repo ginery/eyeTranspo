@@ -98,6 +98,7 @@ export default function TrackBusesScreen({navigation, route}) {
   const cancelRef = React.useRef(null);
   const [userDestination, setUserDestination] = React.useState([]);
   const [tripStatus, getTripStatus] = React.useState('');
+  const [silentMode, setSilentMode] = React.useState(true);
   const retrieveUser = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');
@@ -142,17 +143,18 @@ export default function TrackBusesScreen({navigation, route}) {
     };
   }, [navigation]);
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    getOrderHistory();
-    setTimeout(function () {
-      setRefreshing(false);
-    }, 1000);
-  }, []);
+  const setItemStorage = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      // Error saving data
+    }
+  };
   const refreshLocation = u_id => {
     // console.log('get location');
     Geolocation.getCurrentPosition(info => {
-      console.log(info);
+      // console.log(info);
+
       setLatitude(info.coords.latitude);
       setLongitude(info.coords.longitude);
     });
@@ -199,6 +201,7 @@ export default function TrackBusesScreen({navigation, route}) {
         var minutes = 'hour';
       }
     }
+
     if (tripStatus == 'P') {
       Tts.speak(
         'Bus ' +
@@ -222,6 +225,7 @@ export default function TrackBusesScreen({navigation, route}) {
           minutes,
       );
     }
+
     // console.log(reverseGeoResponse + 'hello');
 
     // console.log(Math.round(distance));
@@ -611,7 +615,7 @@ export default function TrackBusesScreen({navigation, route}) {
             h="60">
             {tripStatus == 'P' ? (
               <Pressable
-                w="100%"
+                w="60%"
                 onPress={() => {
                   Tts.stop();
                   Tts.speak('You are boarded on your bus.');
@@ -652,7 +656,7 @@ export default function TrackBusesScreen({navigation, route}) {
               </Pressable>
             ) : (
               <Pressable
-                w="100%"
+                w="60%"
                 onPress={() => {
                   updateStatus('F');
                   //
@@ -687,6 +691,69 @@ export default function TrackBusesScreen({navigation, route}) {
                         }>
                         Arrived
                       </Text>
+                    </Center>
+                  );
+                }}
+              </Pressable>
+            )}
+            {silentMode == true ? (
+              <Pressable
+                w="40%"
+                onPress={() => {
+                  Tts.stop();
+                  Tts.speak('Voice-based navigation turned off.');
+                  setSilentMode(false);
+                }}>
+                {({isHovered, isFocused, isPressed}) => {
+                  return (
+                    <Center
+                      h="100%"
+                      bg={
+                        isPressed
+                          ? 'yellow.200'
+                          : isHovered
+                          ? 'coolGray.200'
+                          : 'yellow.500'
+                      }
+                      style={{
+                        transform: [
+                          {
+                            scale: isPressed ? 0.96 : 1,
+                          },
+                        ],
+                      }}>
+                      <Icon name="bell" color="white" size={30} />
+                    </Center>
+                  );
+                }}
+              </Pressable>
+            ) : (
+              <Pressable
+                w="40%"
+                onPress={() => {
+                  Tts.stop();
+                  Tts.speak('Voice-based navigation turned on.');
+                  setSilentMode(true);
+                }}>
+                {({isHovered, isFocused, isPressed}) => {
+                  return (
+                    <Center
+                      h="100%"
+                      bg={
+                        isPressed
+                          ? 'yellow.200'
+                          : isHovered
+                          ? 'coolGray.200'
+                          : 'yellow.500'
+                      }
+                      style={{
+                        transform: [
+                          {
+                            scale: isPressed ? 0.96 : 1,
+                          },
+                        ],
+                      }}>
+                      <Icon name="bell-slash" color="white" size={30} />
                     </Center>
                   );
                 }}
