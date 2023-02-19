@@ -199,18 +199,31 @@ export default function TrackBusesScreen({navigation, route}) {
         var minutes = 'hour';
       }
     }
-
+    if (tripStatus == 'P') {
+      Tts.speak(
+        'Bus ' +
+          busNumber +
+          ' is about' +
+          distanceTotal +
+          kilometer +
+          ' away from you. Estimated arrival is ' +
+          Math.round(durationTotal) +
+          minutes,
+      );
+    } else if (tripStatus == 'B') {
+      Tts.speak(
+        'Bus ' +
+          busNumber +
+          ' is about' +
+          distanceTotal +
+          kilometer +
+          ' away from your destination. Estimated arrival is ' +
+          Math.round(durationTotal) +
+          minutes,
+      );
+    }
     // console.log(reverseGeoResponse + 'hello');
-    Tts.speak(
-      'Bus ' +
-        busNumber +
-        ' is about' +
-        distanceTotal +
-        kilometer +
-        ' away from you. Estimated arrival is ' +
-        Math.round(durationTotal) +
-        minutes,
-    );
+
     // console.log(Math.round(distance));
   };
   const getAddressFromCoordinates = async (latitude, longitude) => {
@@ -394,7 +407,7 @@ export default function TrackBusesScreen({navigation, route}) {
   };
   return (
     <NativeBaseProvider safeAreaTop>
-      <Center bg="gray.100" h="50%">
+      <Center bg="gray.100" h="40%">
         <MapView
           provider={PROVIDER_GOOGLE} // remove if not using Google Maps
           style={styles.map}
@@ -414,88 +427,96 @@ export default function TrackBusesScreen({navigation, route}) {
             longitudeDelta: 0.0121,
           }}
           zIndex={-1}>
-          <MapViewDirections
-            origin={{
-              latitude: busLocation != '' ? parseFloat(busLocation[0]) : 0,
-              longitude: busLocation != '' ? parseFloat(busLocation[1]) : 0,
-            }}
-            destination={{
-              latitude:
-                userDestination != '' ? parseFloat(userDestination[0]) : 0,
-              longitude:
-                userDestination != '' ? parseFloat(userDestination[1]) : 0,
-            }}
-            // waypoints={
-            //   waypointarray.length > 2 ? waypointarray.slice(1, -1) : undefined
-            // }
-            apikey="AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms"
-            strokeWidth={8}
-            strokeColor="#0a95ff8a" //#4a89f3
-            onStart={params => {
-              // console.log(
-              //   `Started routing between "${params.origin}" and "${params.destination}"`,
-              // );
-            }}
-            onReady={result => {
-              getAddressFromCoordinates(latitude, longitude);
-              // distanceUpdate(result.distance, result.duration);
+          {/* #!bus kag destination */}
+          {tripStatus == 'B' ? (
+            <MapViewDirections
+              origin={{
+                latitude: busLocation != '' ? parseFloat(busLocation[0]) : 0,
+                longitude: busLocation != '' ? parseFloat(busLocation[1]) : 0,
+              }}
+              destination={{
+                latitude:
+                  userDestination != '' ? parseFloat(userDestination[0]) : 0,
+                longitude:
+                  userDestination != '' ? parseFloat(userDestination[1]) : 0,
+              }}
+              // waypoints={
+              //   waypointarray.length > 2 ? waypointarray.slice(1, -1) : undefined
+              // }
+              apikey="AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms"
+              strokeWidth={8}
+              strokeColor="#RRGGBBAA" //#4a89f3
+              onStart={params => {
+                // console.log(
+                //   `Started routing between "${params.origin}" and "${params.destination}"`,
+                // );
+              }}
+              onReady={result => {
+                // getAddressFromCoordinates(latitude, longitude);
 
-              // console.log(`Distance: ${result.distance} km`);
-              // console.log(`Duration: ${result.duration} min.`);
+                distanceUpdate(result.distance, result.duration);
 
-              // fitToCoordinates(result.coordinates, {
-              //   edgePadding: {
-              //     right: width / 20,
-              //     bottom: height / 20,
-              //     left: width / 20,
-              //     top: height / 20,
-              //   },
-              // });
-            }}
-          />
-          <MapViewDirections
-            origin={{
-              latitude: latitude,
-              longitude: longitude,
-            }}
-            destination={{
-              latitude: userDestination != '' ? parseFloat(busLocation[0]) : 0,
-              longitude: userDestination != '' ? parseFloat(busLocation[1]) : 0,
-            }}
-            // waypoints={
-            //   waypointarray.length > 2 ? waypointarray.slice(1, -1) : undefined
-            // }
-            apikey="AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms"
-            // strokeWidth={8}
-            // strokeColor="green" //#4a89f3
-            onStart={params => {
-              console.log(
-                `Started routing between "${params.origin}" and "${params.destination}"`,
-              );
-            }}
-            onReady={result => {
-              // getAddressFromCoordinates(latitude, longitude);
-              distanceUpdate(result.distance, result.duration);
-              console.log(`Distance: ${result.distance} km`);
-              console.log(`Duration: ${result.duration} min.`);
-              // fitToCoordinates(result.coordinates, {
-              //   edgePadding: {
-              //     right: width / 20,
-              //     bottom: height / 20,
-              //     left: width / 20,
-              //     top: height / 20,
-              //   },
-              // });
-            }}
-          />
+                // console.log(`Distance: ${result.distance} km`);
+                // console.log(`Duration: ${result.duration} min.`);
+                // fitToCoordinates(result.coordinates, {
+                //   edgePadding: {
+                //     right: width / 20,
+                //     bottom: height / 20,
+                //     left: width / 20,
+                //     top: height / 20,
+                //   },
+                // });
+              }}
+            />
+          ) : tripStatus == 'P' ? (
+            //{/* #! user kag si bus location nga distance */}
+            <MapViewDirections
+              origin={{
+                latitude: latitude,
+                longitude: longitude,
+              }}
+              destination={{
+                latitude:
+                  userDestination != '' ? parseFloat(busLocation[0]) : 0,
+                longitude:
+                  userDestination != '' ? parseFloat(busLocation[1]) : 0,
+              }}
+              // waypoints={
+              //   waypointarray.length > 2 ? waypointarray.slice(1, -1) : undefined
+              // }
+              apikey="AIzaSyDoePlR12j4XnPgKCc0YWpI_7rtI6TPNms"
+              strokeWidth={8}
+              strokeColor="#RRGGBBAA" //#4a89f3
+              onStart={params => {
+                console.log(
+                  `Started routing between "${params.origin}" and "${params.destination}"`,
+                );
+              }}
+              onReady={result => {
+                // getAddressFromCoordinates(latitude, longitude);
+
+                distanceUpdate(result.distance, result.duration);
+                console.log(`Distance: ${result.distance} km`);
+                console.log(`Duration: ${result.duration} min.`);
+
+                // fitToCoordinates(result.coordinates, {
+                //   edgePadding: {
+                //     right: width / 20,
+                //     bottom: height / 20,
+                //     left: width / 20,
+                //     top: height / 20,
+                //   },
+                // });
+              }}
+            />
+          ) : null}
           {busLocation != '' && (
             <Marker
               coordinate={{
                 latitude: parseFloat(busLocation[0]),
                 longitude: parseFloat(busLocation[1]),
               }}
-              title={'title'}
-              description={'description'}
+              title={'Bus# ' + busNumber}
             />
           )}
           {userDestination != '' && (
@@ -512,7 +533,7 @@ export default function TrackBusesScreen({navigation, route}) {
           )}
         </MapView>
       </Center>
-      <VStack mt={5}>
+      <VStack mt={3}>
         <Box alignItems="center">
           <Box
             w="95%"

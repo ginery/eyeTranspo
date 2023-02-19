@@ -99,7 +99,7 @@ export default function TripScheduleListScreen({navigation, route}) {
   const [buttonEnable, setButtonEnable] = React.useState(false);
   const [tripScheduleData, setTripScheduleData] = React.useState([]);
   const [loadingModal, setLoadingModal] = React.useState(false);
-
+  const {cardinal_directions} = route.params;
   const [busId, setBusId] = React.useState(0);
   const [tripScheduleId, setTripScheduleId] = React.useState(0);
   const [dateDeparted, setDateDeparted] = React.useState('');
@@ -170,7 +170,7 @@ export default function TripScheduleListScreen({navigation, route}) {
   const getTripSchedules = () => {
     setLoadingModal(true);
     const formData = new FormData();
-    formData.append('trip_id', 1);
+    formData.append('cardinal_directions', cardinal_directions);
     fetch(window.name + 'getTripSchedules.php', {
       method: 'POST',
       headers: {
@@ -200,7 +200,7 @@ export default function TripScheduleListScreen({navigation, route}) {
       })
       .catch(error => {
         Tts.speak('Internet Connection Error');
-        console.error(error);
+        console.error(error, 'getTripSchedules');
         setButtonStatus(false);
         setLoadingModal(false);
         //  Alert.alert('Internet Connection Error');
@@ -288,7 +288,7 @@ export default function TripScheduleListScreen({navigation, route}) {
       })
       .catch(error => {
         Tts.speak('Internet Connection Error');
-        console.error(error);
+        console.error(error, 'addTransaction');
         setButtonStatus(false);
         setLoadingModal(false);
         //  Alert.alert('Internet Connection Error');
@@ -297,8 +297,7 @@ export default function TripScheduleListScreen({navigation, route}) {
   return (
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
-        <Heading
-          fontSize="4xl"
+        <VStack
           p="4"
           pb="3"
           style={{
@@ -307,8 +306,12 @@ export default function TripScheduleListScreen({navigation, route}) {
             borderStyle: 'dashed',
           }}
           mb={2}>
-          Trip Schedules
-        </Heading>
+          <Text fontSize="3xl" fontWeight="bold">
+            Trip Schedules
+          </Text>
+          <Text fontSize="3xl">{cardinal_directions}</Text>
+        </VStack>
+
         {tripScheduleData != '' ? (
           <FlatList
             h="85%"

@@ -79,7 +79,9 @@ export default function TripScheduleScreen({navigation}) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       Tts.stop();
-      Tts.speak('Please select where to go either south or north?');
+      Tts.speak(
+        'Please select where to go either to bacolod city or la castellana city?',
+      );
     });
 
     return unsubscribe;
@@ -88,18 +90,18 @@ export default function TripScheduleScreen({navigation}) {
   return (
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
-        <Heading fontSize="6xl" p="4" pb="3">
+        <Heading fontSize="5xl" p="4" pb="3">
           Where to..?
         </Heading>
         <Center h="60%" width="100%">
           {/* <Text fontSize="6xl">Where to..?</Text> */}
           <Button
-           bgColor="#f25655"
-           bg="#dd302f"
+            bgColor="#f25655"
+            bg="#dd302f"
             onPress={() => {
-              Tts.speak('You are going north!');
+              Tts.speak('You are going to bacolod!');
               navigation.navigate('Trip Schedule List', {
-                cardinal_directions: 'North',
+                cardinal_directions: 'TO BACOLOD',
               });
             }}
             w="80%"
@@ -109,19 +111,19 @@ export default function TripScheduleScreen({navigation}) {
               marginTop: 10,
             }}
             _text={{
-              fontSize: 60,
+              fontSize: 35,
               justifyContent: 'center',
               textAlign: 'justify',
             }}>
-            NORTH
+            TO BACOLOD
           </Button>
           <Button
-             bgColor="#f25655"
-             bg="#dd302f"
+            bgColor="#f25655"
+            bg="#dd302f"
             onPress={() => {
-              Tts.speak('You are going south!');
+              Tts.speak('You are going to la castellana!');
               navigation.navigate('Trip Schedule List', {
-                cardinal_directions: 'South',
+                cardinal_directions: 'TO LA CASTELLANA',
               });
             }}
             w="80%"
@@ -130,11 +132,11 @@ export default function TripScheduleScreen({navigation}) {
               marginBottom: 5,
             }}
             _text={{
-              fontSize: 60,
+              fontSize: 25,
               justifyContent: 'center',
-              textAlign: 'justify',
+              textAlign: 'center',
             }}>
-            SOUTH
+            TO LA CASTELLA
           </Button>
         </Center>
       </Box>

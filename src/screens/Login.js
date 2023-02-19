@@ -41,6 +41,7 @@ import {
   Modal,
   ActivityIndicator,
   Vibration,
+  ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Tts from 'react-native-tts';
@@ -184,18 +185,18 @@ export default function App({navigation, route}) {
               'Aw snap! username or pasword is not right. Please try again.',
             );
             Vibration.vibrate(2 * 1000);
-            toast.show({
-              render: () => {
-                return (
-                  <Box bg="error.500" px="2" py="1" rounded="sm" mb={5}>
-                    <Text color="white">
-                      Aw snap! username or pasword is not right. Please try
-                      again.
-                    </Text>
-                  </Box>
-                );
-              },
-            });
+            // toast.show({
+            //   render: () => {
+            //     return (
+            //       <Box bg="error.500" px="2" py="1" rounded="sm" mb={5}>
+            //         <Text color="white">
+            //           Aw snap! username or pasword is not right. Please try
+            //           again.
+            //         </Text>
+            //       </Box>
+            //     );
+            //   },
+            // });
             ToastAndroid.showWithGravity(
               'Aw snap! username or pasword is not right. Please try again.',
               ToastAndroid.SHORT,
