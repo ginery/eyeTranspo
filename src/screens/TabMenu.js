@@ -152,7 +152,7 @@ export default function TabMenu({navigation}) {
                 onPress={() => {
                   Tts.stop();
                   Tts.speak('TRIP SCHEDULES');
-                  navigation.navigate('Trip Schedule List');
+                  navigation.navigate('Trip Schedule');
                 }}>
                 <Box
                   style={{

@@ -145,15 +145,11 @@ export default function App({navigation, route}) {
           var data = responseJson.array_data[0];
           if (data.response == 1) {
             Tts.speak('Great! Please Wait.');
-            toast.show({
-              render: () => {
-                return (
-                  <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
-                    <Text color="white">Great! Please Wait.</Text>
-                  </Box>
-                );
-              },
-            });
+            ToastAndroid.showWithGravity(
+              'Great! Please Wait.',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
             setItemStorage('user_details', {
               user_id: data.user_id,
               user_fname: data.user_fname,
@@ -168,15 +164,20 @@ export default function App({navigation, route}) {
             }, 1000);
           } else if (data.response == -1) {
             Tts.speak("Sorry! Account doesn't exist.");
-            toast.show({
-              render: () => {
-                return (
-                  <Box bg="error.500" px="2" py="1" rounded="sm" mb={5}>
-                    <Text color="white">Sorry! Account doesn't exist.</Text>
-                  </Box>
-                );
-              },
-            });
+            // toast.show({
+            //   render: () => {
+            //     return (
+            //       <Box bg="error.500" px="2" py="1" rounded="sm" mb={5}>
+            //         <Text color="white">Sorry! Account doesn't exist.</Text>
+            //       </Box>
+            //     );
+            //   },
+            // });
+            ToastAndroid.showWithGravity(
+              "Sorry! Account doesn't exist.",
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
           } else if (data.response == 0) {
             setButtonStatus(false);
             Tts.speak(
@@ -195,6 +196,11 @@ export default function App({navigation, route}) {
                 );
               },
             });
+            ToastAndroid.showWithGravity(
+              'Aw snap! username or pasword is not right. Please try again.',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
           }
           console.log(data);
         })

@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {View, useWindowDimensions, Alert, TouchableOpacity} from 'react-native';
+import {
+  View,
+  useWindowDimensions,
+  Alert,
+  TouchableOpacity,
+  ToastAndroid,
+} from 'react-native';
 import {NativeBaseProvider, Center, Spinner} from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -34,12 +40,13 @@ export default function LandingScreen({navigation}) {
       if (valueString != null) {
         const value = JSON.parse(valueString);
         // console.log(value);
-        if (value.category == 'U') {
-          console.log('user');
-          navigation.navigate('Verify');
-        } else if (value.category == 'C') {
-          navigation.navigate('Verify');
-        }
+        checkIfVerified(value.user_id, value.category);
+        // if (value.category == 'U') {
+        //   console.log('user');
+        //   navigation.navigate('Verify');
+        // } else if (value.category == 'C') {
+        //   navigation.navigate('Verify');
+        // }
       } else {
         console.log('login');
         // navigate('Login');
@@ -50,6 +57,46 @@ export default function LandingScreen({navigation}) {
     } catch (error) {
       console.log(error);
     }
+  };
+  const checkIfVerified = (user_id, category) => {
+    const formData = new FormData();
+    formData.append('user_id', user_id);
+    fetch(window.name + 'checkIfVerified.php', {
+      method: 'POST',
+      header: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        if (responseJson.array_data != '') {
+          if (responseJson.array_data[0].response == 'A') {
+            ToastAndroid.showWithGravity(
+              'Great! your account was successfully verified.',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+            if (category == 'U') {
+              navigation.replace('Tab View');
+            } else if (category == 'C') {
+              navigation.navigate('Tab View 2');
+            } else {
+              navigation.replace('Verify');
+            }
+          } else {
+            navigation.replace('Verify');
+          }
+        } else {
+          navigation.replace('Login');
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        Alert.alert('Internet Connection Error');
+      });
   };
   return (
     <NativeBaseProvider>
