@@ -500,8 +500,8 @@ export default function TrackPassengerScreen({navigation, route}) {
                   latitude: parseFloat(p_loc[0]),
                   longitude: parseFloat(p_loc[1]),
                 }}
-                title={'title'}
-                description={'description'}
+                // title={'title'}
+                // description={'description'}
               />
             );
           })}
