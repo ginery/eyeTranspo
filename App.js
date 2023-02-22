@@ -14,7 +14,7 @@ import Geolocation from 'react-native-geolocation-service';
 // local connection
 // window.name = 'http://192.168.159.159:8080/eyetranspo/mobile/';
 // online connection
-window.name = 'https://juancoder.com/eyetranspo/mobile/';
+window.name = 'https://eyetranspo.tech/mobile/';
 
 export default function App() {
   React.useEffect(() => {
