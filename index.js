@@ -1,15 +1,17 @@
 /**
  * Created by: ginx @ Juancoder IT Solutions
  */
-
-import {AppRegistry} from 'react-native';
+import React from 'react';
+import {AppRegistry, ToastAndroid} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
 import 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert} from 'react-native';
+
+// import {Alert} from 'react-native';
+
 const setItemStorage = async (key, value) => {
   try {
     await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -31,8 +33,12 @@ PushNotification.configure({
 
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: function (notification) {
-    console.log('NOTIFICATION:', notification.message);
-    // Alert.alert(notification.message);
+    console.log('NOTIFICATION:', notification);
+    ToastAndroid.showWithGravity(
+      notification.message,
+      ToastAndroid.LONG,
+      ToastAndroid.CENTER,
+    );
     // process the notification
 
     // (required) Called when a remote is received or opened, or local notification is opened
