@@ -101,7 +101,7 @@ export default function App({navigation, route}) {
   const retrieveToken = async () => {
     try {
       const valueString = await AsyncStorage.getItem('IDToken');
-      console.log(valueString);
+      // console.log(valueString);
       const value = JSON.parse(valueString);
       if (value == null) {
         console.log('empty');
@@ -142,7 +142,7 @@ export default function App({navigation, route}) {
       })
         .then(response => response.json())
         .then(responseJson => {
-          console.log(responseJson);
+          // console.log(responseJson);
           var data = responseJson.array_data[0];
           if (data.response == 1) {
             Tts.speak('Great! Please Wait.');

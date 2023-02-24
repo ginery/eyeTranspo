@@ -648,7 +648,7 @@ export default function TrackBusesScreen({navigation, route}) {
                             ? 'coolGray.200'
                             : 'white'
                         }>
-                        Boarding
+                        Boarded
                       </Text>
                     </Center>
                   );
@@ -660,7 +660,7 @@ export default function TrackBusesScreen({navigation, route}) {
                 onPress={() => {
                   updateStatus('F');
                   //
-                  navigation.navigate('Tab View');
+                  navigation.replace('Tab View');
                 }}>
                 {({isHovered, isFocused, isPressed}) => {
                   return (

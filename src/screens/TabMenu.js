@@ -86,7 +86,7 @@ export default function TabMenu({navigation}) {
       })
       .catch(error => {
         Tts.speak('Internet Connection Error');
-        console.error(error);
+        console.error(error, 'getTransactionStatus');
 
         //  Alert.alert('Internet Connection Error');
       });
