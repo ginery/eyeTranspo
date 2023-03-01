@@ -138,8 +138,8 @@ android {
         applicationId "com.eyetransporn"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6.0
-        versionName "6.0"
+        versionCode 4
+        versionName "4.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {

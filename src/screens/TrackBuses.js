@@ -154,7 +154,7 @@ export default function TrackBusesScreen({navigation, route}) {
     // console.log('get location');
     Geolocation.getCurrentPosition(info => {
       // console.log(info);
-
+      updateLocation(user_id, info.coords.latitude, info.coords.longitude);
       setLatitude(info.coords.latitude);
       setLongitude(info.coords.longitude);
     });
@@ -213,6 +213,7 @@ export default function TrackBusesScreen({navigation, route}) {
           Math.round(durationTotal) +
           minutes,
       );
+      getAddressFromCoordinates(latitude, longitude);
     } else if (tripStatus == 'B') {
       Tts.speak(
         'Bus ' +
@@ -224,6 +225,7 @@ export default function TrackBusesScreen({navigation, route}) {
           Math.round(durationTotal) +
           minutes,
       );
+      getAddressFromCoordinates(latitude, longitude);
     }
 
     // console.log(reverseGeoResponse + 'hello');
@@ -406,6 +408,38 @@ export default function TrackBusesScreen({navigation, route}) {
         Tts.speak('Internet Connection Error', 'Update transaction');
         console.error(error);
         // setButtonStatus(false);
+        //  Alert.alert('Internet Connection Error');
+      });
+  };
+  const updateLocation = (user_id, lat, long) => {
+    const formData = new FormData();
+    formData.append('user_id', user_id);
+    formData.append('location', lat + ',' + long);
+    fetch(window.name + 'updateCurrentLocation.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        if (responseJson.array_data != '') {
+          if (responseJson.array_data[0].response == 1) {
+            ToastAndroid.showWithGravity(
+              'Location Updated.',
+              ToastAndroid.SHORT,
+              ToastAndroid.BOTTOM,
+            );
+          }
+        }
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error);
+        setButtonStatus(false);
         //  Alert.alert('Internet Connection Error');
       });
   };
