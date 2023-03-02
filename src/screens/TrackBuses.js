@@ -99,6 +99,8 @@ export default function TrackBusesScreen({navigation, route}) {
   const [userDestination, setUserDestination] = React.useState([]);
   const [tripStatus, getTripStatus] = React.useState('');
   const [silentMode, setSilentMode] = React.useState(true);
+  const [distance, setDistance] = React.useState(0);
+  const [duration, setDuration] = React.useState(0);
   const retrieveUser = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');
@@ -118,6 +120,7 @@ export default function TrackBusesScreen({navigation, route}) {
   }, [1]);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
+      // distanceUpdate(distance, duration);
       retrieveUser();
       refreshLocation();
       Tts.stop();
@@ -134,6 +137,7 @@ export default function TrackBusesScreen({navigation, route}) {
     );
     const interval = setInterval(() => {
       refreshLocation();
+      // getTripDetails();
     }, 300000);
 
     return () => {
@@ -142,7 +146,27 @@ export default function TrackBusesScreen({navigation, route}) {
       unsubscribe;
     };
   }, [navigation]);
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {});
+    // var watchID = Geolocation.watchPosition(
+    //   latestposition => {
+    //     // setLastPosition(latestposition);
+    //   },
+    //   error => console.log(error),
+    //   {enableHighAccuracy: true, timeout: 3000, maximumAge: 10000},
+    // );
+    const interval = setInterval(() => {
+      // refreshLocation();
+      // getTripDetails();
+      checkTransactionStatus();
+      console.log('test every 5 seconds check status.');
+    }, 5000);
 
+    return () => {
+      clearInterval(interval);
+      unsubscribe;
+    };
+  }, [navigation]);
   const setItemStorage = async (key, value) => {
     try {
       await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -152,6 +176,9 @@ export default function TrackBusesScreen({navigation, route}) {
   };
   const refreshLocation = u_id => {
     // console.log('get location');
+
+    // distanceUpdate(distance, duration);
+
     Geolocation.getCurrentPosition(info => {
       // console.log(info);
       updateLocation(user_id, info.coords.latitude, info.coords.longitude);
@@ -170,6 +197,7 @@ export default function TrackBusesScreen({navigation, route}) {
     },
   ];
   const distanceUpdate = (distance, duration) => {
+    console.log('distance', distance);
     if (distance > 1) {
       var distanceTotal = Math.round(distance);
       if (Math.round(distance) > 1) {
@@ -201,33 +229,33 @@ export default function TrackBusesScreen({navigation, route}) {
         var minutes = 'hour';
       }
     }
-
-    if (tripStatus == 'P') {
-      Tts.speak(
-        'Bus ' +
-          busNumber +
-          ' is about' +
-          distanceTotal +
-          kilometer +
-          ' away from you. Estimated arrival is ' +
-          Math.round(durationTotal) +
-          minutes,
-      );
-      getAddressFromCoordinates(latitude, longitude);
-    } else if (tripStatus == 'B') {
-      Tts.speak(
-        'Bus ' +
-          busNumber +
-          ' is about' +
-          distanceTotal +
-          kilometer +
-          ' away from your destination. Estimated arrival is ' +
-          Math.round(durationTotal) +
-          minutes,
-      );
-      getAddressFromCoordinates(latitude, longitude);
+    if (silentMode) {
+      if (tripStatus == 'P') {
+        Tts.speak(
+          'Bus ' +
+            busNumber +
+            ' is about' +
+            distanceTotal +
+            kilometer +
+            ' away from you. Estimated arrival is ' +
+            Math.round(durationTotal) +
+            minutes,
+        );
+        getAddressFromCoordinates(latitude, longitude);
+      } else if (tripStatus == 'B') {
+        Tts.speak(
+          'Bus ' +
+            busNumber +
+            ' is about' +
+            distanceTotal +
+            kilometer +
+            ' away from your destination. Estimated arrival is ' +
+            Math.round(durationTotal) +
+            minutes,
+        );
+        getAddressFromCoordinates(latitude, longitude);
+      }
     }
-
     // console.log(reverseGeoResponse + 'hello');
 
     // console.log(Math.round(distance));
@@ -328,7 +356,7 @@ export default function TrackBusesScreen({navigation, route}) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        // console.log(responseJson);
         if (responseJson.array_data != '') {
           if (responseJson.array_data[0]) {
             setModalReport(false);
@@ -355,7 +383,7 @@ export default function TrackBusesScreen({navigation, route}) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        // console.log(responseJson);
         if (responseJson.array_data != '') {
           if (responseJson.array_data[0].response == 1) {
             // AsyncStorage.removeItem('user_destination');
@@ -384,7 +412,7 @@ export default function TrackBusesScreen({navigation, route}) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        // console.log(responseJson);
         if (responseJson.array_data != '') {
           if (responseJson.array_data[0].response == 1) {
             getTripDetails();
@@ -425,7 +453,7 @@ export default function TrackBusesScreen({navigation, route}) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        // console.log(responseJson);
         if (responseJson.array_data != '') {
           if (responseJson.array_data[0].response == 1) {
             ToastAndroid.showWithGravity(
@@ -441,6 +469,36 @@ export default function TrackBusesScreen({navigation, route}) {
         console.error(error);
         setButtonStatus(false);
         //  Alert.alert('Internet Connection Error');
+      });
+  };
+  const checkTransactionStatus = () => {
+    const formData = new FormData();
+    formData.append('trip_id', trip_id);
+    // formData.append('user_id', user_id);
+    fetch(window.name + 'checkTransactionStatus.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'applicatiion/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        if (responseJson.array_data != '') {
+          var o = responseJson.array_data[0];
+          if (o.status == 'F') {
+            // Tts.speak('You safely arrived at you destination.');
+            navigation.replace('Tab View');
+          }
+        }
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error, 'checkTransactionStatus');
+
+        Alert.alert('Internet Connection Error');
       });
   };
   return (
@@ -466,7 +524,7 @@ export default function TrackBusesScreen({navigation, route}) {
           }}
           zIndex={-1}>
           {/* #!bus kag destination */}
-          {tripStatus == 'B' ? (
+          {busLocation != '' && (
             <MapViewDirections
               origin={{
                 latitude: busLocation != '' ? parseFloat(busLocation[0]) : 0,
@@ -491,7 +549,8 @@ export default function TrackBusesScreen({navigation, route}) {
               }}
               onReady={result => {
                 // getAddressFromCoordinates(latitude, longitude);
-
+                setDistance(result.distance);
+                setDuration(result.duration);
                 distanceUpdate(result.distance, result.duration);
 
                 // console.log(`Distance: ${result.distance} km`);
@@ -506,8 +565,9 @@ export default function TrackBusesScreen({navigation, route}) {
                 // });
               }}
             />
-          ) : tripStatus == 'P' ? (
-            //{/* #! user kag si bus location nga distance */}
+          )}
+          {/* #! user kag si bus location nga distance */}
+          {userDestination != '' && (
             <MapViewDirections
               origin={{
                 latitude: latitude,
@@ -526,13 +586,15 @@ export default function TrackBusesScreen({navigation, route}) {
               strokeWidth={8}
               strokeColor="#RRGGBBAA" //#4a89f3
               onStart={params => {
+                // distanceUpdate(result.distance, result.duration);
                 console.log(
                   `Started routing between "${params.origin}" and "${params.destination}"`,
                 );
               }}
               onReady={result => {
                 // getAddressFromCoordinates(latitude, longitude);
-
+                // setDistance(result.distance);
+                // setDuration(result.duration);
                 distanceUpdate(result.distance, result.duration);
                 console.log(`Distance: ${result.distance} km`);
                 console.log(`Duration: ${result.duration} min.`);
@@ -547,7 +609,7 @@ export default function TrackBusesScreen({navigation, route}) {
                 // });
               }}
             />
-          ) : null}
+          )}
           {busLocation != '' && (
             <Marker
               coordinate={{
@@ -756,7 +818,7 @@ export default function TrackBusesScreen({navigation, route}) {
                           },
                         ],
                       }}>
-                      <Icon name="bell" color="white" size={30} />
+                      <Icon name="bell-slash" color="white" size={30} />
                     </Center>
                   );
                 }}
@@ -787,7 +849,7 @@ export default function TrackBusesScreen({navigation, route}) {
                           },
                         ],
                       }}>
-                      <Icon name="bell-slash" color="white" size={30} />
+                      <Icon name="bell" color="white" size={30} />
                     </Center>
                   );
                 }}

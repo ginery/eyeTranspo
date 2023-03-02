@@ -74,11 +74,6 @@ export default function LandingScreen({navigation}) {
         console.log(responseJson);
         if (responseJson.array_data != '') {
           if (responseJson.array_data[0].response == 'A') {
-            ToastAndroid.showWithGravity(
-              'Great! your account was successfully verified.',
-              ToastAndroid.SHORT,
-              ToastAndroid.CENTER,
-            );
             if (category == 'U') {
               navigation.replace('Tab View');
             } else if (category == 'C') {
