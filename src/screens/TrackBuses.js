@@ -107,22 +107,23 @@ export default function TrackBusesScreen({navigation, route}) {
       if (valueString != null) {
         const value = JSON.parse(valueString);
         set_user_id(value.user_id);
-
+        refreshLocation(value.user_id);
         // console.log(value.user_id);
       }
     } catch (error) {
       console.log(error);
     }
   };
-  React.useEffect(() => {
-    retrieveUser();
-    refreshLocation();
-  }, [1]);
+  // React.useEffect(() => {
+  //   retrieveUser();
+  //   refreshLocation();
+  //   console.log(user_id);
+  // }, [user_id]);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // distanceUpdate(distance, duration);
       retrieveUser();
-      refreshLocation();
+      // refreshLocation();
       Tts.stop();
       Tts.speak('You are in track buses page.');
       getTripDetails();
@@ -136,9 +137,10 @@ export default function TrackBusesScreen({navigation, route}) {
       {enableHighAccuracy: true, timeout: 3000, maximumAge: 10000},
     );
     const interval = setInterval(() => {
-      refreshLocation();
+      // refreshLocation();
       // getTripDetails();
-    }, 300000);
+      retrieveUser();
+    }, 10000);
 
     return () => {
       clearInterval(interval);
@@ -181,7 +183,7 @@ export default function TrackBusesScreen({navigation, route}) {
 
     Geolocation.getCurrentPosition(info => {
       // console.log(info);
-      updateLocation(user_id, info.coords.latitude, info.coords.longitude);
+      updateLocation(u_id, info.coords.latitude, info.coords.longitude);
       setLatitude(info.coords.latitude);
       setLongitude(info.coords.longitude);
     });
@@ -453,7 +455,7 @@ export default function TrackBusesScreen({navigation, route}) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        // console.log(responseJson);
+        console.log(responseJson);
         if (responseJson.array_data != '') {
           if (responseJson.array_data[0].response == 1) {
             ToastAndroid.showWithGravity(
@@ -485,7 +487,7 @@ export default function TrackBusesScreen({navigation, route}) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        // console.log(responseJson);
         if (responseJson.array_data != '') {
           var o = responseJson.array_data[0];
           if (o.status == 'F') {

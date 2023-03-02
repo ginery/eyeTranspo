@@ -106,7 +106,7 @@ export default function TrackPassengerScreen({navigation, route}) {
       if (valueString != null) {
         const value = JSON.parse(valueString);
         // set_user_id(value.user_id);
-
+        refreshLocation(value.user_id);
         // console.log(value.user_id);
       }
     } catch (error) {
@@ -119,10 +119,10 @@ export default function TrackPassengerScreen({navigation, route}) {
   }, [1]);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      // retrieveUser();
+      retrieveUser();
       // getBusTransaction();
       getBusDetails();
-      refreshLocation();
+      // refreshLocation();
       Tts.stop();
 
       Tts.speak('You are in track passenger page.');
@@ -137,7 +137,8 @@ export default function TrackPassengerScreen({navigation, route}) {
       {enableHighAccuracy: true, timeout: 3000, maximumAge: 10000},
     );
     const interval = setInterval(() => {
-      refreshLocation();
+      // refreshLocation();
+      retrieveUser();
       getBusTransaction();
     }, 10000);
 
@@ -161,7 +162,7 @@ export default function TrackPassengerScreen({navigation, route}) {
       // console.log(info);
       setLatitude(info.coords.latitude);
       setLongitude(info.coords.longitude);
-      updateLocation(user_id, info.coords.latitude, info.coords.longitude);
+      updateLocation(u_id, info.coords.latitude, info.coords.longitude);
     });
   };
   const waypointarray = [
