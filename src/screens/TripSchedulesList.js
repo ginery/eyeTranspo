@@ -255,6 +255,24 @@ export default function TripScheduleListScreen({navigation, route}) {
                 trip_id: trip_id,
               });
             }, 5000);
+          } else if (responseJson.array_data[0].response == 2) {
+            setLoadingModal(false);
+            setButtonStatus(false);
+            Tts.speak(
+              'Sorry! The bus you selected was already arrived at terminal.',
+            );
+            toast.show({
+              render: () => {
+                return (
+                  <Box bg="error.500" px="2" py="1" rounded="sm" mb={5}>
+                    <Text color="white">
+                      Sorry! The bus you selected was already arrived at
+                      terminal.
+                    </Text>
+                  </Box>
+                );
+              },
+            });
           } else {
             setLoadingModal(false);
             setButtonStatus(false);
@@ -268,7 +286,7 @@ export default function TripScheduleListScreen({navigation, route}) {
                 );
               },
             });
-            AsyncStorage.removeItem('user_destination');
+            // AsyncStorage.removeItem('user_destination');
           }
         } else {
           setLoadingModal(false);
@@ -283,7 +301,7 @@ export default function TripScheduleListScreen({navigation, route}) {
               );
             },
           });
-          AsyncStorage.removeItem('user_destination');
+          // AsyncStorage.removeItem('user_destination');
         }
       })
       .catch(error => {
