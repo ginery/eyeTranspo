@@ -109,6 +109,7 @@ export default function TripScheduleListScreen({navigation, route}) {
   const [buttonStatus, setButtonStatus] = React.useState(false);
   const [conductorId, setConductorId] = React.useState(0);
   const [userDestination, setUserDestination] = React.useState(0);
+
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       Tts.stop();
@@ -197,10 +198,6 @@ export default function TripScheduleListScreen({navigation, route}) {
             };
           });
           setTripScheduleData(data);
-        } else {
-          Tts.speak(
-            'Sorry! Bus already arrived at the terminall. Please select another bus.',
-          );
         }
         setLoadingModal(false);
       })
@@ -318,6 +315,61 @@ export default function TripScheduleListScreen({navigation, route}) {
         //  Alert.alert('Internet Connection Error');
       });
   };
+  const getBusStatus = (
+    trip_id,
+    bus_id,
+    trip_schedule_id,
+    date_arrived,
+    date_departed,
+    bus_number,
+    bus_route,
+  ) => {
+    const formData = new FormData();
+    formData.append('trip_id', trip_id);
+    fetch(window.name + 'getBusStatus.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        if (responseJson.array_data[0].trip_status == 'A') {
+          Tts.stop();
+          Tts.speak('Sorry! Bus currently arrived. Please select another bus.');
+          setLoadingModal(false);
+        } else {
+          Tts.stop();
+          Tts.speak(
+            'You are selected a BUS with a number ' +
+              bus_number +
+              'going to' +
+              bus_route +
+              '. Alright, please search your destination.',
+          );
+          setTripId(trip_id);
+          setBusId(bus_id);
+          setTripScheduleId(trip_schedule_id);
+          setDateArrival(date_arrived);
+          setDateDeparted(date_departed);
+          setBusNumber(bus_number);
+          setBusRoute(bus_route);
+          setConductorId(conductorId);
+          setModalVisible(true);
+          setLoadingModal(false);
+        }
+      })
+      .catch(error => {
+        Tts.speak('Internet Connection Error');
+        console.error(error, 'getTripSchedules');
+        setButtonStatus(false);
+        setLoadingModal(false);
+        //  Alert.alert('Internet Connection Error');
+      });
+  };
   return (
     <NativeBaseProvider safeAreaTop>
       <Box p={5}>
@@ -343,24 +395,41 @@ export default function TripScheduleListScreen({navigation, route}) {
             renderItem={({item}) => (
               <TouchableOpacity
                 onPress={() => {
-                  Tts.stop();
-                  Tts.speak(
-                    'You are selected a BUS with a number ' +
-                      item.bus_number +
-                      'going to' +
-                      item.bus_route +
-                      '. Alright, please search your destination.',
-                  );
-                  setTripId(item.trip_id);
-                  setBusId(item.bus_id);
-                  setTripScheduleId(item.trip_schedule_id);
-                  setDateArrival(item.date_arrived);
-                  setDateDeparted(item.date_departed);
-                  setBusNumber(item.bus_number);
-                  setBusRoute(item.busRoute);
-                  setConductorId(item.conductorId);
-                  setModalVisible(true);
+                  // if (tripScheduleData.length == 0) {
+                  //   Tts.stop();
+                  //   Tts.speak(
+                  //     'Sorry! Bus currently arrived. Please select another bus.',
+                  //   );
+                  // } else {
+                  //   Tts.stop();
+                  //   Tts.speak(
+                  //     'You are selected a BUS with a number ' +
+                  //       item.bus_number +
+                  //       'going to' +
+                  //       item.bus_route +
+                  //       '. Alright, please search your destination.',
+                  //   );
+                  //   setTripId(item.trip_id);
+                  //   setBusId(item.bus_id);
+                  //   setTripScheduleId(item.trip_schedule_id);
+                  //   setDateArrival(item.date_arrived);
+                  //   setDateDeparted(item.date_departed);
+                  //   setBusNumber(item.bus_number);
+                  //   setBusRoute(item.busRoute);
+                  //   setConductorId(item.conductorId);
+                  //   setModalVisible(true);
+                  // }
                   // navigation.navigate('Track Buses');
+                  setLoadingModal(true);
+                  getBusStatus(
+                    item.trip_id,
+                    item.bus_id,
+                    item.trip_schedule_id,
+                    item.date_arrived,
+                    item.date_departed,
+                    item.bus_number,
+                    item.busRoute,
+                  );
                 }}>
                 <Box
                   borderRadius={10}
