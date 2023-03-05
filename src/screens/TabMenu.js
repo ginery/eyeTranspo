@@ -22,15 +22,13 @@ export default function TabMenu({navigation}) {
   const [user_id, set_user_id] = React.useState(0);
   const [bus_id, setBusId] = React.useState(0);
   const [trip_id, setTripId] = React.useState(0);
+
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       retrieveUser();
       //console.log('refreshed_home');
       Tts.stop();
       Tts.speak('You are in menu page.');
-      Tts.speak(
-        'The menu list are trip schedules, track buses, profile and lastly logout',
-      );
 
       // retrieveIp();
       // setModalShow(true);
@@ -41,7 +39,6 @@ export default function TabMenu({navigation}) {
   React.useEffect(() => {
     retrieveUser();
   }, [1]);
-
   const retrieveUser = async () => {
     try {
       const valueString = await AsyncStorage.getItem('user_details');
@@ -77,8 +74,15 @@ export default function TabMenu({navigation}) {
           if (responseJson.array_data[0].status == 1) {
             setBusId(responseJson.array_data[0].bus_id);
             setTripId(responseJson.array_data[0].trip_id);
+
             setShowMenu(true);
+            Tts.speak(
+              'The menu list are track buses, profile and lastly logout',
+            );
           } else {
+            Tts.speak(
+              'The menu list are trip schedule, profile and lastly logout',
+            );
             setShowMenu(false);
           }
           // getTripDetails(responseJson.array_data[0].response);

@@ -36,8 +36,12 @@ import {
   ImageBackground,
   ToastAndroid,
 } from 'react-native';
+import Tts from 'react-native-tts';
 export default function CheckVerifiedScreen({navigation}) {
   React.useEffect(() => {
+    Tts.speak(
+      "You can only log in once you're verified. Please wait for verification.",
+    );
     const interval = setInterval(() => {
       retrieveData();
     }, 5000);
@@ -124,9 +128,9 @@ export default function CheckVerifiedScreen({navigation}) {
         />
         <Center
           style={{
-            height: 100,
+            height: 150,
           }}>
-          <Text fontSize="xl" textAlign="center">
+          <Text fontSize="3xl" textAlign="center" mb={3}>
             Please wait for verification.
           </Text>
           <DotIndicator color="#dd302f" />

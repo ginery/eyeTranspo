@@ -182,20 +182,26 @@ export default function TripScheduleListScreen({navigation, route}) {
       .then(response => response.json())
       .then(responseJson => {
         console.log(responseJson);
-        var data = responseJson.array_data.map(function (item, index) {
-          return {
-            trip_id: item.trip_id,
-            bus_id: item.bus_id,
-            bus_number: item.bus_number,
-            bus_route: item.bus_route,
-            trip_schedule_id: item.trip_schedule_id,
-            headings: item.headings,
-            date_departed: item.date_departed,
-            date_arrived: item.date_arrived,
-            conductor_id: item.conductor_id,
-          };
-        });
-        setTripScheduleData(data);
+        if (responseJson.array_data != '') {
+          var data = responseJson.array_data.map(function (item, index) {
+            return {
+              trip_id: item.trip_id,
+              bus_id: item.bus_id,
+              bus_number: item.bus_number,
+              bus_route: item.bus_route,
+              trip_schedule_id: item.trip_schedule_id,
+              headings: item.headings,
+              date_departed: item.date_departed,
+              date_arrived: item.date_arrived,
+              conductor_id: item.conductor_id,
+            };
+          });
+          setTripScheduleData(data);
+        } else {
+          Tts.speak(
+            'Sorry! Bus already arrived at the terminall. Please select another bus.',
+          );
+        }
         setLoadingModal(false);
       })
       .catch(error => {

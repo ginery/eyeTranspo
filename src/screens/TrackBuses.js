@@ -140,7 +140,7 @@ export default function TrackBusesScreen({navigation, route}) {
       // refreshLocation();
       // getTripDetails();
       retrieveUser();
-    }, 10000);
+    }, 300000);
 
     return () => {
       clearInterval(interval);
@@ -360,7 +360,11 @@ export default function TrackBusesScreen({navigation, route}) {
       .then(responseJson => {
         // console.log(responseJson);
         if (responseJson.array_data != '') {
-          if (responseJson.array_data[0]) {
+          if (responseJson.array_data[0].response == 1) {
+            Alert.alert('Report submitted.');
+            Tts.speak(
+              'We will be follow up you report and sorry for the inconvenience.',
+            );
             setModalReport(false);
           }
         }
@@ -1022,19 +1026,29 @@ export default function TrackBusesScreen({navigation, route}) {
               <TextArea
                 value={report}
                 onChangeText={text => setReport(text)}
-                fontSize="xl"
+                fontSize="3xl"
                 h={20}
-                placeholder="Text Area Placeholder"
+                placeholder="TYPE YOU COMPLAINTS AND CONCERNS HERE."
                 w="90%"
               />
             </Box>
-            <Button
-              width="90%"
-              onPress={() => {
-                sendReport();
-              }}>
-              <Heading color="white">Proceed</Heading>
-            </Button>
+            <HStack space={2}>
+              <Button
+                colorScheme="error"
+                width="40%"
+                onPress={() => {
+                  setModalReport(false);
+                }}>
+                <Heading color="white">Cancel</Heading>
+              </Button>
+              <Button
+                width="40%"
+                onPress={() => {
+                  sendReport();
+                }}>
+                <Heading color="white">Proceed</Heading>
+              </Button>
+            </HStack>
           </Center>
         </Box>
       </Modal>
