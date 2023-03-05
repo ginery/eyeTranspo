@@ -1008,17 +1008,7 @@ export default function TrackBusesScreen({navigation, route}) {
         <Box
           bg="#2a2a2ab8"
           style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          {/* <TouchableOpacity>
-            <Badge
-              colorScheme="success"
-              style={{
-                top: 0,
-                right: 0,
-              }}>
-              fdsggsdgfsdgX
-            </Badge>
-          </TouchableOpacity> */}
-          <Center bg="white" width="80%" height="200" borderRadius={10}>
+          <Center bg="white" width="80%" height="310" borderRadius={10}>
             <Text fontSize="xl" fontWeight="bold" mb={2}>
               Report Driver/Conductor?
             </Text>
@@ -1027,7 +1017,7 @@ export default function TrackBusesScreen({navigation, route}) {
                 value={report}
                 onChangeText={text => setReport(text)}
                 fontSize="3xl"
-                h={20}
+                h={200}
                 placeholder="TYPE YOU COMPLAINTS AND CONCERNS HERE."
                 w="90%"
               />

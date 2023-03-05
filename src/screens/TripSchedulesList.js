@@ -239,14 +239,14 @@ export default function TripScheduleListScreen({navigation, route}) {
           if (responseJson.array_data[0].response == 1) {
             setButtonStatus(true);
             Tts.speak(
-              'You have successfully sumbit your transaction. You will redirect to track buses page. Please wait..',
+              'You have successfully submit your transaction. You will redirect to track buses page. Please wait..',
             );
             toast.show({
               render: () => {
                 return (
                   <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
                     <Text color="white">
-                      You have successfully sumbit your transaction.
+                      You have successfully submit your transaction.
                     </Text>
                   </Box>
                 );
