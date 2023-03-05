@@ -259,20 +259,20 @@ export default function TripScheduleListScreen({navigation, route}) {
             setLoadingModal(false);
             setButtonStatus(false);
             Tts.speak(
-              'Sorry! The bus you selected was already arrived at terminal.',
+              'Sorry! Bus currently arrived. Please select another bus.',
             );
             toast.show({
               render: () => {
                 return (
                   <Box bg="error.500" px="2" py="1" rounded="sm" mb={5}>
                     <Text color="white">
-                      Sorry! The bus you selected was already arrived at
-                      terminal.
+                      Sorry! Bus currently arrived. Please select another bus.
                     </Text>
                   </Box>
                 );
               },
             });
+            navigation.replace('Tab View');
           } else {
             setLoadingModal(false);
             setButtonStatus(false);
