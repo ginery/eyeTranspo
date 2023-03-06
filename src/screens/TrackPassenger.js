@@ -134,13 +134,13 @@ export default function TrackPassengerScreen({navigation, route}) {
         // setLastPosition(latestposition);
       },
       error => console.log(error),
-      {enableHighAccuracy: true, timeout: 3000, maximumAge: 10000},
+      {enableHighAccuracy: true, timeout: 30000, maximumAge: 30000},
     );
     const interval = setInterval(() => {
       // refreshLocation();
       retrieveUser();
       getBusTransaction();
-    }, 10000);
+    }, 30000);
 
     return () => {
       clearInterval(interval);

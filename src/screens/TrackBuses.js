@@ -134,13 +134,13 @@ export default function TrackBusesScreen({navigation, route}) {
         // setLastPosition(latestposition);
       },
       error => console.log(error),
-      {enableHighAccuracy: true, timeout: 3000, maximumAge: 10000},
+      {enableHighAccuracy: true, timeout: 30000, maximumAge: 30000},
     );
     const interval = setInterval(() => {
       // refreshLocation();
       // getTripDetails();
       retrieveUser();
-    }, 300000);
+    }, 30000);
 
     return () => {
       clearInterval(interval);
@@ -182,7 +182,7 @@ export default function TrackBusesScreen({navigation, route}) {
     // distanceUpdate(distance, duration);
 
     Geolocation.getCurrentPosition(info => {
-      // console.log(info);
+      console.log(info);
       updateLocation(u_id, info.coords.latitude, info.coords.longitude);
       setLatitude(info.coords.latitude);
       setLongitude(info.coords.longitude);
