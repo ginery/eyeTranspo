@@ -100,7 +100,7 @@ export default function TripScheduleScreen({navigation}) {
             bg="#dd302f"
             onPress={() => {
               Tts.speak('You are going to bacolod!');
-              navigation.navigate('Trip Schedule List', {
+              navigation.replace('Trip Schedule List', {
                 cardinal_directions: 'TO BACOLOD',
               });
             }}
@@ -122,7 +122,7 @@ export default function TripScheduleScreen({navigation}) {
             bg="#dd302f"
             onPress={() => {
               Tts.speak('You are going to la castellana!');
-              navigation.navigate('Trip Schedule List', {
+              navigation.replace('Trip Schedule List', {
                 cardinal_directions: 'TO LA CASTELLANA',
               });
             }}

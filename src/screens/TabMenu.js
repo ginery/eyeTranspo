@@ -206,6 +206,7 @@ export default function TabMenu({navigation}) {
                   navigation.navigate('Track Buses', {
                     bus_id: bus_id,
                     trip_id: trip_id,
+                    user_id: user_id,
                   });
                   Tts.speak('TRACK BUSES');
                 }}>

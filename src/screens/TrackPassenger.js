@@ -113,34 +113,27 @@ export default function TrackPassengerScreen({navigation, route}) {
       console.log(error);
     }
   };
-  React.useEffect(() => {
-    // retrieveUser();
-    refreshLocation();
-  }, [1]);
+
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      retrieveUser();
-      // getBusTransaction();
+      // retrieveUser();
+      // // getBusTransaction();
       getBusDetails();
       // refreshLocation();
-      Tts.stop();
-
-      Tts.speak('You are in track passenger page.');
-
+      // Tts.stop();
+      // Tts.speak('You are in track passenger page.');
       // console.log('user_id' + user_id);
     });
     var watchID = Geolocation.watchPosition(
-      latestposition => {
-        // setLastPosition(latestposition);
-      },
+      latestposition => console.log(latestposition),
       error => console.log(error),
-      {enableHighAccuracy: true, timeout: 30000, maximumAge: 30000},
+      {enableHighAccuracy: true, timeout: 5000, maximumAge: 5000},
     );
     const interval = setInterval(() => {
-      // refreshLocation();
-      retrieveUser();
+      refreshLocation();
+      // retrieveUser();
       getBusTransaction();
-    }, 30000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
@@ -156,13 +149,13 @@ export default function TrackPassengerScreen({navigation, route}) {
       setRefreshing(false);
     }, 1000);
   }, []);
-  const refreshLocation = u_id => {
+  const refreshLocation = () => {
     // console.log('get location');
     Geolocation.getCurrentPosition(info => {
-      // console.log(info);
+      console.log(info);
       setLatitude(info.coords.latitude);
       setLongitude(info.coords.longitude);
-      updateLocation(u_id, info.coords.latitude, info.coords.longitude);
+      updateLocation(user_id, info.coords.latitude, info.coords.longitude);
     });
   };
   const waypointarray = [
@@ -404,7 +397,7 @@ export default function TrackPassengerScreen({navigation, route}) {
   const delayNotification = () => {
     // console.log(busId);
     const formData = new FormData();
-    formData.append('bus_id', busId);
+    formData.append('bus_id', bus_id);
     fetch(window.name + 'delaysNotification.php', {
       method: 'POST',
       headers: {

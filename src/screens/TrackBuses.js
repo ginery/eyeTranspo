@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 });
 export default function TrackBusesScreen({navigation, route}) {
   // const navigation = useNavigation();
-  const [user_id, set_user_id] = React.useState(0);
+  // const [user_id, set_user_id] = React.useState(0);
   const [modalShow, setModalShow] = React.useState(false);
   const [referenceNumber, setReferenceNumber] = React.useState('');
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -83,7 +83,7 @@ export default function TrackBusesScreen({navigation, route}) {
   const [d_long, setDlong] = React.useState(0);
   const [busNumber, setBusNumber] = React.useState(0);
   const [isOpen, setIsOpen] = React.useState(false);
-  const {bus_id, trip_id} = route.params;
+  const {bus_id, trip_id, user_id} = route.params;
   const [busId, setBusId] = React.useState(0);
   const [tripScheduleId, setTripScheduleId] = React.useState(0);
   const [dateDeparted, setDateDeparted] = React.useState('');
@@ -106,7 +106,7 @@ export default function TrackBusesScreen({navigation, route}) {
       const valueString = await AsyncStorage.getItem('user_details');
       if (valueString != null) {
         const value = JSON.parse(valueString);
-        set_user_id(value.user_id);
+        // set_user_id(value.user_id);
         refreshLocation(value.user_id);
         // console.log(value.user_id);
       }
@@ -138,7 +138,7 @@ export default function TrackBusesScreen({navigation, route}) {
     );
     const interval = setInterval(() => {
       // refreshLocation();
-      // getTripDetails();
+      getTripDetails();
       retrieveUser();
     }, 30000);
 
@@ -330,8 +330,8 @@ export default function TrackBusesScreen({navigation, route}) {
           setBusNumber(o.bus_number);
           var loc = o.bus_location.split(',');
           setBusLocation(loc);
-          // var d = o.destination.split(',');
-          setUserDestination(o.destination.split(','));
+          var d = o.destination.split(',');
+          setUserDestination(d);
           getTripStatus(o.status);
           setModalVisible(false);
         }
@@ -633,8 +633,8 @@ export default function TrackBusesScreen({navigation, route}) {
                 longitude:
                   userDestination != '' ? parseFloat(userDestination[1]) : 0,
               }}
-              title={'title'}
-              description={'description'}
+              title={'Destination'}
+              description={'Destination'}
             />
           )}
         </MapView>
