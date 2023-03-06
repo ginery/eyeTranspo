@@ -118,12 +118,12 @@ export default function TripScheduleListScreen({navigation, route}) {
       retrieveUser();
       getTripSchedules();
       Tts.speak('You are in trip schedule page.');
-      tripScheduleData.map((item, index) => {
-        // console.log(item.fullName);
-        Tts.speak(
-          'Bus number ' + item.bus_number + ' where going to ' + item.bus_route,
-        );
-      });
+      // tripScheduleData.map((item, index) => {
+      //   // console.log(item.fullName);
+      //   Tts.speak(
+      //     'Bus number ' + item.bus_number + ' where going to ' + item.bus_route,
+      //   );
+      // });
 
       // retrieveIp();
       // setModalShow(true);
@@ -428,7 +428,7 @@ export default function TripScheduleListScreen({navigation, route}) {
                     item.date_arrived,
                     item.date_departed,
                     item.bus_number,
-                    item.busRoute,
+                    item.bus_route,
                   );
                 }}>
                 <Box

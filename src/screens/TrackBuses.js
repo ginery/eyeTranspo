@@ -977,7 +977,7 @@ export default function TrackBusesScreen({navigation, route}) {
                   colorScheme="coolGray"
                   onPress={onClose}
                   ref={cancelRef}>
-                  <Text fontSize="3xl">Cancel</Text>
+                  <Text fontSize="3xl">Close</Text>
                 </Button>
                 <Button
                   colorScheme="danger"
